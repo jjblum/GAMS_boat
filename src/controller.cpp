@@ -22,6 +22,7 @@
 #include "threads/JSON_read.h"
 #include "threads/JSON_write.h"
 #include "threads/kb_print.h"
+#include "threads/random_motor_signals.h"
 // end thread includes
 
 // begin transport includes
@@ -436,8 +437,9 @@ int main (int argc, char ** argv)
   threader.run (1, "analytics", new threads::analytics());
   threader.run (1, "sensing", new threads::sensing()); // thread for sensors that go directly to the odroid, not through the arduino
   threader.run (20.0, "JSON_read", new threads::JSON_read(port, containers)); // messages that come from the arduino
-  threader.run (20.0, "JSON_write", new threads::JSON_write()); // messages that go to the arduino
+  threader.run (20.0, "JSON_write", new threads::JSON_write(port, containers)); // messages that go to the arduino
   threader.run (1, "kb_print", new threads::kb_print());
+  threader.run(1, "random_motor_signals", new threads::random_motor_signals(containers));
   // end thread creation
   
   // run a mape loop for algorithm and platform control

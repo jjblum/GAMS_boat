@@ -174,7 +174,7 @@
  /home/odroid/madara/include/madara/logger/Logger.h \
  /home/odroid/madara/include/madara/utility/Refcounter.h \
  /home/odroid/madara/include/madara/utility/Refcounter.cpp \
- src/threads/JSON_write.h \
+ src/threads/JSON_write.h src/threads/io_thread.h \
  /home/odroid/madara/include/madara/threads/BaseThread.h \
  /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.h \
  /home/odroid/madara/include/madara/utility/stdint.h \
@@ -268,4 +268,7 @@
  /home/odroid/madara/include/madara/knowledge/containers/BaseContainer.inl \
  /home/odroid/madara/include/madara/knowledge/ContextGuard.h \
  /home/odroid/madara/include/madara/knowledge/containers/Integer.inl \
- /home/odroid/madara/include/madara/knowledge/containers/Integer.h
+ /home/odroid/madara/include/madara/knowledge/containers/Integer.h \
+ src/threads/../boat_containers.h \
+ /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
+ /home/odroid/madara/include/madara/knowledge/containers/Double.h

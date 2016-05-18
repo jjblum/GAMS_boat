@@ -24,12 +24,13 @@ FILES = \
   src/threads/io_thread.cpp \
   src/threads/sensing.cpp \
   src/threads/localization.cpp \
+  src/threads/random_motor_signals.cpp \
   src/threads/JSON_write.cpp \
   src/threads/analytics.cpp \
   src/threads/JSON_read.cpp \
   src/threads/kb_print.cpp
 
-VPATH = .:src:src/threads:src/platforms
+VPATH = .:src/threads:src:src/platforms
 
 #----------------------------------------------------------------------------
 #       Include macros and targets
