@@ -5,8 +5,10 @@
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::localization::localization ()
+threads::localization::localization (Containers & containers_)
+: containers(containers_)
 {
+  state = StateMatrix::Zero();
 }
 
 // destructor
@@ -46,4 +48,9 @@ threads::localization::run (void)
     gams::loggers::LOG_MAJOR,
     "threads::localization::run:" 
     " executing\n");
+}
+
+void threads::localization::new_sensor_update(std::string sensor_name)
+{
+  printf("new sensor update: %s\n", sensor_name.c_str());
 }

@@ -5,11 +5,12 @@
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::JSON_read::JSON_read (std::shared_ptr<asio::serial_port> port_, Containers & containers_)
+threads::JSON_read::JSON_read (std::shared_ptr<asio::serial_port> port_, Containers & containers_, threads::localization * localization_reference)
 : threads::io_thread(port_, containers_)
 {
   end_of_line_char = END_OF_LINE_CHAR;
   rejected_line_count = 0;
+  new_sensor_callback = std::bind( & threads::localization::new_sensor_update, localization_reference, std::placeholders::_1);
 }
 
 // destructor
@@ -81,6 +82,11 @@ threads::JSON_read::run (void)
                 float battery_voltage = std::stof(elems.at(0), nullptr);
                 //printf("battery voltage = %.3f V\n", battery_voltage);
                 containers.battery_voltage = battery_voltage;
+
+                // TEST - try out callbacks with new sensors
+                new_sensor_callback("battery");
+
+
               }
               // TODO - finish the other sensor parsing            
             }

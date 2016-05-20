@@ -17,6 +17,7 @@ BIN_UNCHECKED    = custom_controller
 LIB_PREFIX      ?= lib
 
 FILES = \
+  src/sensor.cpp \
   src/controller.cpp \
   src/boat_containers.cpp \
   src/platforms/boat.cpp \
@@ -30,7 +31,7 @@ FILES = \
   src/threads/JSON_read.cpp \
   src/threads/kb_print.cpp
 
-VPATH = .:src/threads:src:src/platforms
+VPATH = .:src:src/platforms:src/threads
 
 #----------------------------------------------------------------------------
 #       Include macros and targets

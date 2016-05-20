@@ -54,8 +54,8 @@ threads::random_motor_signals::run (void)
 
   double motor1 = (*distribution)(*generator);
   double motor2 = (*distribution)(*generator);
-  motor1 = round(motor1*pow(10.0, 3.0))/pow(10.0, 3.0);
-  motor2 = round(motor2*pow(10.0, 3.0))/pow(10.0, 3.0);
+  motor1 = round_to_decimal(motor1, 3);
+  motor2 = round_to_decimal(motor2, 3);
   //printf("motor signal 1 = %.3f   motor signal 2 = %.3f\n", motor1, motor2);
   motor_signals.at(0) = motor1;
   motor_signals.at(1) = motor2;

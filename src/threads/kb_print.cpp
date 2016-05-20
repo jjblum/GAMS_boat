@@ -6,7 +6,7 @@ namespace knowledge = madara::knowledge;
 
 // constructor
 threads::kb_print::kb_print ()
-{
+{  
 }
 
 // destructor

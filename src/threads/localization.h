@@ -3,8 +3,16 @@
 #define   _THREAD_LOCALIZATION_H_
 
 #include <string>
+#include <stdio.h>
+#include <eigen3/Eigen/Core>
 
 #include "madara/threads/BaseThread.h"
+#include "../sensor.h"
+#include "../boat_containers.h"
+
+#define STATE_DIMENSION 6
+
+typedef Eigen::Matrix< double, STATE_DIMENSION, 1> StateMatrix;
 
 namespace threads
 {
@@ -17,7 +25,7 @@ namespace threads
     /**
      * Default constructor
      **/
-    localization ();
+    localization (Containers & containers_);
     
     /**
      * Destructor
@@ -35,9 +43,13 @@ namespace threads
       **/
     virtual void run (void);
 
+    void new_sensor_update(std::string sensor_name);
+
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
+    Containers containers;
+    StateMatrix state;
   };
 } // end namespace threads
 

@@ -2,8 +2,12 @@
 #ifndef   _THREAD_JSON_READ_H_
 #define   _THREAD_JSON_READ_H_
 
+#include <functional>
+
 #include "io_thread.h"
+#include "localization.h"
 #include "../utility.h"
+#include "../sensor.h"
 
 namespace threads
 {
@@ -13,7 +17,7 @@ namespace threads
   class JSON_read : public io_thread
   {
   public:
-    JSON_read (std::shared_ptr<asio::serial_port> port_, Containers & containers_);
+    JSON_read (std::shared_ptr<asio::serial_port> port_, Containers & containers_, threads::localization * localization_reference);
     virtual ~JSON_read ();
     
     /**
@@ -27,9 +31,12 @@ namespace threads
       **/
     virtual void run (void);
 
+    void callback_example (); // demonstrate c++11 callbacks
+
   private:
     char end_of_line_char;
     int rejected_line_count;
+    std::function<void(std::string)> new_sensor_callback;
   };
 } // end namespace threads
 

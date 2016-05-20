@@ -271,4 +271,5 @@
  /home/odroid/madara/include/madara/knowledge/containers/Integer.h \
  src/threads/../boat_containers.h \
  /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
- /home/odroid/madara/include/madara/knowledge/containers/Double.h
+ /home/odroid/madara/include/madara/knowledge/containers/Double.h \
+ src/threads/../utility.h

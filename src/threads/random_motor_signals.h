@@ -7,10 +7,10 @@
 #include <random>
 #include <vector>
 #include <stdio.h>
-#include <cmath>
 
 #include "madara/threads/BaseThread.h"
 #include "../boat_containers.h"
+#include "../utility.h"
 
 namespace threads
 {

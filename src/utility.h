@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cmath>
+#include <functional>
 
 inline std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
@@ -28,5 +30,22 @@ inline void remove_quotes(std::string &s) {
         s.erase(0, 1);
     }    
 }
+
+inline double round_to_decimal(double input, int decimal_places)
+{
+  return round(input*pow(10.0, decimal_places))/pow(10.0, decimal_places);
+}
+
+/*
+class EventHandler
+{
+public:
+  void addHandler_void_int(std::function < void(int) > callback)
+  {
+    
+  }
+}
+*/
+
 
 #endif // UTILITY_H

@@ -384,7 +384,7 @@ int main (int argc, char ** argv)
   }
   else 
   {
-    printf("ERROR: port->open() failed:  %s\n", ec.message().c_str());
+    printf("WARNING: port->open() failed:  %s\n Do you have the eboard plugged in?\n", ec.message().c_str());
     return -1;            
   }
   
@@ -431,14 +431,16 @@ int main (int argc, char ** argv)
     controller.init_accent (accents[i]);
   }
 
+  threads::localization * localization_thread = new threads::localization(containers); // separated out b/c i want to try callbacks and the caller needs a reference to the callee's instance
+
   // begin thread creation
-  threader.run (1, "localization", new threads::localization());
-  threader.run (1, "control", new threads::control());
+  threader.run (25.0, "localization", localization_thread);
+  threader.run (20.0, "control", new threads::control());
   threader.run (1, "analytics", new threads::analytics());
   threader.run (1, "sensing", new threads::sensing()); // thread for sensors that go directly to the odroid, not through the arduino
-  threader.run (20.0, "JSON_read", new threads::JSON_read(port, containers)); // messages that come from the arduino
+  threader.run (20.0, "JSON_read", new threads::JSON_read(port, containers, localization_thread)); // messages that come from the arduino
   threader.run (20.0, "JSON_write", new threads::JSON_write(port, containers)); // messages that go to the arduino
-  threader.run (1, "kb_print", new threads::kb_print());
+  threader.run (0.1, "kb_print", new threads::kb_print());
   threader.run(1, "random_motor_signals", new threads::random_motor_signals(containers));
   // end thread creation
   
