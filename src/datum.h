@@ -51,6 +51,7 @@ private:
 class Datum
 {
 public:
+  Datum();
   Datum(SENSOR_TYPE type, SENSOR_CATEGORY category, std::vector<double> value, Eigen::MatrixXd covariance);
   ~Datum();
   void set_location(GeographicLib::GeoCoords location);

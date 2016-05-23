@@ -55,7 +55,7 @@ typedef Record::Integer Integer;
 const std::string KNOWLEDGE_BASE_PLATFORM_KEY (".platform");
 bool plat_set = false;
 std::string platform ("boat");
-std::string algorithm ("base");
+std::string algorithm ("null");
 std::vector <std::string> accents;
 
 // controller variables
@@ -439,13 +439,13 @@ int main (int argc, char ** argv)
 
   // begin thread creation
   threader.run (1, "analytics", new threads::analytics ());
-  //threader.run (1, "compass_spoofer", new threads::compass_spoofer (localization_thread));
+  threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (1, "control", new threads::control ());
-  //threader.run (1, "gps_spoofer", new threads::gps_spoofer (localization_thread));
+  threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (localization_thread));
   threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
   threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   threader.run (1.0, "kb_print", new threads::kb_print ());
-  threader.run (25.0, "localization", new threads::localization (containers));
+  threader.run (100.0, "localization", new threads::localization (containers));
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
   threader.run (1, "sensing", new threads::sensing ());
   // end thread creation

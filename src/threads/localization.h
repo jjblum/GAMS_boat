@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <cmath>
 #include <chrono>
+#include <queue>
+#include <mutex>
 #include <eigen3/Eigen/Core>
 
 #include "madara/threads/BaseThread.h"
@@ -15,6 +17,7 @@
 
 #define STATE_DIMENSION 6
 #define MAX_MAHALANOBIS_DIST 6.0
+#define MAX_DATA_QUEUE_SIZE 100
 
 typedef Eigen::Matrix< double, STATE_DIMENSION, 1> StateMatrix;
 typedef Eigen::Matrix< double, STATE_DIMENSION, STATE_DIMENSION> StateSizedSquareMatrix; 
@@ -49,11 +52,16 @@ namespace threads
     virtual void run (void);
 
     void new_sensor_update(Datum datum); // public so it can be used as a callback
+    void update();
 
   private:
     void predict();
+
     madara::knowledge::KnowledgeBase data_;
     Containers containers;
+    std::queue<Datum> data_queue; // contains the datum objects that need to turn into sensor updates
+    std::mutex queue_mutex;
+    Datum current_datum;
     StateMatrix state;
     StateSizedSquareMatrix Q;
     StateSizedSquareMatrix P;
@@ -61,6 +69,7 @@ namespace threads
     StateSizedSquareMatrix Phi;
     StateSizedSquareMatrix Phi_k;
     Eigen::MatrixXd z;
+    Eigen::MatrixXd R;
     Eigen::MatrixXd dz;
     Eigen::MatrixXd H;
     Eigen::MatrixXd S;

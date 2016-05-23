@@ -4,9 +4,14 @@
 
 #include <string>
 #include <cmath>
+#include <vector>
+#include <eigen3/Eigen/Core>
+
+#include "madara/threads/BaseThread.h"
 
 #include "localization.h"
-#include "madara/threads/BaseThread.h"
+#include "../datum.h"
+#include "../utility.h""
 
 namespace threads
 {
@@ -40,7 +45,6 @@ namespace threads
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
-    double angle;
     std::function<void(Datum)> new_sensor_callback;
   };
 } // end namespace threads

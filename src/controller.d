@@ -443,7 +443,8 @@
  src/threads/compass_spoofer.h src/threads/localization.h \
  src/threads/../datum.h src/threads/../boat_containers.h \
  src/threads/../utility.h src/threads/../threads/localization.h \
- src/threads/control.h src/threads/gps_spoofer.h src/threads/io_thread.h \
+ src/threads/../datum.h src/threads/control.h src/threads/gps_spoofer.h \
+ src/threads/../localization_caller.h src/threads/io_thread.h \
  src/threads/JSON_read.h src/threads/io_thread.h src/threads/JSON_write.h \
  src/threads/kb_print.h src/threads/localization.h \
  src/threads/random_motor_signals.h src/threads/sensing.h \

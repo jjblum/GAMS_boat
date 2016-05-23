@@ -1,10 +1,14 @@
-#include "sensor.h"
+#include "datum.h"
 
 Sensor::Sensor()
 {
 }
 
 Sensor::~Sensor()
+{
+}
+
+Datum::Datum()
 {
 }
 

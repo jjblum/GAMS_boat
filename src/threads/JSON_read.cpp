@@ -84,11 +84,13 @@ threads::JSON_read::run (void)
                 containers.battery_voltage = battery_voltage;
 
                 // TEST - try out callbacks with new sensors
+                /*
                 std::vector<double> gps = {40.4406, -79.9959};
                 Eigen::MatrixXd covariance(2, 2);
                 covariance = Eigen::MatrixXd::Identity(2, 2); 
                 Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps, covariance);
                 new_sensor_callback(datum);
+                */
 
 
               }

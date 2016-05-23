@@ -1,1 +1,1 @@
-.obj/src/sensor.o: src/sensor.cpp src/sensor.h
+.obj/src/datum.o: src/datum.cpp src/datum.h

@@ -8,8 +8,10 @@
 #include <chrono>
 #include <eigen3/Eigen/Core>
 #include <random>
+#include <functional>
 
 #include "threads/localization.h"
+#include "datum.h"
 
 inline std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
@@ -99,15 +101,5 @@ namespace random_numbers
     return result;    
   }
 }
-
-class LocalizationCaller 
-// a class to inherit that provides an easy way to establish the localization thread callback
-{
-private:
-  LocalizationCaller() { }
-  ~LocalizationCaller() { }
-};
-
-
 
 #endif // UTILITY_H
