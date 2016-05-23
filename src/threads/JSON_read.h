@@ -3,6 +3,7 @@
 #define   _THREAD_JSON_READ_H_
 
 #include <functional>
+#include <eigen3/Eigen/Core>
 
 #include "io_thread.h"
 #include "localization.h"
@@ -36,7 +37,7 @@ namespace threads
   private:
     char end_of_line_char;
     int rejected_line_count;
-    std::function<void(std::string)> new_sensor_callback;
+    std::function<void(Datum)> new_sensor_callback;
   };
 } // end namespace threads
 

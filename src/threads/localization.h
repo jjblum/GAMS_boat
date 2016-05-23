@@ -43,13 +43,14 @@ namespace threads
       **/
     virtual void run (void);
 
-    void new_sensor_update(std::string sensor_name);
+    void new_sensor_update(Datum datum);
 
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
     Containers containers;
     StateMatrix state;
+    
   };
 } // end namespace threads
 

@@ -50,7 +50,8 @@ threads::localization::run (void)
     " executing\n");
 }
 
-void threads::localization::new_sensor_update(std::string sensor_name)
+void threads::localization::new_sensor_update(Datum datum)
 {
-  printf("new sensor update: %s\n", sensor_name.c_str());
+  printf("Datum unique_id_count = %d    @ %s\n", Datum::unique_id_count, datum.get_human_readable_time().c_str());
+  
 }

@@ -31,7 +31,7 @@ FILES = \
   src/threads/JSON_read.cpp \
   src/threads/kb_print.cpp
 
-VPATH = .:src:src/platforms:src/threads
+VPATH = .:src:src/threads:src/platforms
 
 #----------------------------------------------------------------------------
 #       Include macros and targets

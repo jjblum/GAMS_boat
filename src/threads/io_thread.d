@@ -272,4 +272,5 @@
  src/threads/../boat_containers.h \
  /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
  /home/odroid/madara/include/madara/knowledge/containers/Double.h \
+ src/threads/localization.h src/threads/../sensor.h \
  src/threads/../utility.h

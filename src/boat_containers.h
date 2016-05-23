@@ -4,6 +4,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/containers/NativeDoubleVector.h"
 #include "madara/knowledge/containers/Double.h"
+#include "madara/knowledge/containers/Integer.h"
 
 namespace containers = madara::knowledge::containers;
 
@@ -13,6 +14,11 @@ public:
     ~Containers();
     containers::Double battery_voltage;
     containers::NativeDoubleVector motor_signals;
+
+    containers::Integer gps_init;
+    containers::Integer compass_init;
+    containers::Integer localized;
+    
 private:
     madara::knowledge::KnowledgeBase kb;
 };
