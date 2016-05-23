@@ -5,7 +5,11 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
-#include <functional>
+#include <chrono>
+#include <eigen3/Eigen/Core>
+#include <random>
+
+#include "threads/localization.h"
 
 inline std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
@@ -36,16 +40,74 @@ inline double round_to_decimal(double input, int decimal_places)
   return round(input*pow(10.0, decimal_places))/pow(10.0, decimal_places);
 }
 
-/*
-class EventHandler
+inline std::chrono::time_point<std::chrono::high_resolution_clock> now()
 {
-public:
-  void addHandler_void_int(std::function < void(int) > callback)
+  return std::chrono::high_resolution_clock::now();
+}
+
+
+namespace type_conversion
+{
+  inline Eigen::MatrixXd std_vector_to_MatrixXd(std::vector<double> input)
   {
-    
+    int dim = input.size();
+    Eigen::MatrixXd output(dim, 1);
+    for (int i; i < dim; i++)
+    {
+      output(i, 0) = input.at(i);
+    }
   }
 }
-*/
+
+namespace units_conversion
+{
+}
+
+namespace random_numbers 
+{
+  static std::random_device rd;
+  static std::mt19937 generator(rd());
+  static std::uniform_real_distribution<> distribution(0., 1.0);
+
+  inline double rand()
+  {
+    return distribution(generator);
+  }
+
+  inline double rand(double min, double max)
+  {
+    return distribution(generator)*(max - min) + min;
+  }
+
+  inline std::vector<double> rand(int size)
+  {
+    std::vector<double> result;
+    for (int i = 0; i < size; i++)
+    {
+      result.push_back(distribution(generator));
+    }
+    return result;
+  }
+
+  inline std::vector<double> rand(int size, double min, double max)
+  {
+    std::vector<double> result;
+    for (int i = 0; i < size; i++)
+    {
+      result.push_back(distribution(generator)*(max - min) + min);
+    }
+    return result;    
+  }
+}
+
+class LocalizationCaller 
+// a class to inherit that provides an easy way to establish the localization thread callback
+{
+private:
+  LocalizationCaller() { }
+  ~LocalizationCaller() { }
+};
+
 
 
 #endif // UTILITY_H

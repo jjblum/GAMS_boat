@@ -1,21 +1,17 @@
 
 #include "gams/loggers/GlobalLogger.h"
-#include "random_motor_signals.h"
+#include "compass_spoofer.h"
 
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::random_motor_signals::random_motor_signals (Containers & containers_)
-: containers(containers_)
+threads::compass_spoofer::compass_spoofer (threads::localization * localization_reference)
 {
-    //generator = std::make_shared<std::mt19937>(rd());
-    //distribution = std::make_shared<std::uniform_real_distribution<>>(-1., 1.);
-    //motor_signals.push_back(0.0);
-    //motor_signals.push_back(0.0);
+  new_sensor_callback = std::bind( & threads::localization::new_sensor_update, localization_reference, std::placeholders::_1);
 }
 
 // destructor
-threads::random_motor_signals::~random_motor_signals ()
+threads::compass_spoofer::~compass_spoofer ()
 {
 }
 
@@ -26,7 +22,7 @@ threads::random_motor_signals::~random_motor_signals ()
  * the function.
  **/
 void
-threads::random_motor_signals::init (knowledge::KnowledgeBase & knowledge)
+threads::compass_spoofer::init (knowledge::KnowledgeBase & knowledge)
 {
   // point our data plane to the knowledge base initializing the thread
   data_ = knowledge;
@@ -39,7 +35,7 @@ threads::random_motor_signals::init (knowledge::KnowledgeBase & knowledge)
  * controller.
  **/
 void
-threads::random_motor_signals::run (void)
+threads::compass_spoofer::run (void)
 {
   /**
    * the MADARA logger is thread-safe, fast, and allows for specifying
@@ -49,16 +45,8 @@ threads::random_motor_signals::run (void)
    **/
   madara_logger_ptr_log (gams::loggers::global_logger.get (),
     gams::loggers::LOG_MAJOR,
-    "threads::kb_print::run:" 
+    "threads::compass_spoofer::run:" 
     " executing\n");
 
-  //double motor1 = (*distribution)(*generator);
-  //double motor2 = (*distribution)(*generator);
-  //motor1 = round_to_decimal(motor1, 3);
-  //motor2 = round_to_decimal(motor2, 3);
-  ////printf("motor signal 1 = %.3f   motor signal 2 = %.3f\n", motor1, motor2);
-  //motor_signals.at(0) = motor1;
-  //motor_signals.at(1) = motor2;
-  //containers.motor_signals.set(motor_signals);  
-  containers.motor_signals.set(random_numbers::rand(2, -1.0, 1.0));
+  
 }

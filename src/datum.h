@@ -51,28 +51,29 @@ private:
 class Datum
 {
 public:
-  Datum(SENSOR_TYPE type_, SENSOR_CATEGORY category_, std::vector<double> value_, Eigen::MatrixXd covariance_);
+  Datum(SENSOR_TYPE type, SENSOR_CATEGORY category, std::vector<double> value, Eigen::MatrixXd covariance);
   ~Datum();
-  void set_location(GeographicLib::GeoCoords location_);
-  std::vector<double> get_value();
-  Eigen::MatrixXd get_covariance();
-  long get_unique_id();
-  std::string get_human_readable_time();
-  std::string get_type_string();
+  void set_location(GeographicLib::GeoCoords location);
+  std::vector<double> value();
+  Eigen::MatrixXd covariance();
+  SENSOR_TYPE type();
+  long unique_id();
+  std::string human_readable_time();
+  std::string type_string();
 
   static long unique_id_count;
 
 private:
-  SENSOR_TYPE type;
-  SENSOR_CATEGORY category;
-  long unique_id;
-  std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
-  std::string type_string;
-  std::string human_readable_time;
+  SENSOR_TYPE type_;
+  SENSOR_CATEGORY category_;
+  long unique_id_;
+  std::chrono::time_point<std::chrono::high_resolution_clock> timestamp_;
+  std::string type_string_;
+  std::string human_readable_time_;
   int dimension;
-  std::vector<double> value;
-  Eigen::MatrixXd covariance;
-  GeographicLib::GeoCoords location;
+  std::vector<double> value_;
+  Eigen::MatrixXd covariance_;
+  GeographicLib::GeoCoords location_;
 };
 
 

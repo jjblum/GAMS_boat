@@ -8,7 +8,7 @@
 #include "io_thread.h"
 #include "localization.h"
 #include "../utility.h"
-#include "../sensor.h"
+#include "../datum.h"
 
 namespace threads
 {

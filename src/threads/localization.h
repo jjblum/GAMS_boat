@@ -4,15 +4,20 @@
 
 #include <string>
 #include <stdio.h>
+#include <cmath>
+#include <chrono>
 #include <eigen3/Eigen/Core>
 
 #include "madara/threads/BaseThread.h"
-#include "../sensor.h"
+#include "../datum.h"
 #include "../boat_containers.h"
+#include "../utility.h"
 
 #define STATE_DIMENSION 6
+#define MAX_MAHALANOBIS_DIST 6.0
 
 typedef Eigen::Matrix< double, STATE_DIMENSION, 1> StateMatrix;
+typedef Eigen::Matrix< double, STATE_DIMENSION, STATE_DIMENSION> StateSizedSquareMatrix; 
 
 namespace threads
 {
@@ -43,13 +48,23 @@ namespace threads
       **/
     virtual void run (void);
 
-    void new_sensor_update(Datum datum);
+    void new_sensor_update(Datum datum); // public so it can be used as a callback
 
   private:
-    /// data plane if we want to access the knowledge base
+    void predict();
     madara::knowledge::KnowledgeBase data_;
     Containers containers;
     StateMatrix state;
+    StateSizedSquareMatrix Q;
+    StateSizedSquareMatrix P;
+    StateSizedSquareMatrix G;
+    StateSizedSquareMatrix Phi;
+    StateSizedSquareMatrix Phi_k;
+    Eigen::MatrixXd z;
+    Eigen::MatrixXd dz;
+    Eigen::MatrixXd H;
+    Eigen::MatrixXd S;
+    std::chrono::time_point<std::chrono::high_resolution_clock> t; // current time
     
   };
 } // end namespace threads

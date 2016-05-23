@@ -269,6 +269,7 @@
  /home/odroid/madara/include/madara/knowledge/ContextGuard.h \
  /home/odroid/madara/include/madara/knowledge/containers/Integer.inl \
  /home/odroid/madara/include/madara/knowledge/containers/Integer.h \
- src/threads/../sensor.h src/threads/../boat_containers.h \
+ src/threads/../datum.h src/threads/../boat_containers.h \
  /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
- /home/odroid/madara/include/madara/knowledge/containers/Double.h
+ /home/odroid/madara/include/madara/knowledge/containers/Double.h \
+ src/threads/../utility.h src/threads/../threads/localization.h

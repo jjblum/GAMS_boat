@@ -1,4 +1,4 @@
-.obj/src/threads/io_thread.o: src/threads/io_thread.cpp \
+.obj/src/threads/gps_spoofer.o: src/threads/gps_spoofer.cpp \
  /home/odroid/gams/src/gams/loggers/GlobalLogger.h \
  /home/odroid/gams/src/gams/GAMSExport.h \
  /home/odroid/ace/ACE_wrappers/ace/config-all.h \
@@ -174,7 +174,7 @@
  /home/odroid/madara/include/madara/logger/Logger.h \
  /home/odroid/madara/include/madara/utility/Refcounter.h \
  /home/odroid/madara/include/madara/utility/Refcounter.cpp \
- src/threads/JSON_read.h src/threads/io_thread.h \
+ src/threads/gps_spoofer.h \
  /home/odroid/madara/include/madara/threads/BaseThread.h \
  /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.h \
  /home/odroid/madara/include/madara/utility/stdint.h \
@@ -268,8 +268,4 @@
  /home/odroid/madara/include/madara/knowledge/containers/BaseContainer.inl \
  /home/odroid/madara/include/madara/knowledge/ContextGuard.h \
  /home/odroid/madara/include/madara/knowledge/containers/Integer.inl \
- /home/odroid/madara/include/madara/knowledge/containers/Integer.h \
- src/threads/../boat_containers.h \
- /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
- /home/odroid/madara/include/madara/knowledge/containers/Double.h \
- src/threads/localization.h ../datum.h src/threads/../utility.h
+ /home/odroid/madara/include/madara/knowledge/containers/Integer.h

@@ -263,4 +263,7 @@
  /home/odroid/madara/include/madara/knowledge/containers/BaseContainer.h \
  /home/odroid/madara/include/madara/knowledge/containers/BaseContainer.inl \
  /home/odroid/madara/include/madara/knowledge/ContextGuard.h \
- /home/odroid/madara/include/madara/knowledge/containers/Double.h
+ /home/odroid/madara/include/madara/knowledge/containers/Double.h \
+ /home/odroid/madara/include/madara/knowledge/containers/Integer.h \
+ /home/odroid/madara/include/madara/knowledge/containers/Integer.inl \
+ /home/odroid/madara/include/madara/knowledge/containers/Integer.h

@@ -15,14 +15,17 @@
 // end platform includes
 
 // begin thread includes
-#include "threads/localization.h"
-#include "threads/control.h"
 #include "threads/analytics.h"
-#include "threads/sensing.h"
+#include "threads/compass_spoofer.h"
+#include "threads/control.h"
+#include "threads/gps_spoofer.h"
+#include "threads/io_thread.h"
 #include "threads/JSON_read.h"
 #include "threads/JSON_write.h"
 #include "threads/kb_print.h"
+#include "threads/localization.h"
 #include "threads/random_motor_signals.h"
+#include "threads/sensing.h"
 // end thread includes
 
 // begin transport includes
@@ -403,12 +406,13 @@ int main (int argc, char ** argv)
   // end adding custom algorithm factories
 
   // begin adding custom platform factories
+
   // add boat factory
   aliases.clear ();
   aliases.push_back ("boat");
+
   controller.add_platform_factory (aliases,
     new platforms::boatFactory ());
-
   // end adding custom platform factories
   
   // read madara initialization
@@ -434,14 +438,16 @@ int main (int argc, char ** argv)
   threads::localization * localization_thread = new threads::localization(containers); // separated out b/c i want to try callbacks and the caller needs a reference to the callee's instance
 
   // begin thread creation
-  threader.run (25.0, "localization", localization_thread);
-  threader.run (20.0, "control", new threads::control());
-  threader.run (1, "analytics", new threads::analytics());
-  threader.run (1, "sensing", new threads::sensing()); // thread for sensors that go directly to the odroid, not through the arduino
-  threader.run (5.0, "JSON_read", new threads::JSON_read(port, containers, localization_thread)); // messages that come from the arduino
-  threader.run (20.0, "JSON_write", new threads::JSON_write(port, containers)); // messages that go to the arduino
-  threader.run (1.0, "kb_print", new threads::kb_print());
-  threader.run(1.0, "random_motor_signals", new threads::random_motor_signals(containers));
+  threader.run (1, "analytics", new threads::analytics ());
+  //threader.run (1, "compass_spoofer", new threads::compass_spoofer (localization_thread));
+  threader.run (1, "control", new threads::control ());
+  //threader.run (1, "gps_spoofer", new threads::gps_spoofer (localization_thread));
+  threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
+  threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
+  threader.run (1.0, "kb_print", new threads::kb_print ());
+  threader.run (25.0, "localization", new threads::localization (containers));
+  threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
+  threader.run (1, "sensing", new threads::sensing ());
   // end thread creation
   
   // run a mape loop for algorithm and platform control

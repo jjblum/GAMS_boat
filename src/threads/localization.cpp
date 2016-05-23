@@ -9,6 +9,7 @@ threads::localization::localization (Containers & containers_)
 : containers(containers_)
 {
   state = StateMatrix::Zero();
+  t = now();
 }
 
 // destructor
@@ -52,6 +53,38 @@ threads::localization::run (void)
 
 void threads::localization::new_sensor_update(Datum datum)
 {
-  printf("Datum unique_id_count = %d    @ %s\n", Datum::unique_id_count, datum.get_human_readable_time().c_str());
+  printf("Datum unique_id_count = %d    @ %s\n", Datum::unique_id_count, datum.human_readable_time().c_str());
+
+  // Deal with initial GPS and compass values
+  if (containers.localized == 0)
+  {
+    if (containers.gps_init == 0 && datum.type() == SENSOR_TYPE::GPS)
+    {
+      printf("Received first GPS: %.5f, %.5f\n", datum.value().at(0), datum.value().at(1)); 
+      containers.gps_init = 1;
+    }
+    if (containers.compass_init == 0 && datum.type() == SENSOR_TYPE::COMPASS)
+    {
+      printf("Received first compass: %.4f\n", datum.value().at(0)*180.0/M_PI);
+      containers.compass_init = 1;
+    }
+    if (containers.compass_init == 1 && containers.gps_init == 1)
+    {
+      containers.localized = 1;
+    }
+  }
+
+  ///// BEGIN LOCKED SECTION
+  // convert value std::vector into a column matrix
+  Eigen::Map<Eigen::MatrixXd> z_(datum.value().data(), datum.value().size(), 1);
+  z = z_;
+  R = datum.covariance();
+  ///// END LOCKED SECTION
   
+  predict();
+}
+
+void threads::localization::predict()
+{
+  // Kalman filter prediction step
 }
