@@ -71,6 +71,11 @@ long Datum::unique_id()
   return unique_id_;
 }
 
+std::chrono::time_point<std::chrono::high_resolution_clock> Datum::timestamp()
+{
+  return timestamp_;
+}
+
 std::string Datum::human_readable_time()
 {
   return human_readable_time_;

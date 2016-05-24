@@ -6,8 +6,8 @@ namespace knowledge = madara::knowledge;
 
 // constructor
 threads::compass_spoofer::compass_spoofer (threads::localization * localization_reference)
+: LocalizationCaller(localization_reference)
 {
-  new_sensor_callback = std::bind( & threads::localization::new_sensor_update, localization_reference, std::placeholders::_1);
 }
 
 // destructor
@@ -48,9 +48,9 @@ threads::compass_spoofer::run (void)
     "threads::compass_spoofer::run:" 
     " executing\n");
 
-  std::vector<double> gps = {40.4406 + random_numbers::rand(-0.001, 0.001), -79.9959 + random_numbers::rand(-0.001, 0.001)};
-  Eigen::MatrixXd covariance(2, 2);
-  covariance = Eigen::MatrixXd::Identity(2, 2); 
-  Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps, covariance);
+  std::vector<double> compass = {0.0 + utility::random_numbers::rand(-M_PI, M_PI)};
+  Eigen::MatrixXd covariance(1, 1);
+  covariance = Eigen::MatrixXd::Identity(1, 1); 
+  Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
   new_sensor_callback(datum);  
 }

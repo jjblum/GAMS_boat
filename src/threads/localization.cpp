@@ -8,8 +8,16 @@ namespace knowledge = madara::knowledge;
 threads::localization::localization (Containers & containers_)
 : containers(containers_)
 {
-  state = StateMatrix::Zero();
-  t = now();
+  state = StateMatrix::Zero(); // [x y th xdot ydot thdot]
+  t = utility::time_tools::now();
+  
+  QBase = 0.1*StateSizedSquareMatrix::Identity();
+  P = StateSizedSquareMatrix::Zero();
+  P(0, 0) = 5.0;
+  P(1, 1) = 5.0;
+  Phi = StateSizedSquareMatrix::Zero();
+  Phi_k = StateSizedSquareMatrix::Zero();
+  G = StateSizedSquareMatrix::Identity();
 }
 
 // destructor
@@ -80,6 +88,7 @@ void threads::localization::new_sensor_update(Datum datum)
   std::lock_guard<std::mutex> lock(queue_mutex);
   if (data_queue.size() > MAX_DATA_QUEUE_SIZE)
   {
+    printf("WARNING: localization queue is too long, throwing out oldest datum\n");
     data_queue.pop(); // throw out oldest item
   }
   data_queue.push(datum);// push Datum to queue
@@ -87,26 +96,45 @@ void threads::localization::new_sensor_update(Datum datum)
   ///// END LOCKED SECTION
 }
 
-void threads::localization::predict()
+void threads::localization::predict(double dt)
 {
   // Kalman filter prediction step
-  printf("prediction step!\n");
+  printf("prediction step: dt = %f\n", dt);
+  
+  Q = QBase*dt;
+  
+  Phi(0, 3) = dt;
+  Phi(1, 4) = dt;
+  Phi(2, 5) = dt;
+  
+  Phi_k(0, 3) = dt;
+  Phi_k(1, 4) = dt;
+  Phi_k(2, 5) = dt;
+  
+  state = Phi*state; // Phi*x
+  // wrap theta
+  while (std::abs(state(2,0)) > M_PI)
+  {
+    state(2,0) -= copysign(2.0*M_PI, state(2,0));
+  }
+  
+  P = Phi_k*P*Phi_k.transpose() + G*Q*G.transpose();
+  
 }
 
 void threads::localization::update()
 {
-  predict(); // we don't want to predict past the incoming data, or we'd have to roll the state back, which means storing a series of states!
-  // for now, just assume data is coming in order and correctly
-
+  
   bool new_datum_available = false;
   ///// BEGIN LOCKED SECTION
   {
     // pop Datum from queue
     std::lock_guard<std::mutex> lock(queue_mutex);
+    printf("is queue empty? size = %d\n", data_queue.size());
     if (!data_queue.empty())
     {
       new_datum_available = true;
-      current_datum = data_queue.front(); // TODO - do I need to overload the = operator?
+      current_datum = data_queue.top();
       data_queue.pop();
       printf("popped datum from queue, size = %d\n", data_queue.size());      
     }
@@ -120,9 +148,48 @@ void threads::localization::update()
   //if there is a datum to process, continue, else return
   if (new_datum_available)
   {
+    // prediction step
+    // calculate dt using current time and datum time stamp    
+    
+    dt = std::chrono::duration_cast< std::chrono::duration<double> >(current_datum.timestamp()-t); // dt in seconds
+    t = current_datum.timestamp();
+    predict(dt.count());
+    
     // convert value std::vector into a column matrix
     Eigen::Map<Eigen::MatrixXd> z_(current_datum.value().data(), current_datum.value().size(), 1);
     z = z_;
     R = current_datum.covariance();
+    setH();
+    
+    
+    
+    printf("Processed a datum of type: %s\n", current_datum.type_string().c_str());
+  }
+}
+
+void threads::localization::setH()
+{
+  double th = state(2, 0);
+  double s = sin(th);
+  double c = cos(th);
+  
+  H = Eigen::MatrixXd::Zero(z.rows(), STATE_DIMENSION);
+  if (current_datum.type() == SENSOR_TYPE::GPS)
+  {
+    H(0, 0) = 1.0;
+    H(1, 1) = 1.0;
+  }
+  else if (current_datum.type() == SENSOR_TYPE::COMPASS) 
+  {
+    H(0, 2) = 1.0;
+  }
+  else if (current_datum.type() == SENSOR_TYPE::GYRO) 
+  {
+    H(0, 5) = 1.0;
+  }
+  else if (current_datum.type() == SENSOR_TYPE::GPS_VELOCITY) 
+  {
+    H(0, 3) = 1.0;
+    H(0, 4) = 1.0;    
   }
 }

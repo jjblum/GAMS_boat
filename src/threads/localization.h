@@ -8,6 +8,7 @@
 #include <chrono>
 #include <queue>
 #include <mutex>
+#include <vector>
 #include <eigen3/Eigen/Core>
 
 #include "madara/threads/BaseThread.h"
@@ -55,15 +56,17 @@ namespace threads
     void update();
 
   private:
-    void predict();
+    void predict(double dt);
+    void setH();
 
     madara::knowledge::KnowledgeBase data_;
     Containers containers;
-    std::queue<Datum> data_queue; // contains the datum objects that need to turn into sensor updates
+    std::priority_queue<Datum, std::vector<Datum>, DatumComparison> data_queue;
     std::mutex queue_mutex;
     Datum current_datum;
     StateMatrix state;
-    StateSizedSquareMatrix Q;
+    StateSizedSquareMatrix Q; // growth of uncertainty with time (after time step modification)
+    StateSizedSquareMatrix QBase; // growth of uncertainty with time (before time step modification)
     StateSizedSquareMatrix P;
     StateSizedSquareMatrix G;
     StateSizedSquareMatrix Phi;
@@ -74,7 +77,7 @@ namespace threads
     Eigen::MatrixXd H;
     Eigen::MatrixXd S;
     std::chrono::time_point<std::chrono::high_resolution_clock> t; // current time
-    
+    std::chrono::duration<double> dt; // differences in time [seconds]
   };
 } // end namespace threads
 

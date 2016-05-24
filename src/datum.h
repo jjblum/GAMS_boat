@@ -59,6 +59,7 @@ public:
   Eigen::MatrixXd covariance();
   SENSOR_TYPE type();
   long unique_id();
+  std::chrono::time_point<std::chrono::high_resolution_clock> timestamp();
   std::string human_readable_time();
   std::string type_string();
 
@@ -77,6 +78,14 @@ private:
   GeographicLib::GeoCoords location_;
 };
 
+class DatumComparison
+{
+public:
+  bool operator() (Datum & a, Datum & b)
+  {
+    return a.timestamp() > b.timestamp();
+  }
+};
 
 
 

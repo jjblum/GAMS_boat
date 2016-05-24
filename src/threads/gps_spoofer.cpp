@@ -48,7 +48,7 @@ threads::gps_spoofer::run (void)
     "threads::gps_spoofer::run:" 
     " executing\n");
     
-  std::vector<double> gps = {40.4406 + random_numbers::rand(-0.001, 0.001), -79.9959 + random_numbers::rand(-0.001, 0.001)};
+  std::vector<double> gps = {40.4406 + utility::random_numbers::rand(-0.001, 0.001), -79.9959 + utility::random_numbers::rand(-0.001, 0.001)};
   Eigen::MatrixXd covariance(2, 2);
   covariance = Eigen::MatrixXd::Identity(2, 2); 
   Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps, covariance);

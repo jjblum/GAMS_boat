@@ -274,4 +274,4 @@
  /home/odroid/madara/include/madara/knowledge/containers/Double.h \
  src/threads/localization.h src/threads/../datum.h \
  src/threads/../utility.h src/threads/../threads/localization.h \
- src/threads/../datum.h
+ src/threads/../datum.h src/threads/../localization_caller.h

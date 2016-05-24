@@ -6,11 +6,10 @@ namespace knowledge = madara::knowledge;
 
 // constructor
 threads::JSON_read::JSON_read (std::shared_ptr<asio::serial_port> port_, Containers & containers_, threads::localization * localization_reference)
-: threads::io_thread(port_, containers_)
+: threads::io_thread(port_, containers_), LocalizationCaller(localization_reference)
 {
   end_of_line_char = END_OF_LINE_CHAR;
   rejected_line_count = 0;
-  new_sensor_callback = std::bind( & threads::localization::new_sensor_update, localization_reference, std::placeholders::_1);
 }
 
 // destructor
@@ -72,13 +71,13 @@ threads::JSON_read::run (void)
             if (primary_key.substr(0,1) == "s") // look for a leading "s"
             {
               std::string type = j.front().find("type").value();
-              remove_quotes(type);
+              utility::string_tools::remove_quotes(type);
               
               if (type.compare("battery") == 0) 
               {
                 std::string data = j.front().find("data").value();
-                remove_quotes(data);
-                std::vector<std::string> elems = split(data, ' ');
+                utility::string_tools::remove_quotes(data);
+                std::vector<std::string> elems = utility::string_tools::split(data, ' ');
                 float battery_voltage = std::stof(elems.at(0), nullptr);
                 //printf("battery voltage = %.3f V\n", battery_voltage);
                 containers.battery_voltage = battery_voltage;

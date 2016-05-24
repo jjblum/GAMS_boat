@@ -445,7 +445,7 @@ int main (int argc, char ** argv)
   threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
   threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   threader.run (1.0, "kb_print", new threads::kb_print ());
-  threader.run (100.0, "localization", new threads::localization (containers));
+  threader.run (100.0, "localization", localization_thread);
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
   threader.run (1, "sensing", new threads::sensing ());
   // end thread creation

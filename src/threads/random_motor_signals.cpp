@@ -60,5 +60,5 @@ threads::random_motor_signals::run (void)
   //motor_signals.at(0) = motor1;
   //motor_signals.at(1) = motor2;
   //containers.motor_signals.set(motor_signals);  
-  containers.motor_signals.set(random_numbers::rand(2, -1.0, 1.0));
+  containers.motor_signals.set(utility::random_numbers::rand(2, -1.0, 1.0));
 }
