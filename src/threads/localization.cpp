@@ -185,11 +185,9 @@ void threads::localization::update()
     dz = z - H*state; // TODO - alter the value for theta so that it isn't tricked by [-pi, pi] wrapped values
     if (current_datum.type() == SENSOR_TYPE::COMPASS)
     {
-      dz(0, 0) = utility::angle_tools::minimum_difference(dz(0, 0));
+      dz(0, 0) = utility::angle_tools::minimum_difference(dz(0, 0)); // use true angular difference, not algebraic difference
     }
-    
-    
-    
+            
     S = H*P*H.transpose();
     
     if (S.determinant() < pow(10.0, -12.0))

@@ -8,6 +8,7 @@ namespace knowledge = madara::knowledge;
 threads::gps_spoofer::gps_spoofer (threads::localization * localization_reference)
 : LocalizationCaller(localization_reference)
 {
+  t0 = utility::time_tools::now();
 }
 
 // destructor
@@ -48,8 +49,8 @@ threads::gps_spoofer::run (void)
     "threads::gps_spoofer::run:" 
     " executing\n");
     
-  double lat = 40.4406;// + utility::random_numbers::rand(-0.0001, 0.0001);
-  double lon = -79.9959;// + utility::random_numbers::rand(-0.0001, 0.0001);
+  double lat = 40.4406 + 0.00001*utility::time_tools::dt(t0, utility::time_tools::now());
+  double lon = -79.9959 + 0.00001*utility::time_tools::dt(t0, utility::time_tools::now());
   GeographicLib::GeoCoords coord(lat, lon);
   std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
   
