@@ -46,6 +46,7 @@ namespace threads
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
+    std::chrono::time_point<std::chrono::high_resolution_clock> t0;
   };
 } // end namespace threads
 

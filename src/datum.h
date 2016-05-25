@@ -78,7 +78,7 @@ private:
   GeographicLib::GeoCoords location_;
 };
 
-class DatumComparison
+class DatumComparison // used for the localization sensor update priority queue
 {
 public:
   bool operator() (Datum & a, Datum & b)

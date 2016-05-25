@@ -8,6 +8,7 @@ namespace knowledge = madara::knowledge;
 threads::compass_spoofer::compass_spoofer (threads::localization * localization_reference)
 : LocalizationCaller(localization_reference)
 {
+  t0 = utility::time_tools::now();
 }
 
 // destructor
@@ -48,9 +49,11 @@ threads::compass_spoofer::run (void)
     "threads::compass_spoofer::run:" 
     " executing\n");
 
-  std::vector<double> compass = {0.0 + utility::random_numbers::rand(-M_PI, M_PI)};
+  // full revolution in 10 seconds --> 2pi/10 rad/s = 0.6283
+  std::vector<double> compass = {utility::angle_tools::wrap_to_pi(2.0*M_PI/10.0*
+                                 utility::time_tools::dt(t0, utility::time_tools::now()))}; 
   Eigen::MatrixXd covariance(1, 1);
-  covariance = Eigen::MatrixXd::Identity(1, 1); 
+  covariance = 0.25*Eigen::MatrixXd::Identity(1, 1); 
   Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
   new_sensor_callback(datum);  
 }

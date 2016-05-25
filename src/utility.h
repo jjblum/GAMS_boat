@@ -47,12 +47,45 @@ namespace utility
   {
     return round(input*pow(10.0, decimal_places))/pow(10.0, decimal_places);
   }
+  
+  namespace angle_tools
+  {
+    inline double wrap_to_pi(double angle)
+    {    
+      while (std::abs(angle) > M_PI)
+      {
+        angle -= copysign(2.0*M_PI, angle);
+      }
+      return angle;
+    }
+    
+    inline double minimum_difference(double algebraic_difference) // return actual angular distance between two angles
+    {
+      if (std::abs(algebraic_difference - 2*M_PI) < std::abs(algebraic_difference))
+      {
+        return algebraic_difference - 2*M_PI;
+      }
+      if (std::abs(algebraic_difference + 2*M_PI) < std::abs(algebraic_difference))
+      {
+        return algebraic_difference + 2*M_PI;
+      }      
+      return algebraic_difference;
+    }
+  }
+ 
 
   namespace time_tools 
   {
     inline std::chrono::time_point<std::chrono::high_resolution_clock> now()
     {
       return std::chrono::high_resolution_clock::now();
+    }
+    
+    inline double dt(std::chrono::time_point<std::chrono::high_resolution_clock> t0, 
+                     std::chrono::time_point<std::chrono::high_resolution_clock> t1)
+    {
+      std::chrono::duration<double> dt_ = std::chrono::duration_cast< std::chrono::duration<double> >(t1-t0);
+      return dt_.count();
     }
   }
 

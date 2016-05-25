@@ -4,12 +4,14 @@
 
 #include <string>
 #include <stdio.h>
+#include <iostream>
 #include <cmath>
 #include <chrono>
 #include <queue>
 #include <mutex>
 #include <vector>
 #include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/LU>
 
 #include "madara/threads/BaseThread.h"
 #include "../datum.h"
@@ -76,8 +78,10 @@ namespace threads
     Eigen::MatrixXd dz;
     Eigen::MatrixXd H;
     Eigen::MatrixXd S;
+    Eigen::MatrixXd K;
     std::chrono::time_point<std::chrono::high_resolution_clock> t; // current time
-    std::chrono::duration<double> dt; // differences in time [seconds]
+    double home_x;
+    double home_y;    
   };
 } // end namespace threads
 

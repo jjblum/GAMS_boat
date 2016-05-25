@@ -34,12 +34,12 @@ FILES = \
   src/threads/JSON_read.cpp \
   src/threads/kb_print.cpp
 
-VPATH = .:src/platforms:src/threads:src
+VPATH = .:src:src/threads:src/platforms
 
 #----------------------------------------------------------------------------
 #       Include macros and targets
 #----------------------------------------------------------------------------
-LDLIBS = -lACE -lMADARA -lGAMS
+LDLIBS = -lACE -lMADARA -lGAMS -lGeographic
 
 PRJ_TYPE = rtp
 

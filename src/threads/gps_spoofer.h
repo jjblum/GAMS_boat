@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <eigen3/Eigen/Core>
+#include <GeographicLib/GeoCoords.hpp>
 
 #include "madara/threads/BaseThread.h"
 #include "localization.h"
