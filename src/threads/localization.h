@@ -12,6 +12,7 @@
 #include <vector>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/LU>
+#include <GeographicLib/GeoCoords.hpp>
 
 #include "madara/threads/BaseThread.h"
 #include "../datum.h"
@@ -66,6 +67,8 @@ namespace threads
     std::priority_queue<Datum, std::vector<Datum>, DatumComparison> data_queue;
     std::mutex queue_mutex;
     Datum current_datum;
+    std::vector<double> eastingNorthingHeading;
+    std::vector<double> location;
     StateMatrix state;
     StateSizedSquareMatrix Q; // growth of uncertainty with time (after time step modification)
     StateSizedSquareMatrix QBase; // growth of uncertainty with time (before time step modification)
@@ -82,6 +85,7 @@ namespace threads
     std::chrono::time_point<std::chrono::high_resolution_clock> t; // current time
     double home_x;
     double home_y;    
+    GeographicLib::GeoCoords coord;
   };
 } // end namespace threads
 

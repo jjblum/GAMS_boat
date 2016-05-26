@@ -61,6 +61,9 @@ int platforms::boat::sense (void)
 int
 platforms::boat::analyze (void)
 {
+  // update the agent location (lat/long)
+  //GeographicLib::GeoCoords coord();
+
   return gams::platforms::PLATFORM_OK;
 }
 

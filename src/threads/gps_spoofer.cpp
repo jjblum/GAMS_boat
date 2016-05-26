@@ -5,8 +5,8 @@
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::gps_spoofer::gps_spoofer (threads::localization * localization_reference)
-: LocalizationCaller(localization_reference)
+threads::gps_spoofer::gps_spoofer (Containers containers_, threads::localization * localization_reference)
+: containers(containers_), LocalizationCaller(localization_reference)
 {
   t0 = utility::time_tools::now();
 }
@@ -53,6 +53,15 @@ threads::gps_spoofer::run (void)
   double lon = -79.9959 + 0.00001*utility::time_tools::dt(t0, utility::time_tools::now());
   GeographicLib::GeoCoords coord(lat, lon);
   std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
+  containers.gpsZone = coord.Zone();
+  if (coord.Northp())
+  {
+    containers.northernHemisphere = 1;
+  }
+  else
+  {
+    containers.northernHemisphere = 0;
+  }
   
   Eigen::MatrixXd covariance(2, 2);
   covariance = Eigen::MatrixXd::Identity(2, 2); 

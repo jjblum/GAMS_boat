@@ -363,7 +363,7 @@ int main (int argc, char ** argv)
   knowledge.attach_transport (host, settings);
 
   // create containers
-  Containers containers(knowledge);
+  Containers containers(knowledge, settings.id);
 
   // open serial port to boat arduino
   std::shared_ptr<asio::serial_port> port;
@@ -441,7 +441,7 @@ int main (int argc, char ** argv)
   threader.run (1, "analytics", new threads::analytics ());
   threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (1, "control", new threads::control ());
-  threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (localization_thread));
+  threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
   threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
   threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   threader.run (1.0, "kb_print", new threads::kb_print ());

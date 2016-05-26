@@ -19,6 +19,8 @@ threads::localization::localization (Containers & containers_)
   Phi = StateSizedSquareMatrix::Identity();
   Phi_k = StateSizedSquareMatrix::Identity();
   G = StateSizedSquareMatrix::Identity();
+  eastingNorthingHeading.resize(3);
+  location.resize(3);
 }
 
 // destructor
@@ -159,20 +161,21 @@ void threads::localization::update()
     std::cout << " value = " << current_datum.value() << std::endl;
     // prediction step
     // calculate dt using current time and datum time stamp    
+    double dt = utility::time_tools::dt(t, current_datum.timestamp());
+    if (dt < 0)
+    {
+      printf("WARNING: localization timestep is negative, skipping sensor update\n");
+      return;
+    }
     
-    //dt = std::chrono::duration_cast< std::chrono::duration<double> >(current_datum.timestamp()-t); // dt in seconds
-    
-    // TODO - what to do if dt happens to be negative
-    
-    //predict(dt.count());
-    predict(utility::time_tools::dt(t, current_datum.timestamp()));
+    predict(dt);
     t = current_datum.timestamp();
     
     // convert value std::vector into a column matrix
     std::vector<double> value = current_datum.value();
     if (current_datum.type() == SENSOR_TYPE::GPS)
     {
-      value.at(0) -= home_x;
+      value.at(0) -= home_x; // use local frame
       value.at(1) -= home_y;
     }
     Eigen::Map<Eigen::MatrixXd> z_(value.data(), value.size(), 1);
@@ -182,7 +185,7 @@ void threads::localization::update()
     
     K = P*H.transpose()*(H*P*H.transpose() + R).inverse();
     
-    dz = z - H*state; // TODO - alter the value for theta so that it isn't tricked by [-pi, pi] wrapped values
+    dz = z - H*state;
     if (current_datum.type() == SENSOR_TYPE::COMPASS)
     {
       dz(0, 0) = utility::angle_tools::minimum_difference(dz(0, 0)); // use true angular difference, not algebraic difference
@@ -209,6 +212,22 @@ void threads::localization::update()
     state += K*dz;
     P = (StateSizedSquareMatrix::Identity() - K*H)*P;        
     std::cout << "Updated state = " << state.transpose() << std::endl;
+    
+    eastingNorthingHeading.at(0) = state(0, 0) + home_x;
+    eastingNorthingHeading.at(1) = state(1, 0) + home_y;
+    eastingNorthingHeading.at(2) = state(2, 0);
+    containers.eastingNorthingHeading.set(eastingNorthingHeading); // update the knowledge base
+    //bool northernHemisphere = false;
+    //if (containers.northernHemisphere == 1) 
+    //{
+    //  northernHemisphere = true;
+    //}
+    coord.Reset(containers.gpsZone.to_integer(), containers.northernHemisphere.to_integer(), eastingNorthingHeading.at(0), eastingNorthingHeading.at(1));    
+    
+    location.at(0) = coord.Latitude();
+    location.at(1) = coord.Longitude();
+    location.at(2) = 0.0;
+    containers.location.set(location);
   }
 }
 

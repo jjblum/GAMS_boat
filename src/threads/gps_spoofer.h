@@ -9,6 +9,7 @@
 
 #include "madara/threads/BaseThread.h"
 #include "localization.h"
+#include "../boat_containers.h"
 #include "../datum.h"
 #include "../utility.h"
 #include "../localization_caller.h"
@@ -24,7 +25,7 @@ namespace threads
     /**
      * Default constructor
      **/
-    gps_spoofer (threads::localization * localization_reference);
+    gps_spoofer (Containers containers_, threads::localization * localization_reference);
     
     /**
      * Destructor
@@ -45,6 +46,7 @@ namespace threads
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
+    Containers containers;
     std::chrono::time_point<std::chrono::high_resolution_clock> t0;
   };
 } // end namespace threads
