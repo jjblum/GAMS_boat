@@ -61,8 +61,6 @@ int platforms::boat::sense (void)
 int
 platforms::boat::analyze (void)
 {
-  // update the agent location (lat/long)
-  //GeographicLib::GeoCoords coord();
 
   return gams::platforms::PLATFORM_OK;
 }
@@ -168,6 +166,11 @@ platforms::boat::move (
    * platform status to determine what to return. For now, we will simply
    * return that we are in the process of moving to the final pose.
    **/
+   
+   double easting = location.x();
+   double northing = location.y();
+   printf("platform.move():  x = %f,  y = %f\n");
+   
   return gams::platforms::PLATFORM_MOVING;
 }
 
@@ -227,4 +230,9 @@ int
 platforms::boat::takeoff (void)
 {
   return gams::platforms::PLATFORM_OK;
+}
+
+void platforms::boat::set_containers(Containers & containers_)
+{
+  containers = containers_;
 }

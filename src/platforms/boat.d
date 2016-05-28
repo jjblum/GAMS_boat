@@ -309,4 +309,5 @@
  /home/odroid/gams/src/gams/utility/GPSFrame.inl \
  /home/odroid/gams/src/gams/utility/GPSFrame.h \
  /home/odroid/gams/src/gams/platforms/BasePlatform.inl \
- /home/odroid/gams/src/gams/platforms/PlatformFactory.h
+ /home/odroid/gams/src/gams/platforms/PlatformFactory.h \
+ src/platforms/../boat_containers.h

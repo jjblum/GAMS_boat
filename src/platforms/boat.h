@@ -5,6 +5,8 @@
 #include "gams/platforms/BasePlatform.h"
 #include "gams/platforms/PlatformFactory.h"
 
+#include "../boat_containers.h"
+
 namespace platforms
 {        
   /**
@@ -155,6 +157,12 @@ namespace platforms
      * @return the status of the takeoff, @see PlatformReturnValues
      **/
     virtual int takeoff (void);
+    
+    void set_containers(Containers & containers_);
+    
+  private:    
+    Containers containers;
+    
   }; // end boat class
     
 

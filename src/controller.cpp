@@ -26,6 +26,7 @@
 #include "threads/localization.h"
 #include "threads/random_motor_signals.h"
 #include "threads/sensing.h"
+#include "threads/operator_watchdog.h"
 // end thread includes
 
 // begin transport includes
@@ -414,7 +415,7 @@ int main (int argc, char ** argv)
   controller.add_platform_factory (aliases,
     new platforms::boatFactory ());
   // end adding custom platform factories
-  
+    
   // read madara initialization
   if (madara_commands != "")
   {
@@ -427,8 +428,17 @@ int main (int argc, char ** argv)
   if (!plat_set && knowledge.exists (KNOWLEDGE_BASE_PLATFORM_KEY))
     platform = knowledge.get (KNOWLEDGE_BASE_PLATFORM_KEY).to_string ();
   controller.init_platform (platform);
-  controller.init_algorithm (algorithm);
+  controller.init_algorithm (algorithm);    
 
+  // check if it is a boat platform via a dynamic_cast not returning null, and if it is a valid pointer, set the containers
+  gams::platforms::BasePlatform * platform_ptr = controller.get_platform();  
+  platforms::boat * boat_platform_ptr;
+  boat_platform_ptr = dynamic_cast< platforms::boat * > (platform_ptr);
+  if (boat_platform_ptr != nullptr)
+  {
+    boat_platform_ptr->set_containers(containers);
+  }
+  
   // add any accents
   for (unsigned int i = 0; i < accents.size (); ++i)
   {
@@ -448,6 +458,7 @@ int main (int argc, char ** argv)
   threader.run (100.0, "localization", localization_thread);
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
   threader.run (1, "sensing", new threads::sensing ());
+  threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
   // end thread creation
   
   // run a mape loop for algorithm and platform control

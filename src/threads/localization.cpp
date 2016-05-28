@@ -110,7 +110,7 @@ void threads::localization::new_sensor_update(Datum datum)
 void threads::localization::predict(double dt)
 {
   // Kalman filter prediction step
-  printf("prediction step: dt = %f\n", dt);
+  //printf("prediction step: dt = %f\n", dt);
   
   Q = QBase*dt;
   
@@ -157,8 +157,9 @@ void threads::localization::update()
   //if there is a datum to process, continue, else return
   if (new_datum_available)
   {
-    printf("Processing a datum of type: %s", current_datum.type_string().c_str());
-    std::cout << " value = " << current_datum.value() << std::endl;
+    //printf("Processing a datum of type: %s", current_datum.type_string().c_str());
+    //std::cout << " value = " << current_datum.value() << std::endl;
+    
     // prediction step
     // calculate dt using current time and datum time stamp    
     double dt = utility::time_tools::dt(t, current_datum.timestamp());
@@ -207,23 +208,18 @@ void threads::localization::update()
     }
     
     double d = sqrt((dz.transpose()*S.inverse()*dz)(0, 0));
-    printf("Mahalonobis distance = %f\n", d);
+    //printf("Mahalonobis distance = %f\n", d);
     
     state += K*dz;
     P = (StateSizedSquareMatrix::Identity() - K*H)*P;        
-    std::cout << "Updated state = " << state.transpose() << std::endl;
+    //std::cout << "Updated state = " << state.transpose() << std::endl;
     
+    // update the knowledge base. Make sure to use containers so that these updates are not sent out constantly
     eastingNorthingHeading.at(0) = state(0, 0) + home_x;
     eastingNorthingHeading.at(1) = state(1, 0) + home_y;
     eastingNorthingHeading.at(2) = state(2, 0);
     containers.eastingNorthingHeading.set(eastingNorthingHeading); // update the knowledge base
-    //bool northernHemisphere = false;
-    //if (containers.northernHemisphere == 1) 
-    //{
-    //  northernHemisphere = true;
-    //}
-    coord.Reset(containers.gpsZone.to_integer(), containers.northernHemisphere.to_integer(), eastingNorthingHeading.at(0), eastingNorthingHeading.at(1));    
-    
+    coord.Reset(containers.gpsZone.to_integer(), containers.northernHemisphere.to_integer(), eastingNorthingHeading.at(0), eastingNorthingHeading.at(1));        
     location.at(0) = coord.Latitude();
     location.at(1) = coord.Longitude();
     location.at(2) = 0.0;

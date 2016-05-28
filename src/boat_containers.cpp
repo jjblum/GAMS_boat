@@ -1,5 +1,9 @@
 #include "boat_containers.h"
 
+Containers::Containers()
+{
+}
+
 Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id) 
 : kb(kb_)
 { 
@@ -47,6 +51,9 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id)
     
     heartbeat_operator.set_name(prefix + "heartbeat_operator", kb);
     heartbeat_operator = 0;
+    
+    teleop_status.set_name(prefix + "teleop_status", kb);
+    teleop_status = 1; // start in teleop mode
     
     // misc stuff
     battery_voltage.set_name(prefix + "battery_voltage", kb);

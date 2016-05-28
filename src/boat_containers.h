@@ -13,6 +13,7 @@ namespace containers = madara::knowledge::containers;
 
 class Containers {
 public:
+    Containers();
     Containers(madara::knowledge::KnowledgeBase &kb_, int id);
     ~Containers();
     
@@ -33,6 +34,7 @@ public:
     containers::Integer heartbeat_gps;
     containers::Integer heartbeat_connectivity;
     containers::Integer heartbeat_operator;
+    containers::Integer teleop_status;
     
     // misc. stuff
     containers::Double battery_voltage;
