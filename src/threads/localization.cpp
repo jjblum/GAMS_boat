@@ -10,6 +10,7 @@ threads::localization::localization (Containers & containers_)
 {
   state = StateMatrix::Zero(); // [x y th xdot ydot thdot]
   t = utility::time_tools::now();
+  t0 = utility::time_tools::now();
   
   QBase = 0.1*StateSizedSquareMatrix::Identity();
   P = StateSizedSquareMatrix::Zero();
@@ -178,6 +179,46 @@ void threads::localization::update()
     {
       value.at(0) -= home_x; // use local frame
       value.at(1) -= home_y;
+      
+      // save gps information for use in gps velocity calculation
+      tR = utility::time_tools::dt(t0, t);
+      //printf("t = %f seconds\n", tR);
+      gps_data_t.push_back(utility::time_tools::dt(t0, current_datum.timestamp()));
+      gps_data_x.push_back(value.at(0));
+      gps_data_y.push_back(value.at(1));
+      // eliminate old gps data
+      for (int i = gps_data_t.size()-1; i > -1; i--)
+      {
+        if (tR - gps_data_t.at(i) > GPS_HISTORY_TIME_WINDOW)
+        {
+          //printf("gps datum age = %f seconds, deleting it...\n", tR - gps_data_t.at(i));
+          gps_data_t.erase(gps_data_t.begin() + i);
+          gps_data_x.erase(gps_data_x.begin() + i);
+          gps_data_y.erase(gps_data_y.begin() + i);
+        }
+      }
+      // if there are enough gps data remaining, calculate dx/dt and dy/dt
+      if (gps_data_t.size() >= GPS_HISTORY_REQUIRED_SIZE)
+      {
+        //printf("There are at least %d gps data available, calculating velocities...\n", GPS_HISTORY_REQUIRED_SIZE);
+        double n, s_t, s_x, s_y, s_tx, s_ty, s_tt, dx_dt, dy_dt;
+        n = (double)gps_data_t.size();
+        s_t = std::accumulate(gps_data_t.begin(), gps_data_t.end(), 0.0);
+        s_x = std::accumulate(gps_data_x.begin(), gps_data_x.end(), 0.0);
+        s_y = std::accumulate(gps_data_y.begin(), gps_data_y.end(), 0.0);
+        s_tt = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_t.begin(), 0.0);
+        s_tx = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_x.begin(), 0.0);        
+        s_ty = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_y.begin(), 0.0);
+        dx_dt = (n*s_tx - s_t*s_x)/(n*s_tt - s_t*s_t);
+        dy_dt = (n*s_ty - s_t*s_y)/(n*s_tt - s_t*s_t);
+        //printf("dx_dt = %f m/s,  dy_dt = %f m/s\n", dx_dt, dy_dt);        
+        std::vector<double> velocities = {dx_dt, dy_dt};
+        Eigen::MatrixXd covariance(2, 2);
+        covariance = Eigen::MatrixXd::Identity(2, 2); 
+        Datum datum(SENSOR_TYPE::GPS_VELOCITY, SENSOR_CATEGORY::LOCALIZATION, velocities, covariance);       
+        new_sensor_update(datum); // put this gps_velocity datum into the queue
+      }
+      
     }
     Eigen::Map<Eigen::MatrixXd> z_(value.data(), value.size(), 1);
     z = z_;

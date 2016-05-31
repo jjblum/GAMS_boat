@@ -10,6 +10,7 @@
 #include <queue>
 #include <mutex>
 #include <vector>
+#include <numeric>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/LU>
 #include <GeographicLib/GeoCoords.hpp>
@@ -22,6 +23,9 @@
 #define STATE_DIMENSION 6
 #define MAX_MAHALANOBIS_DIST 6.0
 #define MAX_DATA_QUEUE_SIZE 100
+
+#define GPS_HISTORY_TIME_WINDOW 3 // x seconds long window of gps data used
+#define GPS_HISTORY_REQUIRED_SIZE 6 // require at least x gps measurements before gps velocity can be calculated 
 
 typedef Eigen::Matrix< double, STATE_DIMENSION, 1> StateMatrix;
 typedef Eigen::Matrix< double, STATE_DIMENSION, STATE_DIMENSION> StateSizedSquareMatrix; 
@@ -83,9 +87,15 @@ namespace threads
     Eigen::MatrixXd S;
     Eigen::MatrixXd K;
     std::chrono::time_point<std::chrono::high_resolution_clock> t; // current time
+    std::chrono::time_point<std::chrono::high_resolution_clock> t0; // reference time
+    double tR; // current time, but measured relative to the reference time, in seconds
     double home_x;
     double home_y;    
     GeographicLib::GeoCoords coord;
+    
+    std::vector<double> gps_data_t;
+    std::vector<double> gps_data_x;
+    std::vector<double> gps_data_y;
   };
 } // end namespace threads
 
