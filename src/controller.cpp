@@ -450,12 +450,12 @@ int main (int argc, char ** argv)
   // begin thread creation
   threader.run (1, "analytics", new threads::analytics ());
   threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
-  threader.run (1, "control", new threads::control ());
+  threader.run (20.0, "control", new threads::control (containers));
   threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
   threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
   threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   threader.run (1.0, "kb_print", new threads::kb_print ());
-  threader.run (100.0, "localization", localization_thread);
+  threader.run (25.0, "localization", localization_thread);
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
   threader.run (1, "sensing", new threads::sensing ());
   threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));

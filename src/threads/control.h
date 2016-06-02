@@ -3,8 +3,14 @@
 #define   _THREAD_CONTROL_H_
 
 #include <string>
+#include <stdio.h>
+#include <iostream>
 
 #include "madara/threads/BaseThread.h"
+#include "../boat_containers.h"
+
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/LU>
 
 namespace threads
 {
@@ -17,7 +23,7 @@ namespace threads
     /**
      * Default constructor
      **/
-    control ();
+    control (Containers & containers_);
     
     /**
      * Destructor
@@ -38,6 +44,8 @@ namespace threads
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
+    Containers containers;
+    std::vector<double> local_state;
   };
 } // end namespace threads
 

@@ -22,6 +22,7 @@ threads::localization::localization (Containers & containers_)
   G = StateSizedSquareMatrix::Identity();
   eastingNorthingHeading.resize(3);
   location.resize(3);
+  local_state.resize(STATE_DIMENSION);
 }
 
 // destructor
@@ -104,7 +105,7 @@ void threads::localization::new_sensor_update(Datum datum)
     data_queue.pop(); // throw out oldest item
   }
   data_queue.push(datum);// push Datum to queue
-  printf("pushed datum to queue, size = %d\n", data_queue.size());
+  //printf("pushed datum to queue, size = %d\n", data_queue.size());
   ///// END LOCKED SECTION
 }
 
@@ -245,7 +246,7 @@ void threads::localization::update()
       std::cout << "K = " << K << std::endl;
       std::cout << "S = " << S << std::endl;
       std::cout << "det(S) = " << S.determinant() << " vs. " << pow(10.0, -6.0) << std::endl;
-      return;      
+      return;
     }
     
     double d = sqrt((dz.transpose()*S.inverse()*dz)(0, 0));
@@ -265,6 +266,11 @@ void threads::localization::update()
     location.at(1) = coord.Longitude();
     location.at(2) = 0.0;
     containers.location.set(location);
+    
+    for (int i = 0; i < state.rows(); i++) 
+    {
+      containers.local_state.set(i, state(i, 0));
+    }    
   }
 }
 

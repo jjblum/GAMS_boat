@@ -1,12 +1,15 @@
 
 #include "gams/loggers/GlobalLogger.h"
 #include "control.h"
+#include "localization.h"
 
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::control::control ()
+threads::control::control (Containers & containers_)
+: containers(containers_)
 {
+  local_state.resize(STATE_DIMENSION);
 }
 
 // destructor
@@ -46,4 +49,9 @@ threads::control::run (void)
     gams::loggers::LOG_MAJOR,
     "threads::control::run:" 
     " executing\n");
+    
+    // pull the current state from the knowledgebase
+    local_state = containers.local_state.to_record().to_doubles();
+    
+    
 }

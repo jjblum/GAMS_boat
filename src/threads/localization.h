@@ -73,6 +73,7 @@ namespace threads
     Datum current_datum;
     std::vector<double> eastingNorthingHeading;
     std::vector<double> location;
+    std::vector<double> local_state;
     StateMatrix state;
     StateSizedSquareMatrix Q; // growth of uncertainty with time (after time step modification)
     StateSizedSquareMatrix QBase; // growth of uncertainty with time (before time step modification)

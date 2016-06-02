@@ -21,6 +21,7 @@ public:
     containers::NativeDoubleVector motor_signals;
     containers::NativeDoubleVector eastingNorthingHeading;
     containers::NativeDoubleVector location; // lat, long, elevation
+    containers::NativeDoubleVector local_state; // local x, local y, theta, xdot, ydot, thetadot
     containers::Double thrustFraction;
     containers::Double headingFraction;
     containers::Double sufficientProximity;
