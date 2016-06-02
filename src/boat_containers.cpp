@@ -53,14 +53,14 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id)
     heartbeat_connectivity.set_name(prefix + "connectivityWatchdog", kb);
     heartbeat_connectivity = 1;
     
-    heartbeat_operator.set_name(prefix + "heartbeat_operator", kb);
+    heartbeat_operator.set_name(prefix + "operatorHeartbeat", kb);
     heartbeat_operator = 0;
     
     teleop_status.set_name(prefix + "teleopStatus", kb);
     teleop_status = 1; // start in teleop mode
     
     // misc stuff
-    battery_voltage.set_name(prefix + "battery_voltage", kb);
+    battery_voltage.set_name(prefix + "batteryVoltage", kb);
     battery_voltage = 0.0;
     
     

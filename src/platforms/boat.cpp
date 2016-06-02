@@ -53,6 +53,7 @@ platforms::boat::~boat ()
 // Polls the sensor environment for useful information. Required.
 int platforms::boat::sense (void)
 {
+  printf("platform.sense()\n");
   return gams::platforms::PLATFORM_OK;
 }
 
@@ -61,7 +62,7 @@ int platforms::boat::sense (void)
 int
 platforms::boat::analyze (void)
 {
-
+  printf("platform.analyze()\n");
   return gams::platforms::PLATFORM_OK;
 }
 
@@ -170,6 +171,8 @@ platforms::boat::move (
    double easting = location.x();
    double northing = location.y();
    printf("platform.move():  x = %f,  y = %f\n");
+   
+   // if the destination is not the location supplied here, set new destination and set source to current destination
    
   return gams::platforms::PLATFORM_MOVING;
 }

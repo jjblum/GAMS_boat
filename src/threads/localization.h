@@ -63,8 +63,9 @@ namespace threads
     void update();
 
   private:
+    void updateKB();
     void predict(double dt);
-    void setH();
+    void setH();    
 
     madara::knowledge::KnowledgeBase data_;
     Containers containers;

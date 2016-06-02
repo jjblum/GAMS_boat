@@ -53,5 +53,7 @@ threads::control::run (void)
     // pull the current state from the knowledgebase
     local_state = containers.local_state.to_record().to_doubles();
     
+    // goal state - determined by containers for agent.id.source, agent.id.destination, and agent.id.desired_velocity
+    
     
 }

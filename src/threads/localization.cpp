@@ -80,8 +80,7 @@ void threads::localization::new_sensor_update(Datum datum)
       home_x = datum.value().at(0);
       home_y = datum.value().at(1);
       state(0, 0) = 0.0;
-      state(1, 0) = 0.0;      
-      std::cout << "Updated state = " << state.transpose() << std::endl;
+      state(1, 0) = 0.0;
     }
     if (containers.compass_init == 0 && datum.type() == SENSOR_TYPE::COMPASS)
     {
@@ -92,7 +91,8 @@ void threads::localization::new_sensor_update(Datum datum)
     }
     if (containers.compass_init == 1 && containers.gps_init == 1)
     {
-      containers.localized = 1;
+      containers.localized = 1; 
+      updateKB();     
     }
     return; // don't do anything until at least 1 gps and compass measurement come through
   }
@@ -133,6 +133,24 @@ void threads::localization::predict(double dt)
   
 }
 
+void threads::localization::updateKB()
+{
+  // update the knowledge base. Make sure to use containers so that these updates are not sent out constantly
+  eastingNorthingHeading.at(0) = state(0, 0) + home_x;
+  eastingNorthingHeading.at(1) = state(1, 0) + home_y;
+  eastingNorthingHeading.at(2) = state(2, 0);
+  containers.eastingNorthingHeading.set(eastingNorthingHeading); // update the knowledge base
+  coord.Reset(containers.gpsZone.to_integer(), containers.northernHemisphere.to_integer(), eastingNorthingHeading.at(0), eastingNorthingHeading.at(1));        
+  location.at(0) = coord.Latitude();
+  location.at(1) = coord.Longitude();
+  location.at(2) = 0.0;
+  containers.location.set(location);
+  for (int i = 0; i < state.rows(); i++) 
+  {
+    containers.local_state.set(i, state(i, 0));
+  }    
+}
+
 void threads::localization::update()
 {
   
@@ -157,121 +175,106 @@ void threads::localization::update()
   ///// END LOCKED SECTION
 
   //if there is a datum to process, continue, else return
-  if (new_datum_available)
+  if (!new_datum_available) return;
+  
+  //printf("Processing a datum of type: %s", current_datum.type_string().c_str());
+  //std::cout << " value = " << current_datum.value() << std::endl;
+  
+  // prediction step
+  // calculate dt using current time and datum time stamp    
+  double dt = utility::time_tools::dt(t, current_datum.timestamp());
+  if (dt < 0)
   {
-    //printf("Processing a datum of type: %s", current_datum.type_string().c_str());
-    //std::cout << " value = " << current_datum.value() << std::endl;
-    
-    // prediction step
-    // calculate dt using current time and datum time stamp    
-    double dt = utility::time_tools::dt(t, current_datum.timestamp());
-    if (dt < 0)
-    {
-      printf("WARNING: localization timestep is negative, skipping sensor update\n");
-      return;
-    }
-    
-    predict(dt);
-    t = current_datum.timestamp();
-    
-    // convert value std::vector into a column matrix
-    std::vector<double> value = current_datum.value();
-    if (current_datum.type() == SENSOR_TYPE::GPS)
-    {
-      value.at(0) -= home_x; // use local frame
-      value.at(1) -= home_y;
-      
-      // save gps information for use in gps velocity calculation
-      tR = utility::time_tools::dt(t0, t);
-      //printf("t = %f seconds\n", tR);
-      gps_data_t.push_back(utility::time_tools::dt(t0, current_datum.timestamp()));
-      gps_data_x.push_back(value.at(0));
-      gps_data_y.push_back(value.at(1));
-      // eliminate old gps data
-      for (int i = gps_data_t.size()-1; i > -1; i--)
-      {
-        if (tR - gps_data_t.at(i) > GPS_HISTORY_TIME_WINDOW)
-        {
-          //printf("gps datum age = %f seconds, deleting it...\n", tR - gps_data_t.at(i));
-          gps_data_t.erase(gps_data_t.begin() + i);
-          gps_data_x.erase(gps_data_x.begin() + i);
-          gps_data_y.erase(gps_data_y.begin() + i);
-        }
-      }
-      // if there are enough gps data remaining, calculate dx/dt and dy/dt
-      if (gps_data_t.size() >= GPS_HISTORY_REQUIRED_SIZE)
-      {
-        //printf("There are at least %d gps data available, calculating velocities...\n", GPS_HISTORY_REQUIRED_SIZE);
-        double n, s_t, s_x, s_y, s_tx, s_ty, s_tt, dx_dt, dy_dt;
-        n = (double)gps_data_t.size();
-        s_t = std::accumulate(gps_data_t.begin(), gps_data_t.end(), 0.0);
-        s_x = std::accumulate(gps_data_x.begin(), gps_data_x.end(), 0.0);
-        s_y = std::accumulate(gps_data_y.begin(), gps_data_y.end(), 0.0);
-        s_tt = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_t.begin(), 0.0);
-        s_tx = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_x.begin(), 0.0);        
-        s_ty = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_y.begin(), 0.0);
-        dx_dt = (n*s_tx - s_t*s_x)/(n*s_tt - s_t*s_t);
-        dy_dt = (n*s_ty - s_t*s_y)/(n*s_tt - s_t*s_t);
-        //printf("dx_dt = %f m/s,  dy_dt = %f m/s\n", dx_dt, dy_dt);        
-        std::vector<double> velocities = {dx_dt, dy_dt};
-        Eigen::MatrixXd covariance(2, 2);
-        covariance = Eigen::MatrixXd::Identity(2, 2); 
-        Datum datum(SENSOR_TYPE::GPS_VELOCITY, SENSOR_CATEGORY::LOCALIZATION, velocities, covariance);       
-        new_sensor_update(datum); // put this gps_velocity datum into the queue
-      }
-      
-    }
-    Eigen::Map<Eigen::MatrixXd> z_(value.data(), value.size(), 1);
-    z = z_;
-    R = current_datum.covariance();
-    setH();
-    
-    K = P*H.transpose()*(H*P*H.transpose() + R).inverse();
-    
-    dz = z - H*state;
-    if (current_datum.type() == SENSOR_TYPE::COMPASS)
-    {
-      dz(0, 0) = utility::angle_tools::minimum_difference(dz(0, 0)); // use true angular difference, not algebraic difference
-    }
-            
-    S = H*P*H.transpose();
-    
-    if (S.determinant() < pow(10.0, -12.0))
-    {
-      printf("WARNING: innovation covariance is singular for sensor type: %s\n", current_datum.type_string().c_str());
-      std::cout << "z = " << z << std::endl;
-      std::cout << "H = " << H << std::endl;
-      std::cout << "R = " << R << std::endl;
-      std::cout << "P = " << P << std::endl;
-      std::cout << "K = " << K << std::endl;
-      std::cout << "S = " << S << std::endl;
-      std::cout << "det(S) = " << S.determinant() << " vs. " << pow(10.0, -6.0) << std::endl;
-      return;
-    }
-    
-    double d = sqrt((dz.transpose()*S.inverse()*dz)(0, 0));
-    //printf("Mahalonobis distance = %f\n", d);
-    
-    state += K*dz;
-    P = (StateSizedSquareMatrix::Identity() - K*H)*P;        
-    //std::cout << "Updated state = " << state.transpose() << std::endl;
-    
-    // update the knowledge base. Make sure to use containers so that these updates are not sent out constantly
-    eastingNorthingHeading.at(0) = state(0, 0) + home_x;
-    eastingNorthingHeading.at(1) = state(1, 0) + home_y;
-    eastingNorthingHeading.at(2) = state(2, 0);
-    containers.eastingNorthingHeading.set(eastingNorthingHeading); // update the knowledge base
-    coord.Reset(containers.gpsZone.to_integer(), containers.northernHemisphere.to_integer(), eastingNorthingHeading.at(0), eastingNorthingHeading.at(1));        
-    location.at(0) = coord.Latitude();
-    location.at(1) = coord.Longitude();
-    location.at(2) = 0.0;
-    containers.location.set(location);
-    
-    for (int i = 0; i < state.rows(); i++) 
-    {
-      containers.local_state.set(i, state(i, 0));
-    }    
+    printf("WARNING: localization timestep is negative, skipping sensor update\n");
+    return;
   }
+  
+  predict(dt);
+  t = current_datum.timestamp();
+  
+  // convert value std::vector into a column matrix
+  std::vector<double> value = current_datum.value();
+  if (current_datum.type() == SENSOR_TYPE::GPS)
+  {
+    value.at(0) -= home_x; // use local frame
+    value.at(1) -= home_y;
+    
+    // save gps information for use in gps velocity calculation
+    tR = utility::time_tools::dt(t0, t);
+    //printf("t = %f seconds\n", tR);
+    gps_data_t.push_back(utility::time_tools::dt(t0, current_datum.timestamp()));
+    gps_data_x.push_back(value.at(0));
+    gps_data_y.push_back(value.at(1));
+    // eliminate old gps data
+    for (int i = gps_data_t.size()-1; i > -1; i--)
+    {
+      if (tR - gps_data_t.at(i) > GPS_HISTORY_TIME_WINDOW)
+      {
+        //printf("gps datum age = %f seconds, deleting it...\n", tR - gps_data_t.at(i));
+        gps_data_t.erase(gps_data_t.begin() + i);
+        gps_data_x.erase(gps_data_x.begin() + i);
+        gps_data_y.erase(gps_data_y.begin() + i);
+      }
+    }
+    // if there are enough gps data remaining, calculate dx/dt and dy/dt
+    if (gps_data_t.size() >= GPS_HISTORY_REQUIRED_SIZE)
+    {
+      //printf("There are at least %d gps data available, calculating velocities...\n", GPS_HISTORY_REQUIRED_SIZE);
+      double n, s_t, s_x, s_y, s_tx, s_ty, s_tt, dx_dt, dy_dt;
+      n = (double)gps_data_t.size();
+      s_t = std::accumulate(gps_data_t.begin(), gps_data_t.end(), 0.0);
+      s_x = std::accumulate(gps_data_x.begin(), gps_data_x.end(), 0.0);
+      s_y = std::accumulate(gps_data_y.begin(), gps_data_y.end(), 0.0);
+      s_tt = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_t.begin(), 0.0);
+      s_tx = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_x.begin(), 0.0);        
+      s_ty = std::inner_product(gps_data_t.begin(), gps_data_t.end(), gps_data_y.begin(), 0.0);
+      dx_dt = (n*s_tx - s_t*s_x)/(n*s_tt - s_t*s_t);
+      dy_dt = (n*s_ty - s_t*s_y)/(n*s_tt - s_t*s_t);
+      //printf("dx_dt = %f m/s,  dy_dt = %f m/s\n", dx_dt, dy_dt);        
+      std::vector<double> velocities = {dx_dt, dy_dt};
+      Eigen::MatrixXd covariance(2, 2);
+      covariance = Eigen::MatrixXd::Identity(2, 2); 
+      Datum datum(SENSOR_TYPE::GPS_VELOCITY, SENSOR_CATEGORY::LOCALIZATION, velocities, covariance);       
+      new_sensor_update(datum); // put this gps_velocity datum into the queue
+    }      
+  }
+  
+  Eigen::Map<Eigen::MatrixXd> z_(value.data(), value.size(), 1);
+  z = z_;
+  R = current_datum.covariance();
+  setH();
+  
+  K = P*H.transpose()*(H*P*H.transpose() + R).inverse();
+  
+  dz = z - H*state;
+  if (current_datum.type() == SENSOR_TYPE::COMPASS)
+  {
+    dz(0, 0) = utility::angle_tools::minimum_difference(dz(0, 0)); // use true angular difference, not algebraic difference
+  }
+          
+  S = H*P*H.transpose();
+  
+  if (S.determinant() < pow(10.0, -12.0))
+  {
+    printf("WARNING: innovation covariance is singular for sensor type: %s\n", current_datum.type_string().c_str());
+    std::cout << "z = " << z << std::endl;
+    std::cout << "H = " << H << std::endl;
+    std::cout << "R = " << R << std::endl;
+    std::cout << "P = " << P << std::endl;
+    std::cout << "K = " << K << std::endl;
+    std::cout << "S = " << S << std::endl;
+    std::cout << "det(S) = " << S.determinant() << " vs. " << pow(10.0, -6.0) << std::endl;
+    return;
+  }
+  
+  double d = sqrt((dz.transpose()*S.inverse()*dz)(0, 0));
+  //printf("Mahalonobis distance = %f\n", d);
+  
+  state += K*dz;
+  P = (StateSizedSquareMatrix::Identity() - K*H)*P;        
+  //std::cout << "Updated state = " << state.transpose() << std::endl;
+  
+  updateKB();
 }
 
 void threads::localization::setH()

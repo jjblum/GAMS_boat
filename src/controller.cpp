@@ -38,6 +38,8 @@
 #include "asio/error_code.hpp"
 #include "asio/serial_port.hpp"
 #include <memory>
+#include <chrono>
+#include <thread>
 // end other includes
 
 // END DO NOT DELETE THIS SECTION
@@ -56,12 +58,15 @@ typedef Record::Integer Integer;
 const std::string KNOWLEDGE_BASE_PLATFORM_KEY (".platform");
 bool plat_set = false;
 std::string platform ("boat");
-std::string algorithm ("null");
+std::string algorithm ("debug");
 std::vector <std::string> accents;
 
 // controller variables
 double period (1.0);
 double loop_time (50.0);
+
+#define GAMS_RUN_HZ 5.0
+#define GAMS_SEND_HZ 2.0
 
 // madara commands from a file
 std::string madara_commands = "";
@@ -354,6 +359,9 @@ void handle_arguments (int argc, char ** argv)
 // perform main logic of program
 int main (int argc, char ** argv)
 {
+
+  printf("qwerty\n");
+
   // handle all user arguments
   handle_arguments (argc, argv);
   
@@ -366,30 +374,37 @@ int main (int argc, char ** argv)
   // create containers
   Containers containers(knowledge, settings.id);
 
+  // TODO - turn this into a loop that keeps trying to connect at 1 Hz rather than trying once
   // open serial port to boat arduino
   std::shared_ptr<asio::serial_port> port;
   asio::io_service io;
   port = std::make_shared<asio::serial_port>(io);
   std::string port_name = PORT_NAME;
-  asio::error_code ec;
-  port->open(port_name, ec);
-  if (!ec) 
+  asio::error_code ec; 
+  bool port_ready = false;
+  printf("asdf\n");
+  while (!port_ready)
   {
-    if (port->is_open()) 
+    printf("attempting to open port...\n");
+    port->open(port_name, ec);
+    if (!ec) 
     {
-        printf("port is open\n");
-        port->set_option(asio::serial_port_base::baud_rate(BAUD_RATE));
+      if (port->is_open()) 
+      {
+          printf("port is open\n");
+          port->set_option(asio::serial_port_base::baud_rate(BAUD_RATE));
+          port_ready = true;
+      }
+      else 
+      {
+        printf("ERROR: port->is_open() returned false\n");
+      }
     }
     else 
     {
-      printf("ERROR: port->is_open() returned false\n");
-      return -1;
+      printf("WARNING: port->open() failed:  %s\n Do you have the eboard plugged in?\n", ec.message().c_str());
     }
-  }
-  else 
-  {
-    printf("WARNING: port->open() failed:  %s\n Do you have the eboard plugged in?\n", ec.message().c_str());
-    return -1;            
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
   
   // begin transport creation 
@@ -448,7 +463,7 @@ int main (int argc, char ** argv)
   threads::localization * localization_thread = new threads::localization(containers); // separated out b/c i want to try callbacks and the caller needs a reference to the callee's instance
 
   // begin thread creation
-  threader.run (1, "analytics", new threads::analytics ());
+  //threader.run (1, "analytics", new threads::analytics ());
   threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers));
   threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
@@ -457,12 +472,12 @@ int main (int argc, char ** argv)
   threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (25.0, "localization", localization_thread);
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
-  threader.run (1, "sensing", new threads::sensing ());
-  threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
+  //threader.run (1, "sensing", new threads::sensing ());
+  //threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
   // end thread creation
   
   // run a mape loop for algorithm and platform control
-  controller.run (period, loop_time);
+  controller.run_hz (GAMS_RUN_HZ, -1, GAMS_SEND_HZ);
 
   // terminate all threads after the controller
   threader.terminate ();
