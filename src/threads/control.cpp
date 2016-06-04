@@ -1,7 +1,6 @@
-
-#include "gams/loggers/GlobalLogger.h"
 #include "control.h"
-#include "localization.h"
+#include "gams/loggers/GlobalLogger.h"
+
 
 namespace knowledge = madara::knowledge;
 
@@ -54,6 +53,8 @@ threads::control::run (void)
     local_state = containers.local_state.to_record().to_doubles();
     
     // goal state - determined by containers for agent.id.source, agent.id.destination, and agent.id.desired_velocity
-    
-    
+    // assume we are using LOS along a straight line all the time. PID used for heading, thrust effort set to a constant based on desired velocity
+    // use the LOS_Line stuff from my python sim
+    // Need a Design class and then child classes, again like my python sim
+    // control thread has a design. It feeds the desired thrust and heading effort fractions to the design and the design provides the motor signals
 }

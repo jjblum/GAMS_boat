@@ -53,6 +53,9 @@ platforms::boat::~boat ()
 // Polls the sensor environment for useful information. Required.
 int platforms::boat::sense (void)
 {
+
+  // self_->agent.[agent variables] // could try using the Self container in boat_containers!
+
   printf("platform.sense()\n");
   return gams::platforms::PLATFORM_OK;
 }

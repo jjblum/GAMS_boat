@@ -8,6 +8,8 @@
 
 #include "madara/threads/BaseThread.h"
 #include "../boat_containers.h"
+#include "../design.h"
+#include "localization.h"
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/LU>

@@ -1,6 +1,7 @@
-.obj/src/threads/control.o: src/threads/control.cpp \
- /home/odroid/gams/src/gams/loggers/GlobalLogger.h \
- /home/odroid/gams/src/gams/GAMSExport.h \
+.obj/src/threads/control.o: src/threads/control.cpp src/threads/control.h \
+ /home/odroid/madara/include/madara/threads/BaseThread.h \
+ /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.h \
+ /home/odroid/madara/include/madara/MADARA_export.h \
  /home/odroid/ace/ACE_wrappers/ace/config-all.h \
  /home/odroid/ace/ACE_wrappers/ace/pre.h \
  /home/odroid/ace/ACE_wrappers/ace/config-lite.h \
@@ -16,8 +17,15 @@
  /home/odroid/ace/ACE_wrappers/ace/ace_wchar.inl \
  /home/odroid/ace/ACE_wrappers/ace/OS_main.h \
  /home/odroid/ace/ACE_wrappers/ace/ACE_export.h \
+ /home/odroid/madara/include/madara/utility/stdint.h \
+ /home/odroid/madara/include/madara/utility/ScopedArray.h \
+ /home/odroid/madara/include/madara/utility/ScopedArray.inl \
+ /home/odroid/madara/include/madara/utility/Refcounter.h \
+ /home/odroid/madara/include/madara/utility/Refcounter.cpp \
+ /home/odroid/ace/ACE_wrappers/ace/os_include/sys/os_types.h \
+ /home/odroid/ace/ACE_wrappers/ace/os_include/os_stddef.h \
+ /home/odroid/madara/include/madara/logger/GlobalLogger.h \
  /home/odroid/madara/include/madara/logger/Logger.h \
- /home/odroid/madara/include/madara/MADARA_export.h \
  /home/odroid/madara/include/madara/LockType.h \
  /home/odroid/ace/ACE_wrappers/ace/Recursive_Thread_Mutex.h \
  /home/odroid/ace/ACE_wrappers/ace/OS_NS_Thread.h \
@@ -31,8 +39,6 @@
  /home/odroid/ace/ACE_wrappers/ace/Basic_Types.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_limits.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_unistd.h \
- /home/odroid/ace/ACE_wrappers/ace/os_include/sys/os_types.h \
- /home/odroid/ace/ACE_wrappers/ace/os_include/os_stddef.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_inttypes.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_stdint.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_stdio.h \
@@ -171,16 +177,6 @@
  /home/odroid/ace/ACE_wrappers/ace/TSS_Adapter.h \
  /home/odroid/madara/include/madara/utility/inttypes.h \
  /home/odroid/madara/include/madara/logger/Logger.inl \
- /home/odroid/madara/include/madara/logger/Logger.h \
- /home/odroid/madara/include/madara/utility/Refcounter.h \
- /home/odroid/madara/include/madara/utility/Refcounter.cpp \
- src/threads/control.h \
- /home/odroid/madara/include/madara/threads/BaseThread.h \
- /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.h \
- /home/odroid/madara/include/madara/utility/stdint.h \
- /home/odroid/madara/include/madara/utility/ScopedArray.h \
- /home/odroid/madara/include/madara/utility/ScopedArray.inl \
- /home/odroid/madara/include/madara/logger/GlobalLogger.h \
  /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.inl \
  /home/odroid/madara/include/madara/utility/Utility.h \
  /home/odroid/ace/ACE_wrappers/ace/SOCK_Dgram.h \
@@ -217,6 +213,7 @@
  /home/odroid/madara/include/madara/knowledge/FunctionArguments.h \
  /home/odroid/madara/include/madara/expression/ExpressionTree.h \
  /home/odroid/madara/include/madara/expression/ComponentNode.h \
+ /home/odroid/madara/include/madara/logger/Logger.h \
  /home/odroid/madara/include/madara/filters/RecordFilter.h \
  /home/odroid/madara/include/madara/knowledge/ExternFunctionVariables.h \
  /home/odroid/madara/include/madara/knowledge/CompiledExpression.h \
@@ -273,6 +270,8 @@
  /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
  /home/odroid/madara/include/madara/knowledge/containers/Double.h \
  /home/odroid/madara/include/madara/knowledge/containers/String.h \
- src/threads/localization.h src/threads/../datum.h \
- src/threads/../utility.h src/threads/../threads/localization.h \
- src/threads/../datum.h
+ src/threads/../design.h src/threads/localization.h \
+ src/threads/../datum.h src/threads/../utility.h \
+ src/threads/../threads/localization.h src/threads/../datum.h \
+ /home/odroid/gams/src/gams/loggers/GlobalLogger.h \
+ /home/odroid/gams/src/gams/GAMSExport.h

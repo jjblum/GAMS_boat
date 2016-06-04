@@ -58,15 +58,15 @@ typedef Record::Integer Integer;
 const std::string KNOWLEDGE_BASE_PLATFORM_KEY (".platform");
 bool plat_set = false;
 std::string platform ("boat");
-std::string algorithm ("debug");
+std::string algorithm ("null");
 std::vector <std::string> accents;
 
 // controller variables
 double period (1.0);
 double loop_time (50.0);
 
-#define GAMS_RUN_HZ 5.0
-#define GAMS_SEND_HZ 2.0
+#define GAMS_RUN_HZ 1.0
+#define GAMS_SEND_HZ 1.0
 
 // madara commands from a file
 std::string madara_commands = "";
@@ -359,9 +359,6 @@ void handle_arguments (int argc, char ** argv)
 // perform main logic of program
 int main (int argc, char ** argv)
 {
-
-  printf("qwerty\n");
-
   // handle all user arguments
   handle_arguments (argc, argv);
   
@@ -382,7 +379,6 @@ int main (int argc, char ** argv)
   std::string port_name = PORT_NAME;
   asio::error_code ec; 
   bool port_ready = false;
-  printf("asdf\n");
   while (!port_ready)
   {
     printf("attempting to open port...\n");
@@ -443,7 +439,7 @@ int main (int argc, char ** argv)
   if (!plat_set && knowledge.exists (KNOWLEDGE_BASE_PLATFORM_KEY))
     platform = knowledge.get (KNOWLEDGE_BASE_PLATFORM_KEY).to_string ();
   controller.init_platform (platform);
-  controller.init_algorithm (algorithm);    
+  controller.init_algorithm (algorithm);
 
   // check if it is a boat platform via a dynamic_cast not returning null, and if it is a valid pointer, set the containers
   gams::platforms::BasePlatform * platform_ptr = controller.get_platform();  
@@ -459,7 +455,14 @@ int main (int argc, char ** argv)
   {
     controller.init_accent (accents[i]);
   }
-
+  
+  // add any logging
+  madara::logger::global_logger->add_file ("madara_log.txt");
+  gams::loggers::global_logger->add_file ("gams_log.txt");
+  madara_logger_ptr_log(gams::loggers::global_logger.get(), 0, "HEYYYYYYY\n");
+  gams::loggers::global_logger->log(0, "THERE\n");
+  printf("GAMS LOG LEVEL: %d\n", (int)gams::loggers::global_logger->get_level());
+  
   threads::localization * localization_thread = new threads::localization(containers); // separated out b/c i want to try callbacks and the caller needs a reference to the callee's instance
 
   // begin thread creation
@@ -467,8 +470,8 @@ int main (int argc, char ** argv)
   threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers));
   threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
-  threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
-  threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
+  //threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
+  //threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (25.0, "localization", localization_thread);
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));

@@ -62,7 +62,7 @@ threads::localization::run (void)
     gams::loggers::LOG_MAJOR,
     "threads::localization::run:" 
     " executing\n");
-
+  
   update();
 }
 
