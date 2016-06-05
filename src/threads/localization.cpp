@@ -82,7 +82,7 @@ void threads::localization::new_sensor_update(Datum datum)
       state(0, 0) = 0.0;
       state(1, 0) = 0.0;
     }
-    if (containers.compass_init == 0 && datum.type() == SENSOR_TYPE::COMPASS)
+    if (containers.compass_init == 0 && (datum.type() == SENSOR_TYPE::COMPASS || datum.type() == SENSOR_TYPE::AHRS))
     {
       printf("Received first compass: %f\n", datum.value().at(0));
       containers.compass_init = 1;
@@ -296,6 +296,11 @@ void threads::localization::setH()
   else if (current_datum.type() == SENSOR_TYPE::GYRO) 
   {
     H(0, 5) = 1.0;
+  }
+  else if (current_datum.type() == SENSOR_TYPE::AHRS)
+  {
+    H(0, 2) = 1.0;
+    H(1, 5) = 1.0;
   }
   else if (current_datum.type() == SENSOR_TYPE::GPS_VELOCITY) 
   {

@@ -1,7 +1,6 @@
-.obj/src/controller.o: src/controller.cpp \
- /home/odroid/madara/include/madara/knowledge/KnowledgeBase.h \
- /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.h \
- /home/odroid/madara/include/madara/MADARA_export.h \
+.obj/src/threads/ahrs.o: src/threads/ahrs.cpp \
+ /home/odroid/gams/src/gams/loggers/GlobalLogger.h \
+ /home/odroid/gams/src/gams/GAMSExport.h \
  /home/odroid/ace/ACE_wrappers/ace/config-all.h \
  /home/odroid/ace/ACE_wrappers/ace/pre.h \
  /home/odroid/ace/ACE_wrappers/ace/config-lite.h \
@@ -17,15 +16,8 @@
  /home/odroid/ace/ACE_wrappers/ace/ace_wchar.inl \
  /home/odroid/ace/ACE_wrappers/ace/OS_main.h \
  /home/odroid/ace/ACE_wrappers/ace/ACE_export.h \
- /home/odroid/madara/include/madara/utility/stdint.h \
- /home/odroid/madara/include/madara/utility/ScopedArray.h \
- /home/odroid/madara/include/madara/utility/ScopedArray.inl \
- /home/odroid/madara/include/madara/utility/Refcounter.h \
- /home/odroid/madara/include/madara/utility/Refcounter.cpp \
- /home/odroid/ace/ACE_wrappers/ace/os_include/sys/os_types.h \
- /home/odroid/ace/ACE_wrappers/ace/os_include/os_stddef.h \
- /home/odroid/madara/include/madara/logger/GlobalLogger.h \
  /home/odroid/madara/include/madara/logger/Logger.h \
+ /home/odroid/madara/include/madara/MADARA_export.h \
  /home/odroid/madara/include/madara/LockType.h \
  /home/odroid/ace/ACE_wrappers/ace/Recursive_Thread_Mutex.h \
  /home/odroid/ace/ACE_wrappers/ace/OS_NS_Thread.h \
@@ -39,6 +31,8 @@
  /home/odroid/ace/ACE_wrappers/ace/Basic_Types.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_limits.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_unistd.h \
+ /home/odroid/ace/ACE_wrappers/ace/os_include/sys/os_types.h \
+ /home/odroid/ace/ACE_wrappers/ace/os_include/os_stddef.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_inttypes.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_stdint.h \
  /home/odroid/ace/ACE_wrappers/ace/os_include/os_stdio.h \
@@ -177,6 +171,16 @@
  /home/odroid/ace/ACE_wrappers/ace/TSS_Adapter.h \
  /home/odroid/madara/include/madara/utility/inttypes.h \
  /home/odroid/madara/include/madara/logger/Logger.inl \
+ /home/odroid/madara/include/madara/logger/Logger.h \
+ /home/odroid/madara/include/madara/utility/Refcounter.h \
+ /home/odroid/madara/include/madara/utility/Refcounter.cpp \
+ src/threads/ahrs.h \
+ /home/odroid/madara/include/madara/threads/BaseThread.h \
+ /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.h \
+ /home/odroid/madara/include/madara/utility/stdint.h \
+ /home/odroid/madara/include/madara/utility/ScopedArray.h \
+ /home/odroid/madara/include/madara/utility/ScopedArray.inl \
+ /home/odroid/madara/include/madara/logger/GlobalLogger.h \
  /home/odroid/madara/include/madara/knowledge/KnowledgeRecord.inl \
  /home/odroid/madara/include/madara/utility/Utility.h \
  /home/odroid/ace/ACE_wrappers/ace/SOCK_Dgram.h \
@@ -213,12 +217,12 @@
  /home/odroid/madara/include/madara/knowledge/FunctionArguments.h \
  /home/odroid/madara/include/madara/expression/ExpressionTree.h \
  /home/odroid/madara/include/madara/expression/ComponentNode.h \
- /home/odroid/madara/include/madara/logger/Logger.h \
  /home/odroid/madara/include/madara/filters/RecordFilter.h \
  /home/odroid/madara/include/madara/knowledge/ExternFunctionVariables.h \
  /home/odroid/madara/include/madara/knowledge/CompiledExpression.h \
  /home/odroid/madara/include/madara/knowledge/VariableReference.h \
  /home/odroid/madara/include/madara/knowledge/VariableReference.inl \
+ /home/odroid/madara/include/madara/knowledge/KnowledgeBase.h \
  /home/odroid/madara/include/madara/filters/Arguments.h \
  /home/odroid/madara/include/madara/knowledge/ThreadSafeContext.h \
  /home/odroid/madara/include/madara/knowledge/FunctionMap.h \
@@ -259,195 +263,17 @@
  /home/odroid/madara/include/madara/knowledge/KnowledgeBaseImpl.inl \
  /home/odroid/madara/include/madara/knowledge/KnowledgeBase.inl \
  /home/odroid/ace/ACE_wrappers/ace/streams.h \
- /home/odroid/madara/include/madara/threads/Threader.h \
- /home/odroid/madara/include/madara/threads/BaseThread.h \
  /home/odroid/madara/include/madara/knowledge/containers/Integer.h \
  /home/odroid/madara/include/madara/knowledge/containers/BaseContainer.h \
  /home/odroid/madara/include/madara/knowledge/containers/BaseContainer.inl \
  /home/odroid/madara/include/madara/knowledge/ContextGuard.h \
  /home/odroid/madara/include/madara/knowledge/containers/Integer.inl \
  /home/odroid/madara/include/madara/knowledge/containers/Integer.h \
- /home/odroid/madara/include/madara/threads/WorkerThread.h \
- /home/odroid/madara/include/madara/knowledge/containers/Double.h \
- /home/odroid/ace/ACE_wrappers/ace/Task.h \
- /home/odroid/ace/ACE_wrappers/ace/Service_Object.h \
- /home/odroid/ace/ACE_wrappers/ace/Shared_Object.h \
- /home/odroid/ace/ACE_wrappers/ace/Shared_Object.inl \
- /home/odroid/ace/ACE_wrappers/ace/Svc_Conf_Tokens.h \
- /home/odroid/ace/ACE_wrappers/ace/Svc_Conf_Token_Table.h \
- /home/odroid/ace/ACE_wrappers/ace/Event_Handler.h \
- /home/odroid/ace/ACE_wrappers/ace/Atomic_Op.h \
- /home/odroid/ace/ACE_wrappers/ace/Atomic_Op_T.h \
- /home/odroid/ace/ACE_wrappers/ace/Atomic_Op_T.inl \
- /home/odroid/ace/ACE_wrappers/ace/Atomic_Op_T.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Atomic_Op_GCC_T.h \
- /home/odroid/ace/ACE_wrappers/ace/Atomic_Op.inl \
- /home/odroid/ace/ACE_wrappers/ace/Event_Handler.inl \
- /home/odroid/ace/ACE_wrappers/ace/DLL.h \
- /home/odroid/ace/ACE_wrappers/ace/os_include/os_dlfcn.h \
- /home/odroid/ace/ACE_wrappers/ace/SString.h \
- /home/odroid/ace/ACE_wrappers/ace/SStringfwd.h \
- /home/odroid/ace/ACE_wrappers/ace/String_Base.h \
- /home/odroid/ace/ACE_wrappers/ace/String_Base_Const.h \
- /home/odroid/ace/ACE_wrappers/ace/Malloc_Base.h \
- /home/odroid/ace/ACE_wrappers/ace/String_Base.inl \
- /home/odroid/ace/ACE_wrappers/ace/Min_Max.h \
- /home/odroid/ace/ACE_wrappers/ace/String_Base.cpp \
- /home/odroid/ace/ACE_wrappers/ace/ACE.h \
- /home/odroid/ace/ACE_wrappers/ace/ACE.inl \
- /home/odroid/ace/ACE_wrappers/ace/OS_NS_ctype.h \
- /home/odroid/ace/ACE_wrappers/ace/os_include/os_wctype.h \
- /home/odroid/ace/ACE_wrappers/ace/OS_NS_ctype.inl \
- /home/odroid/ace/ACE_wrappers/ace/Auto_Ptr.h \
- /home/odroid/ace/ACE_wrappers/ace/Auto_Ptr.inl \
- /home/odroid/ace/ACE_wrappers/ace/Auto_Ptr.cpp \
- /home/odroid/ace/ACE_wrappers/ace/SString.inl \
- /home/odroid/ace/ACE_wrappers/ace/Service_Gestalt.h \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Queue.h \
- /home/odroid/ace/ACE_wrappers/ace/Node.h \
- /home/odroid/ace/ACE_wrappers/ace/Node.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Queue.inl \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Queue.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Set.h \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Set_Ex.h \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Set_Ex.inl \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Set_Ex.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Set.inl \
- /home/odroid/ace/ACE_wrappers/ace/Unbounded_Set.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Service_Repository.h \
- /home/odroid/ace/ACE_wrappers/ace/Array_Map.h \
- /home/odroid/ace/ACE_wrappers/ace/Array_Map.inl \
- /home/odroid/ace/ACE_wrappers/ace/Array_Map.cpp \
- /home/odroid/ace/ACE_wrappers/ace/checked_iterator.h \
- /home/odroid/ace/ACE_wrappers/ace/Service_Repository.inl \
- /home/odroid/ace/ACE_wrappers/ace/Singleton.h \
- /home/odroid/ace/ACE_wrappers/ace/TSS_T.h \
- /home/odroid/ace/ACE_wrappers/ace/TSS_T.inl \
- /home/odroid/ace/ACE_wrappers/ace/Thread.h \
- /home/odroid/ace/ACE_wrappers/ace/Thread_Adapter.h \
- /home/odroid/ace/ACE_wrappers/ace/Thread_Adapter.inl \
- /home/odroid/ace/ACE_wrappers/ace/Thread.inl \
- /home/odroid/ace/ACE_wrappers/ace/TSS_T.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Singleton.inl \
- /home/odroid/ace/ACE_wrappers/ace/Singleton.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Object_Manager.h \
- /home/odroid/ace/ACE_wrappers/ace/Static_Object_Lock.h \
- /home/odroid/ace/ACE_wrappers/ace/Object_Manager.inl \
- /home/odroid/ace/ACE_wrappers/ace/Managed_Object.h \
- /home/odroid/ace/ACE_wrappers/ace/Managed_Object.inl \
- /home/odroid/ace/ACE_wrappers/ace/Managed_Object.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Framework_Component.h \
- /home/odroid/ace/ACE_wrappers/ace/Framework_Component.inl \
- /home/odroid/ace/ACE_wrappers/ace/Framework_Component_T.h \
- /home/odroid/ace/ACE_wrappers/ace/Framework_Component_T.cpp \
- /home/odroid/ace/ACE_wrappers/ace/os_include/os_typeinfo.h \
- /home/odroid/ace/ACE_wrappers/ace/Service_Gestalt.inl \
- /home/odroid/ace/ACE_wrappers/ace/Service_Object.inl \
- /home/odroid/ace/ACE_wrappers/ace/Thread_Manager.h \
- /home/odroid/ace/ACE_wrappers/ace/Thread_Exit.h \
- /home/odroid/ace/ACE_wrappers/ace/Thread_Control.h \
- /home/odroid/ace/ACE_wrappers/ace/Thread_Control.inl \
- /home/odroid/ace/ACE_wrappers/ace/Containers.h \
- /home/odroid/ace/ACE_wrappers/ace/Containers.inl \
- /home/odroid/ace/ACE_wrappers/ace/Containers_T.h \
- /home/odroid/ace/ACE_wrappers/ace/Array_Base.h \
- /home/odroid/ace/ACE_wrappers/ace/Array_Base.inl \
- /home/odroid/ace/ACE_wrappers/ace/Array_Base.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Containers_T.inl \
- /home/odroid/ace/ACE_wrappers/ace/Containers_T.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Free_List.h \
- /home/odroid/ace/ACE_wrappers/ace/Free_List.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Thread_Manager.inl \
- /home/odroid/ace/ACE_wrappers/ace/Task.inl \
- /home/odroid/ace/ACE_wrappers/ace/Task_T.h \
- /home/odroid/ace/ACE_wrappers/ace/Message_Queue.h \
- /home/odroid/ace/ACE_wrappers/ace/Message_Block.h \
- /home/odroid/ace/ACE_wrappers/ace/Message_Block.inl \
- /home/odroid/ace/ACE_wrappers/ace/Message_Block_T.h \
- /home/odroid/ace/ACE_wrappers/ace/Message_Block_T.inl \
- /home/odroid/ace/ACE_wrappers/ace/Message_Block_T.cpp \
- /home/odroid/ace/ACE_wrappers/ace/IO_Cntl_Msg.h \
- /home/odroid/ace/ACE_wrappers/ace/IO_Cntl_Msg.inl \
- /home/odroid/ace/ACE_wrappers/ace/Message_Queue_T.h \
- /home/odroid/ace/ACE_wrappers/ace/Dynamic_Message_Strategy.h \
- /home/odroid/ace/ACE_wrappers/ace/Dynamic_Message_Strategy.inl \
- /home/odroid/ace/ACE_wrappers/ace/Message_Queue_T.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Message_Queue_Vx.h \
- /home/odroid/ace/ACE_wrappers/ace/Message_Queue_Vx.inl \
- /home/odroid/ace/ACE_wrappers/ace/Notification_Strategy.h \
- /home/odroid/ace/ACE_wrappers/ace/Notification_Strategy.inl \
- /home/odroid/ace/ACE_wrappers/ace/Message_Queue.inl \
- /home/odroid/ace/ACE_wrappers/ace/Task_T.inl \
- /home/odroid/ace/ACE_wrappers/ace/Task_T.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Module.h \
- /home/odroid/ace/ACE_wrappers/ace/os_include/os_dirent.h \
- /home/odroid/ace/ACE_wrappers/ace/Module.inl \
- /home/odroid/ace/ACE_wrappers/ace/Module.cpp \
- /home/odroid/ace/ACE_wrappers/ace/Stream_Modules.h \
- /home/odroid/ace/ACE_wrappers/ace/Stream_Modules.cpp \
- /home/odroid/madara/include/madara/threads/WorkerThread.inl \
- /home/odroid/madara/include/madara/threads/Threader.inl \
- /home/odroid/madara/include/madara/threads/Threader.h \
- /home/odroid/gams/src/gams/controllers/BaseController.h \
- /home/odroid/gams/src/gams/GAMSExport.h \
- /home/odroid/gams/src/gams/variables/Agent.h \
- /home/odroid/madara/include/madara/knowledge/containers/String.h \
+ src/threads/localization.h src/threads/../datum.h \
+ src/threads/../boat_containers.h \
  /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
- /home/odroid/madara/include/madara/knowledge/containers/Vector.h \
- /home/odroid/madara/include/madara/knowledge/containers/Map.h \
- /home/odroid/gams/src/gams/variables/AccentStatus.h \
- /home/odroid/gams/src/gams/variables/Swarm.h \
- /home/odroid/gams/src/gams/variables/Self.h \
- /home/odroid/gams/src/gams/variables/Agent.h \
- /home/odroid/gams/src/gams/variables/Sensor.h \
- /home/odroid/gams/src/gams/utility/GPSPosition.h \
- /home/odroid/madara/include/madara/knowledge/containers/DoubleVector.h \
- /home/odroid/gams/src/gams/utility/Position.h \
- /home/odroid/gams/src/gams/utility/Position.h \
- /home/odroid/gams/src/gams/utility/SearchArea.h \
- /home/odroid/gams/src/gams/utility/PrioritizedRegion.h \
- /home/odroid/gams/src/gams/utility/Region.h \
- /home/odroid/madara/include/madara/knowledge/containers/StringVector.h \
- /home/odroid/gams/src/gams/utility/Containerize.h \
- /home/odroid/gams/src/gams/utility/SearchArea.inl \
- /home/odroid/gams/src/gams/variables/AlgorithmStatus.h \
- /home/odroid/gams/src/gams/variables/PlatformStatus.h \
- /home/odroid/gams/src/gams/algorithms/BaseAlgorithm.h \
- /home/odroid/gams/src/gams/platforms/BasePlatform.h \
- /home/odroid/gams/src/gams/utility/Axes.h \
- /home/odroid/gams/src/gams/utility/GPSFrame.h \
- /home/odroid/gams/src/gams/utility/ReferenceFrame.h \
- /home/odroid/gams/src/gams/CPP11_compat.h \
- /home/odroid/gams/src/gams/utility/Pose.h \
- /home/odroid/gams/src/gams/utility/Location.h \
- /home/odroid/gams/src/gams/utility/Coordinate.h \
- /home/odroid/gams/src/gams/utility/Coordinate.inl \
- /home/odroid/gams/src/gams/utility/Coordinate.h \
- /home/odroid/gams/src/gams/utility/Location.inl \
- /home/odroid/gams/src/gams/utility/Location.h \
- /home/odroid/gams/src/gams/utility/Rotation.h \
- /home/odroid/gams/src/gams/utility/AngleUnits.h \
- /home/odroid/gams/src/gams/utility/Rotation.h \
- /home/odroid/gams/src/gams/utility/Rotation.inl \
- /home/odroid/gams/src/gams/utility/ReferenceFrame.inl \
- /home/odroid/gams/src/gams/utility/Pose.h \
- /home/odroid/gams/src/gams/utility/Pose.inl \
- /home/odroid/gams/src/gams/utility/GPSFrame.inl \
- /home/odroid/gams/src/gams/utility/GPSFrame.h \
- /home/odroid/gams/src/gams/platforms/BasePlatform.inl \
- /home/odroid/gams/src/gams/loggers/GlobalLogger.h \
- /home/odroid/gams/src/gams/algorithms/AlgorithmFactory.h \
- /home/odroid/gams/src/gams/platforms/PlatformFactory.h \
- src/platforms/boat.h src/platforms/../boat_containers.h \
- src/threads/analytics.h \
- /home/odroid/madara/include/madara/threads/BaseThread.h \
- src/threads/compass_spoofer.h src/threads/localization.h \
- src/threads/../datum.h src/threads/../boat_containers.h \
+ /home/odroid/madara/include/madara/knowledge/containers/Double.h \
+ /home/odroid/madara/include/madara/knowledge/containers/String.h \
  src/threads/../utility.h src/threads/../threads/localization.h \
  src/threads/../datum.h src/threads/../localization_caller.h \
- src/threads/control.h src/threads/../design.h src/threads/gps_spoofer.h \
- src/threads/io_thread.h src/threads/JSON_read.h src/threads/io_thread.h \
- src/threads/JSON_write.h src/threads/kb_print.h \
- src/threads/localization.h src/threads/random_motor_signals.h \
- src/threads/sensing.h src/threads/operator_watchdog.h src/threads/ahrs.h \
- src/threads/../myahrs_plus.hpp src/boat_containers.h src/myahrs_plus.hpp
+ src/threads/../myahrs_plus.hpp

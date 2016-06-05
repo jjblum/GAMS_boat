@@ -32,6 +32,10 @@ Datum::Datum(SENSOR_TYPE type, SENSOR_CATEGORY category, std::vector<double> val
   {
     type_string_ = "GYRO";
   }
+  else if (type == SENSOR_TYPE::AHRS)
+  {
+    type_string_ = "AHRS";
+  }
   else if (type == SENSOR_TYPE::ACCELEROMETER)
   {
     type_string_ = "ACCELEROMETER";

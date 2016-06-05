@@ -18,6 +18,7 @@ LIB_PREFIX      ?= lib
 
 FILES = \
   src/controller.cpp \
+  src/design.cpp \
   src/datum.cpp \
   src/localization_caller.cpp \
   src/boat_containers.cpp \
@@ -25,6 +26,7 @@ FILES = \
   src/threads/control.cpp \
   src/threads/io_thread.cpp \
   src/threads/compass_spoofer.cpp \
+  src/threads/ahrs.cpp \
   src/threads/sensing.cpp \
   src/threads/operator_watchdog.cpp \
   src/threads/localization.cpp \
@@ -35,7 +37,7 @@ FILES = \
   src/threads/JSON_read.cpp \
   src/threads/kb_print.cpp
 
-VPATH = .:src/platforms:src/threads:src
+VPATH = .:src/threads:src/platforms:src
 
 #----------------------------------------------------------------------------
 #       Include macros and targets

@@ -20,6 +20,7 @@ enum class SENSOR_TYPE
   GPS,
   COMPASS,
   GYRO,
+  AHRS, // combined compass and gyro in one datum
   ACCELEROMETER,
   GPS_VELOCITY,
   EC,
