@@ -27,6 +27,7 @@
 #include "threads/random_motor_signals.h"
 #include "threads/sensing.h"
 #include "threads/operator_watchdog.h"
+#include "threads/ahrs.h"
 // end thread includes
 
 // begin transport includes
@@ -40,6 +41,7 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include "myahrs_plus.hpp"
 // end other includes
 
 // END DO NOT DELETE THIS SECTION
@@ -373,23 +375,23 @@ int main (int argc, char ** argv)
 
   // TODO - turn this into a loop that keeps trying to connect at 1 Hz rather than trying once
   // open serial port to boat arduino
-  std::shared_ptr<asio::serial_port> port;
   asio::io_service io;
-  port = std::make_shared<asio::serial_port>(io);
-  std::string port_name = PORT_NAME;
+  std::shared_ptr<asio::serial_port> port = std::make_shared<asio::serial_port>(io);  
+  std::string port_name = EBOARD_PORT_NAME;
   asio::error_code ec; 
   bool port_ready = false;
   while (!port_ready)
   {
-    printf("attempting to open port...\n");
+    printf("attempting to open eboard port: %s\n", port_name.c_str());
     port->open(port_name, ec);
     if (!ec) 
     {
       if (port->is_open()) 
       {
-          printf("port is open\n");
-          port->set_option(asio::serial_port_base::baud_rate(BAUD_RATE));
+          printf("eboard port is open\n");
+          port->set_option(asio::serial_port_base::baud_rate(EBOARD_BAUD_RATE));
           port_ready = true;
+          break;
       }
       else 
       {
@@ -400,6 +402,22 @@ int main (int argc, char ** argv)
     {
       printf("WARNING: port->open() failed:  %s\n Do you have the eboard plugged in?\n", ec.message().c_str());
     }
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+  
+  // Connect the AHRS in a similar loop, then hand off the successfully connected sensor to the ahrs thread
+  std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
+  port_ready = false;
+  port_name = AHRS_PORT_NAME;
+  while (!port_ready)
+  {
+    printf("attempting to open ahrs port: %s\n", port_name.c_str());
+    if(AHRS->start(port_name, AHRS_BAUD_RATE)) {
+      printf("ahrs port is open\n");
+      port_ready = true;
+      break;
+    }
+    printf("WARNING: ahrs port failed to open. Do you have the ahrs plugged in?\n");
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
   
@@ -470,11 +488,12 @@ int main (int argc, char ** argv)
   threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers));
   threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
-  //threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
-  //threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
+  threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
+  threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (25.0, "localization", localization_thread);
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
+  
   //threader.run (1, "sensing", new threads::sensing ());
   //threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
   // end thread creation

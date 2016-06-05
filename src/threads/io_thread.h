@@ -20,8 +20,8 @@
 #include "../boat_containers.h"
 
 #define BUFFER_SIZE 256
-#define PORT_NAME "/dev/ttyACM0" // the bottom usb slot on the odroid?
-#define BAUD_RATE 115200
+#define EBOARD_PORT_NAME "/dev/tty_arduino" // the bottom usb 3 slot (the horizontal ones) on the odroid
+#define EBOARD_BAUD_RATE 115200
 #define END_OF_LINE_CHAR '\n'
 #define INITIAL_REJECT_COUNT 10 // number of lines to reject initially to avoid junk
 

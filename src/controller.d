@@ -449,5 +449,5 @@
  src/threads/io_thread.h src/threads/JSON_read.h src/threads/io_thread.h \
  src/threads/JSON_write.h src/threads/kb_print.h \
  src/threads/localization.h src/threads/random_motor_signals.h \
- src/threads/sensing.h src/threads/operator_watchdog.h \
- src/boat_containers.h
+ src/threads/sensing.h src/threads/operator_watchdog.h src/threads/ahrs.h \
+ src/boat_containers.h src/myahrs_plus.hpp

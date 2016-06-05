@@ -1,0 +1,3 @@
+# COPY TO /etc/udev/rules.d
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="003d", ATTRS{serial}=="85431303736351607262", SYMLINK+="tty_arduino"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ATTRS{serial}=="000001010000", SYMLINK+="tty_ahrs"
