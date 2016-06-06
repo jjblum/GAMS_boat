@@ -35,7 +35,10 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id)
     headingFraction = 0.0;
     
     gpsZone.set_name(prefix + "gps_zone", kb);
+
     northernHemisphere.set_name(prefix + "northern_hemisphere", kb);
+    
+    design_type.set_name(prefix + "design_type", kb);    
 
     // Integer status stuff
     gps_init.set_name(prefix + "gpsInitialized", kb);

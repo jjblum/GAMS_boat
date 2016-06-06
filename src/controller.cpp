@@ -42,6 +42,9 @@
 #include <chrono>
 #include <thread>
 #include "myahrs_plus.hpp"
+#include "design.h"
+#include "lutra_tank.h"
+#include "lutra_articulated_fan.h"
 // end other includes
 
 // END DO NOT DELETE THIS SECTION
@@ -477,23 +480,47 @@ int main (int argc, char ** argv)
   // add any logging
   madara::logger::global_logger->add_file ("madara_log.txt");
   gams::loggers::global_logger->add_file ("gams_log.txt");
-  madara_logger_ptr_log(gams::loggers::global_logger.get(), 0, "HEYYYYYYY\n");
-  gams::loggers::global_logger->log(0, "THERE\n");
-  printf("GAMS LOG LEVEL: %d\n", (int)gams::loggers::global_logger->get_level());
+  //madara_logger_ptr_log(gams::loggers::global_logger.get(), 0, "HEYYYYYYY\n");
+  //gams::loggers::global_logger->log(0, "THERE\n");
+  //printf("GAMS LOG LEVEL: %d\n", (int)gams::loggers::global_logger->get_level());
+  
+  // set up boat Design object
+  std::shared_ptr<designs::Design> design;
+  int design_type = (int)containers.design_type.to_integer();
+  switch (design_type)
+  {
+    case (int)DESIGN_TYPE::LUTRA_TANK:
+      printf("Using a LUTRA_TANK design\n");
+      design = std::dynamic_pointer_cast<designs::Design>(std::make_shared<designs::LutraTank>());
+      break;
+    case (int)DESIGN_TYPE::LUTRA_ARTICULATED_FAN:
+      printf("Using a LUTRA_ARTICULATED_FAN design\n");
+      design = std::dynamic_pointer_cast<designs::Design>(std::make_shared<designs::LutraArticulatedFan>());
+      break;
+    default:
+      printf("WARNING: unknown boat design type. Defaults to using a LUTRA_TANK design\n");
+      design = std::dynamic_pointer_cast<designs::Design>(std::make_shared<designs::LutraTank>());
+      break;
+  }
+  if (design == nullptr)
+  {
+    printf("Design object dynamic cast returned a null pointer\n");
+    return -1;
+  }
   
   threads::localization * localization_thread = new threads::localization(containers); // separated out b/c i want to try callbacks and the caller needs a reference to the callee's instance
 
   // begin thread creation
   //threader.run (1, "analytics", new threads::analytics ());
   //threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
-  threader.run (20.0, "control", new threads::control (containers));
+  threader.run (20.0, "control", new threads::control (containers, design));
   threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
   threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
   threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (25.0, "localization", localization_thread);
   threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
-  threader.run (5.0, "ahrs", new threads::AHRS (AHRS, localization_thread));
+  threader.run (10.0, "ahrs", new threads::AHRS (AHRS, localization_thread));
   //threader.run (1, "sensing", new threads::sensing ());
   //threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
   // end thread creation

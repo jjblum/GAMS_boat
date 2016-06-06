@@ -5,6 +5,7 @@
 #include <string>
 #include <stdio.h>
 #include <iostream>
+#include <memory>
 
 #include "madara/threads/BaseThread.h"
 #include "../boat_containers.h"
@@ -13,6 +14,8 @@
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/LU>
+
+using namespace designs;
 
 namespace threads
 {
@@ -25,7 +28,7 @@ namespace threads
     /**
      * Default constructor
      **/
-    control (Containers & containers_);
+    control (Containers & containers_, std::shared_ptr<Design> design_);
     
     /**
      * Destructor
@@ -42,10 +45,12 @@ namespace threads
       * Executes the main thread logic
       **/
     virtual void run (void);
+    std::vector<double> ideal_state();
 
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
+    std::shared_ptr<Design> design;
     Containers containers;
     std::vector<double> local_state;
   };

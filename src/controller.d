@@ -450,4 +450,5 @@
  src/threads/JSON_write.h src/threads/kb_print.h \
  src/threads/localization.h src/threads/random_motor_signals.h \
  src/threads/sensing.h src/threads/operator_watchdog.h src/threads/ahrs.h \
- src/threads/../myahrs_plus.hpp src/boat_containers.h src/myahrs_plus.hpp
+ src/threads/../myahrs_plus.hpp src/boat_containers.h src/myahrs_plus.hpp \
+ src/design.h src/lutra_tank.h src/lutra_articulated_fan.h

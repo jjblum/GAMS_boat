@@ -27,6 +27,7 @@ public:
     containers::Double sufficientProximity;
     containers::Integer gpsZone;
     containers::Integer northernHemisphere;
+    containers::Integer design_type;
     
     // Integer status stuff
     containers::Integer gps_init;
