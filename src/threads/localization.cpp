@@ -79,8 +79,10 @@ void threads::localization::new_sensor_update(Datum datum)
       containers.gps_init = 1;
       home_x = datum.value().at(0);
       home_y = datum.value().at(1);
+      containers.self.agent.home.set(0, home_x);
+      containers.self.agent.home.set(1, home_y);
       state(0, 0) = 0.0;
-      state(1, 0) = 0.0;
+      state(1, 0) = 0.0;      
     }
     if (containers.compass_init == 0 && (datum.type() == SENSOR_TYPE::COMPASS || datum.type() == SENSOR_TYPE::AHRS))
     {

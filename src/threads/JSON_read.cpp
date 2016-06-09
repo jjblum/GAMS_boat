@@ -78,28 +78,47 @@ threads::JSON_read::run (void)
                 std::string data = j.front().find("data").value();
                 utility::string_tools::remove_quotes(data);
                 std::vector<std::string> elems = utility::string_tools::split(data, ' ');
-                float battery_voltage = std::stof(elems.at(0), nullptr);
+                double battery_voltage = std::stod(elems.at(0), nullptr);
                 //printf("battery voltage = %.3f V\n", battery_voltage);
                 containers.battery_voltage = battery_voltage;
-
-                // TEST - try out callbacks with new sensors
-                /*
-                std::vector<double> gps = {40.4406, -79.9959};
-                Eigen::MatrixXd covariance(2, 2);
-                covariance = Eigen::MatrixXd::Identity(2, 2); 
-                Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps, covariance);
-                new_sensor_callback(datum);
-                */
-
-
               }
               // TODO - finish the other sensor parsing            
             }
             // ADAFRUIT GPS
-            if (primary_key.substr(0,1) == "g") 
+            if (primary_key.substr(0,1) == "g") // look for leading g
             {
               printf("received an Adafruit GPS reading\n");
               // TODO - finish the adafruit GPS parsing
+              double lat = -999.;
+              double lon = -999.;
+              std::string lati = j.front().find("lati").value();
+              std::string longi = j.front().find("longi").value();
+              utility::string_tools::remove_quotes(lati);
+              utility::string_tools::remove_quotes(longi);
+              lat = std::stod(lati, nullptr);
+              lon = std::stod(longi, nullptr);
+              if (lat == -999. || lon == -999.)
+              {
+                printf("WARNING: Adafruit GPS did not return a correct latitude and longitude\n");
+              }
+              else
+              {                                         
+                GeographicLib::GeoCoords coord(lat, lon);
+                std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
+                containers.gpsZone = coord.Zone();
+                if (coord.Northp())
+                {
+                  containers.northernHemisphere = 1;
+                }
+                else
+                {
+                  containers.northernHemisphere = 0;
+                }              
+                Eigen::MatrixXd covariance(2, 2);
+                covariance = Eigen::MatrixXd::Identity(2, 2);
+                Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps_utm, covariance);
+                new_sensor_callback(datum);              
+              }
             }            
           }
           catch (std::exception e) 

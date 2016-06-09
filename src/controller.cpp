@@ -431,6 +431,7 @@ int main (int argc, char ** argv)
   madara::threads::Threader threader (knowledge);
 
   // initialize variables and function stubs
+  //controller.init_vars (settings.id, num_agents);
   controller.init_vars (settings.id, num_agents);
   
   std::vector <std::string> aliases;

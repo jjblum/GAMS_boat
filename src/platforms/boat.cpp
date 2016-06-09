@@ -108,7 +108,7 @@ platforms::boat::get_location () const
 gams::utility::Rotation
 platforms::boat::get_rotation () const
 {
-  gams::utility::Rotation result;
+  gams::utility::Rotation result(0., 0., containers.eastingNorthingHeading[2]);
   
   return result;
 }

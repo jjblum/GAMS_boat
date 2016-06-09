@@ -6,11 +6,13 @@
 #include <stdio.h>
 #include <iostream>
 #include <memory>
+#include <cmath>
 
 #include "madara/threads/BaseThread.h"
 #include "../boat_containers.h"
 #include "../design.h"
 #include "localization.h"
+#include "../pid.h"
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/LU>
@@ -44,15 +46,15 @@ namespace threads
     /**
       * Executes the main thread logic
       **/
-    virtual void run (void);
-    std::vector<double> ideal_state();
+    virtual void run (void);    
 
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
     std::shared_ptr<Design> design;
     Containers containers;
-    std::vector<double> local_state;
+    std::chrono::time_point<std::chrono::high_resolution_clock> t; // current time
+    PID heading_PID;
   };
 } // end namespace threads
 

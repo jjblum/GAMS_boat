@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <eigen3/Eigen/Core>
+#include <GeographicLib/GeoCoords.hpp>
 
 #include "io_thread.h"
 #include "localization.h"

@@ -8,13 +8,14 @@
 #include "madara/knowledge/containers/Double.h"
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/knowledge/containers/String.h"
+#include "gams/variables/Self.h"
 
 namespace containers = madara::knowledge::containers;
 
 class Containers {
 public:
     Containers();
-    Containers(madara::knowledge::KnowledgeBase &kb_, int id);
+    Containers(madara::knowledge::KnowledgeBase &kb_, int id_);
     ~Containers();
     
     // Localization and control stuff
@@ -28,6 +29,9 @@ public:
     containers::Integer gpsZone;
     containers::Integer northernHemisphere;
     containers::Integer design_type;
+    containers::Double LOS_lookahead;
+    containers::Double LOS_surge_effort_fraction; // desired maximum surge effort = [0., 1.]
+    containers::NativeDoubleVector LOS_surge_PID;
     
     // Integer status stuff
     containers::Integer gps_init;
@@ -39,7 +43,9 @@ public:
     containers::Integer teleop_status;
     
     // misc. stuff
+    containers::Integer id;
     containers::Double battery_voltage;
+    gams::variables::Self self;
 private:
     madara::knowledge::KnowledgeBase kb;
 };

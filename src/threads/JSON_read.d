@@ -273,6 +273,11 @@
  /home/odroid/madara/include/madara/knowledge/containers/NativeDoubleVector.h \
  /home/odroid/madara/include/madara/knowledge/containers/Double.h \
  /home/odroid/madara/include/madara/knowledge/containers/String.h \
+ /home/odroid/gams/src/gams/variables/Self.h \
+ /home/odroid/gams/src/gams/variables/Agent.h \
+ /home/odroid/madara/include/madara/knowledge/containers/Vector.h \
+ /home/odroid/madara/include/madara/knowledge/containers/Map.h \
+ /home/odroid/gams/src/gams/variables/AccentStatus.h \
  src/threads/localization.h src/threads/../datum.h \
  src/threads/../utility.h src/threads/../threads/localization.h \
  src/threads/../datum.h src/threads/../localization_caller.h

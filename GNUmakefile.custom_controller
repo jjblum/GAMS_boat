@@ -17,6 +17,7 @@ BIN_UNCHECKED    = custom_controller
 LIB_PREFIX      ?= lib
 
 FILES = \
+  src/pid.cpp \
   src/controller.cpp \
   src/design.cpp \
   src/datum.cpp \

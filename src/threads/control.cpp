@@ -6,9 +6,10 @@ namespace knowledge = madara::knowledge;
 
 // constructor
 threads::control::control (Containers & containers_, std::shared_ptr<Design> design_)
-: containers(containers_), design(design_)
-{
-  local_state.resize(STATE_DIMENSION);
+: containers(containers_), design(design_), heading_PID(containers_.LOS_surge_PID)
+{  
+  t = utility::time_tools::now();
+  heading_PID.set_t(t);
 }
 
 // destructor
@@ -50,16 +51,45 @@ threads::control::run (void)
     " executing\n");        
     
     if (containers.teleop_status == 0)
-    {    
-      // pull the current state from the knowledgebase
-      local_state = containers.local_state.to_record().to_doubles();
-    
+    {        
       // goal state - determined by containers for agent.id.source, agent.id.destination, and agent.id.desired_velocity
-      // assume we are using LOS along a straight line all the time. PID used for heading, thrust effort set to a constant based on desired velocity
+      double x_dest, x_source, x_current, y_dest, y_source, y_current, th_full, th_current; 
+      double dx_current, dx_full, dy_current, dy_full, L_current, L_full, dth;
+      double projected_length, distance_from_ideal_line;
+      double lookahead_distance, dx_lookahead, dy_lookahead;
+      double heading_desired, heading_current, heading_error, heading_signal;
+      x_dest = containers.self.agent.dest[0] - containers.self.agent.home[0];
+      y_dest = containers.self.agent.dest[1] - containers.self.agent.home[1];
+      x_source = containers.self.agent.source[0] - containers.self.agent.home[0];
+      y_source = containers.self.agent.source[1] - containers.self.agent.home[1];
+      x_current = containers.local_state[0];
+      y_current = containers.local_state[1];
+      heading_current = containers.local_state[2];
+      dx_full = x_dest - x_source;
+      dx_current = x_current - x_source;
+      dy_full = y_dest - y_source;
+      dy_current = y_current - y_source;
+      L_full = sqrt(pow(dx_full, 2.) + pow(dy_full, 2.));
+      L_current = sqrt(pow(dx_current, 2.) + pow(dy_current, 2.));
+      th_full = atan2(dy_full, dx_full);
+      th_current = atan2(dy_current, dx_current);
+      dth = std::abs(th_full - th_current);
+      projected_length = L_current*cos(dth);
+      distance_from_ideal_line = L_current*sin(dth);
+      lookahead_distance = containers.LOS_lookahead.to_double(); // TODO - use a dynamic lookahead      
+      std::vector<double> projected_state = {x_source + L_current*cos(th_full), y_source + L_current*sin(th_full)};
+      std::vector<double> lookahead_state = {projected_state.at(0) + lookahead_distance*cos(th_full), projected_state.at(1) + lookahead_distance*sin(th_full)};
+      // IMPORTANT NOTE: the ideal state (the lookahead) is allowed to go past the actual destination because it is just a tool to get the boat on top of the goal
+      dx_lookahead = lookahead_state.at(0) - x_current;
+      dy_lookahead = lookahead_state.at(1) - y_current;
+      heading_desired = atan2(dy_lookahead, dx_lookahead);
+      heading_error = utility::angle_tools::minimum_difference(heading_current - heading_desired); // fed into a 1 DOF PID for heading     
+      t = utility::time_tools::now();
+      heading_signal = heading_PID.signal(heading_error, t);
       
-      
-      // use the LOS_Line stuff from my python sim
-      // Need a Design class and then child classes, again like my python sim
-      // control thread has a design. It feeds the desired thrust and heading effort fractions to the design and the design provides the motor signals      
+      // TODO - send heading signal and thrust signal to Design
+      // TODO - write the design such that the thrust signal is lowered to accomodate the more important heading signal
+      // TODO - have the design set the motor signals
+      // TODO - have the JSON_write thread send the motor signals in JSON
     }
 }
