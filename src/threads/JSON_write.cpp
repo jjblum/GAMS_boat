@@ -57,9 +57,23 @@ threads::JSON_write::run (void)
       return;
   }
   //printf("motor signal 0 = %.3f   motor signal 1 = %.3f\n", motor_signals.at(0), motor_signals.at(1));
-  motor_json["m0"] = { {"v", motor_signals.at(0)} };
-  motor_json["m1"] = { {"v", motor_signals.at(1)} };
-  //std::cout << std::setw(4) << motor_json << std::endl;
+  
+  switch (containers.design_type.to_record().to_integer())
+  {
+    case (int)DESIGN_TYPE::LUTRA_TANK:
+      motor_json["m0"] = { {"v", motor_signals.at(0)} };
+      motor_json["m1"] = { {"v", motor_signals.at(1)} };
+      //std::cout << std::setw(4) << motor_json << std::endl;
+      break;
+    case (int)DESIGN_TYPE::LUTRA_ARTICULATED_FAN:
+      // TODO - finish the JSON motor signals for the various designs
+      break;
+    default:
+      motor_json["m0"] = { {"v", motor_signals.at(0)} };
+      motor_json["m1"] = { {"v", motor_signals.at(1)} };
+  }
+  
+  
   raw_data.clear();
   raw_data = motor_json.dump(); // do NOT need an explicit newline character at the end
   //printf("%s\n", raw_data.c_str());

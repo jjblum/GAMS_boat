@@ -3,6 +3,7 @@
 #define   _THREAD_JSON_WRITE_H_
 
 #include "io_thread.h"
+#include "../design.h"
 
 namespace threads
 {

@@ -86,10 +86,9 @@ threads::control::run (void)
       heading_error = utility::angle_tools::minimum_difference(heading_current - heading_desired); // fed into a 1 DOF PID for heading     
       t = utility::time_tools::now();
       heading_signal = heading_PID.signal(heading_error, t);
-      
-      // TODO - send heading signal and thrust signal to Design
-      // TODO - write the design such that the thrust signal is lowered to accomodate the more important heading signal
-      // TODO - have the design set the motor signals
-      // TODO - have the JSON_write thread send the motor signals in JSON
+      std::vector<double> motor_signals = design->motor_signals_from_effort_fractions(containers.LOS_surge_effort_fraction.to_double(), heading_signal);
+      containers.motor_signals.set(0, motor_signals.at(0));
+      containers.motor_signals.set(1, motor_signals.at(1));      
+      // TODO - have the JSON_write thread send the motor signals in JSON - doesn't this depend on the design too?
     }
 }

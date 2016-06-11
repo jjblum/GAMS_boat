@@ -445,7 +445,8 @@
  src/threads/../datum.h src/threads/../boat_containers.h \
  src/threads/../utility.h src/threads/../threads/localization.h \
  src/threads/../datum.h src/threads/../localization_caller.h \
- src/threads/control.h src/threads/../design.h src/threads/gps_spoofer.h \
+ src/threads/control.h src/threads/../design.h src/threads/../pid.h \
+ src/threads/../utility.h src/threads/gps_spoofer.h \
  src/threads/io_thread.h src/threads/JSON_read.h src/threads/io_thread.h \
  src/threads/JSON_write.h src/threads/kb_print.h \
  src/threads/localization.h src/threads/random_motor_signals.h \

@@ -1,6 +1,7 @@
 #ifndef _LUTRA_TANK_DESIGN_H_
 #define _LUTRA_TANK_DESIGN_H_
 
+#include <cmath>
 #include "design.h"
 
 namespace designs
