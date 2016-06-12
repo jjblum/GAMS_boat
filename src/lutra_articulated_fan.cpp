@@ -14,3 +14,9 @@ std::vector<double> designs::LutraArticulatedFan::motor_signals_from_effort_frac
   std::vector<double> result = {0., 0.};
   return result;
 }
+
+std::vector<double> designs::LutraArticulatedFan::thrust_and_moment_from_motor_signals(double m0, double m1)
+{
+  std::vector<double> result = {0., 0., 0.};
+  return result;
+}

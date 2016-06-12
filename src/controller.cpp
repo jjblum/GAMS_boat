@@ -28,6 +28,7 @@
 #include "threads/sensing.h"
 #include "threads/operator_watchdog.h"
 #include "threads/ahrs.h"
+#include "threads/ode_simulation_spoofer.h"
 // end thread includes
 
 // begin transport includes
@@ -524,6 +525,7 @@ int main (int argc, char ** argv)
   threader.run (10.0, "ahrs", new threads::AHRS (AHRS, localization_thread));
   //threader.run (1, "sensing", new threads::sensing ());
   //threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
+  threader.run(100.0, "ODE_sim_spoofer", new threads::ODE_sim_spoofer (containers, design, localization_thread));
   // end thread creation
   
   // run a mape loop for algorithm and platform control

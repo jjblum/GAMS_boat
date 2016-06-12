@@ -10,8 +10,9 @@ namespace designs
   public:
     LutraArticulatedFan();
     ~LutraArticulatedFan();  
+    std::vector<double> motor_signals_from_effort_fractions(double thrust_fraction, double heading_fraction);    
+    std::vector<double> thrust_and_moment_from_motor_signals(double m0, double m1);
   private:
-    std::vector<double> motor_signals_from_effort_fractions(double thrust_fraction, double heading_fraction);
   };
 }
 

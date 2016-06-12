@@ -5,7 +5,7 @@
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::control::control (Containers & containers_, std::shared_ptr<Design> design_)
+threads::control::control (Containers & containers_, std::shared_ptr<designs::Design> design_)
 : containers(containers_), design(design_), heading_PID(containers_.LOS_surge_PID)
 {  
   t = utility::time_tools::now();
@@ -76,7 +76,7 @@ threads::control::run (void)
       dth = std::abs(th_full - th_current);
       projected_length = L_current*cos(dth);
       distance_from_ideal_line = L_current*sin(dth);
-      lookahead_distance = containers.LOS_lookahead.to_double(); // TODO - use a dynamic lookahead      
+      lookahead_distance = containers.LOS_lookahead.to_double(); // TODO - use a dynamic lookahead?     
       std::vector<double> projected_state = {x_source + L_current*cos(th_full), y_source + L_current*sin(th_full)};
       std::vector<double> lookahead_state = {projected_state.at(0) + lookahead_distance*cos(th_full), projected_state.at(1) + lookahead_distance*sin(th_full)};
       // IMPORTANT NOTE: the ideal state (the lookahead) is allowed to go past the actual destination because it is just a tool to get the boat on top of the goal
@@ -89,6 +89,8 @@ threads::control::run (void)
       std::vector<double> motor_signals = design->motor_signals_from_effort_fractions(containers.LOS_surge_effort_fraction.to_double(), heading_signal);
       containers.motor_signals.set(0, motor_signals.at(0));
       containers.motor_signals.set(1, motor_signals.at(1));      
-      // TODO - have the JSON_write thread send the motor signals in JSON - doesn't this depend on the design too?
+      
+      // TODO - set up velocity profile along the path that lets the desired thrust be modulated for slow start up and drift down. Independent of time, only depends on location along line.
+      
     }
 }

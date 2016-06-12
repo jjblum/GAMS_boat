@@ -51,7 +51,7 @@ namespace threads
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::KnowledgeBase data_;
-    std::shared_ptr<Design> design;
+    std::shared_ptr<designs::Design> design;
     Containers containers;
     std::chrono::time_point<std::chrono::high_resolution_clock> t; // current time
     PID heading_PID;
