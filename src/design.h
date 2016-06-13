@@ -2,6 +2,7 @@
 #define _DESIGN_H_
 
 #include <vector>
+#include <stdio.h>
 
 enum class DESIGN_TYPE
 {

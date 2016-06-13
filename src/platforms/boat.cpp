@@ -56,7 +56,7 @@ int platforms::boat::sense (void)
 
   // self_->agent.[agent variables] // could try using the Self container in boat_containers!
 
-  printf("platform.sense()\n");
+  //printf("platform.sense()\n");
   return gams::platforms::PLATFORM_OK;
 }
 
@@ -65,7 +65,7 @@ int platforms::boat::sense (void)
 int
 platforms::boat::analyze (void)
 {
-  printf("platform.analyze()\n");
+  //printf("platform.analyze()\n");
   return gams::platforms::PLATFORM_OK;
 }
 

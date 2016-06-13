@@ -26,6 +26,7 @@ public:
     containers::Double thrustFraction;
     containers::Double headingFraction;
     containers::Double sufficientProximity;
+    containers::Double dist_to_dest;
     containers::Integer gpsZone;
     containers::Integer northernHemisphere;
     containers::Integer design_type;

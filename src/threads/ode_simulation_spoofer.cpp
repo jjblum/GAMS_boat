@@ -10,6 +10,47 @@ threads::ODE_sim_spoofer::ODE_sim_spoofer (Containers containers_, std::shared_p
 {
   t = utility::time_tools::now();
   t_double = 0.;
+  
+  _ODE_MASS = design->mass();
+  _ODE_MOMENT_OF_INERTIA = design->moment_of_inertia();
+  _ODE_DRAG_AREA_SURGE = design->drag_areas().at(0);
+  _ODE_DRAG_AREA_SWAY = design->drag_areas().at(1);
+  _ODE_DRAG_AREA_TURN = design->drag_areas().at(2);
+  _ODE_DRAG_COEFF_SURGE = design->drag_coeffs().at(0);
+  _ODE_DRAG_COEFF_SWAY = design->drag_coeffs().at(1);
+  _ODE_DRAG_COEFF_TURN = design->drag_coeffs().at(2);  
+  
+  // initial GPS and compass
+  std::vector<double> ahrs = {0.0, 0.0};
+  Eigen::MatrixXd covariance_ahrs(2, 2); 
+  covariance_ahrs = Eigen::MatrixXd::Identity(2, 2);
+  covariance_ahrs(0, 0) = 10.0*M_PI/180.0;
+  covariance_ahrs(1, 1) = 0.1;
+  Datum datum_ahrs(SENSOR_TYPE::AHRS, SENSOR_CATEGORY::LOCALIZATION, ahrs, covariance_ahrs);
+  new_sensor_callback(datum_ahrs);
+  
+  double lat = 40.4406;
+  double lon = -79.9959;
+  GeographicLib::GeoCoords coord(lat, lon);
+  std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
+  containers.gpsZone = coord.Zone();
+  if (coord.Northp())
+  {
+    containers.northernHemisphere = 1;
+  }
+  else
+  {
+    containers.northernHemisphere = 0;
+  }
+  Eigen::MatrixXd covariance_gps(2, 2);
+  covariance_gps = Eigen::MatrixXd::Identity(2, 2); 
+  Datum datum_gps(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps_utm, covariance_gps);
+  new_sensor_callback(datum_gps);  
+  
+  t_to_gps = 0.;
+  t_to_ahrs = 0.;
+  
+  state = containers.local_state.to_record().to_doubles();  // current state (used as initial state for ODE)
 }
 
 // destructor
@@ -55,8 +96,50 @@ threads::ODE_sim_spoofer::run (void)
   motor_signals = containers.motor_signals.to_record().to_doubles();
   thrust_and_moment = design->thrust_and_moment_from_motor_signals(motor_signals.at(0), motor_signals.at(1));
 
-  // apply odeint from t_double to t_double + dt
-  printf("ode integration from t = %f  to t = %f\n", t_double, t_double + dt);
+  // apply odeint from t_double to t_double + dt  
+  _ODE_THRUST_SURGE = thrust_and_moment.at(0);
+  _ODE_THRUST_SWAY = thrust_and_moment.at(1);
+  _ODE_MOMENT = thrust_and_moment.at(2);
+
+  //printf("ode integration from t = %f  to t = %f\n", t_double, t_double + dt);
+  //printf("    m0 = %f   m1 = %f\n", motor_signals.at(0), motor_signals.at(1));
+  //printf("    thrust = %f N   moment = %f Nm\n", thrust_and_moment.at(0), thrust_and_moment.at(2));
+  //std::cout << "    state before = " << state << std::endl;
+  rk.do_step(boat_ode, state, t_double, dt);
+  //std::cout << "    state after = " << state << std::endl;  
+  
+  if (t_to_gps > 1./5.)
+  {
+    
+    std::vector<double> gps_utm = {state.at(0) + containers.self.agent.home[0], state.at(1) + containers.self.agent.home[1]};
+    Eigen::MatrixXd covariance_gps(2, 2);
+    covariance_gps = Eigen::MatrixXd::Identity(2, 2); 
+    Datum datum_gps(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps_utm, covariance_gps);
+    new_sensor_callback(datum_gps);
+    
+    t_to_gps = 0.;
+  }
+  else
+  {
+    t_to_gps += dt;
+  }
+  
+  if (t_to_ahrs > 1./20.)
+  {
+    std::vector<double> ahrs = {state.at(2), state.at(5)};
+    Eigen::MatrixXd covariance_ahrs(2, 2); 
+    covariance_ahrs = Eigen::MatrixXd::Identity(2, 2);
+    covariance_ahrs(0, 0) = 10.0*M_PI/180.0;
+    covariance_ahrs(1, 1) = 0.1;
+    Datum datum_ahrs(SENSOR_TYPE::AHRS, SENSOR_CATEGORY::LOCALIZATION, ahrs, covariance_ahrs);
+    new_sensor_callback(datum_ahrs);
+  
+    t_to_ahrs = 0.;
+  }
+  else
+  {
+    t_to_ahrs += dt;
+  }
   
   t = tnew;
   t_double += dt;
@@ -64,7 +147,7 @@ threads::ODE_sim_spoofer::run (void)
                     
 }
 
-void threads::ODE_sim_spoofer::boat_ode (const state_array_type &x, state_array_type &dxdt, double t)
+void boat_ode (const std::vector<double> &x, std::vector<double> &dxdt, double t_)
 {
   // state: x y th xdot ydot thdot -- note that you don't have u explicitly! must get from xdot and ydot!
   //        0 1  2    3    4     5
@@ -73,14 +156,14 @@ void threads::ODE_sim_spoofer::boat_ode (const state_array_type &x, state_array_
   double th = x[2];
   double u = x[3]*cos(th) + x[4]*sin(th);
   double w = -x[3]*sin(th) + x[4]*cos(th);  
-  double udot = 1.0/design->mass()*(thrust_and_moment.at(0) - 0.5*WATER_KG_PER_SQ_M*design->drag_areas().at(0)*design->drag_coeffs().at(0)*std::abs(u)*u);
-  double wdot = 1.0/design->mass()*(thrust_and_moment.at(1) - 0.5*WATER_KG_PER_SQ_M*design->drag_areas().at(1)*design->drag_coeffs().at(1)*std::abs(w)*w);
+  double udot = 1.0/_ODE_MASS*(_ODE_THRUST_SURGE - 0.5*WATER_KG_PER_SQ_M*_ODE_DRAG_AREA_SURGE*_ODE_DRAG_COEFF_SURGE*std::abs(u)*u);
+  double wdot = 1.0/_ODE_MASS*(_ODE_THRUST_SWAY - 0.5*WATER_KG_PER_SQ_M*_ODE_DRAG_AREA_SWAY*_ODE_DRAG_COEFF_SURGE*std::abs(w)*w);
   dxdt[0] = x[3];
   dxdt[1] = x[4];
   dxdt[2] = x[5];
   dxdt[3] = udot*cos(th) - wdot*sin(th);
   dxdt[4] = udot*sin(th) + wdot*cos(th);
-  dxdt[5] = 1.0/design->moment_of_inertia()*(thrust_and_moment.at(2) - 0.5*WATER_KG_PER_SQ_M*design->drag_areas().at(2)*design->drag_coeffs().at(2)*std::abs(x[5])*x[5]);
+  dxdt[5] = 1.0/_ODE_MOMENT_OF_INERTIA*(_ODE_MOMENT - 0.5*WATER_KG_PER_SQ_M*_ODE_DRAG_AREA_TURN*_ODE_DRAG_COEFF_TURN*std::abs(x[5])*x[5]); 
 }
 
 /*

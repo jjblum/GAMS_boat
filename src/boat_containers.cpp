@@ -37,6 +37,9 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     sufficientProximity.set_name(prefix + "sufficientProximity", kb);
     sufficientProximity = 3.0;
     
+    dist_to_dest.set_name(prefix + "distToDest", kb);
+    dist_to_dest = 0.0;
+    
     gpsZone.set_name(prefix + "gps_zone", kb);
 
     northernHemisphere.set_name(prefix + "northern_hemisphere", kb);
@@ -51,6 +54,7 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     
     LOS_surge_PID.set_name(prefix + "LOS_surge_PID", kb);
     std::vector<double> LOS_surge_PID_start = {1.0, 0.1, 5.0};
+    LOS_surge_PID.set(LOS_surge_PID_start);
 
     // Integer status stuff
     gps_init.set_name(prefix + "gpsInitialized", kb);

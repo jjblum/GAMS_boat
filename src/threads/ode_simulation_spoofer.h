@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <iostream>
 #include <eigen3/Eigen/Core>
 #include <GeographicLib/GeoCoords.hpp>
 #include <boost/numeric/odeint.hpp>
@@ -17,8 +18,22 @@
 #include "../localization_caller.h"
 #include "../design.h"
 
-typedef boost::array< double , STATE_DIMENSION > state_array_type; // for use with odeint
+//typedef boost::array< double , STATE_DIMENSION > state_array_type; // for use with odeint
 #define WATER_KG_PER_SQ_M 1000.0
+
+static double _ODE_MASS;
+static double _ODE_MOMENT_OF_INERTIA;
+static double _ODE_THRUST_SURGE;
+static double _ODE_THRUST_SWAY;
+static double _ODE_MOMENT;
+static double _ODE_DRAG_AREA_SURGE;
+static double _ODE_DRAG_AREA_SWAY;
+static double _ODE_DRAG_AREA_TURN;
+static double _ODE_DRAG_COEFF_SURGE;
+static double _ODE_DRAG_COEFF_SWAY;
+static double _ODE_DRAG_COEFF_TURN;
+
+void boat_ode (const std::vector<double> &x, std::vector<double> &dxdt, double t_); 
 
 namespace threads
 {
@@ -49,7 +64,7 @@ namespace threads
       **/
     virtual void run (void);
     
-    void boat_ode(const state_array_type &x, state_array_type &dxdt, double t);
+    //static void boat_ode(const std::vector<double> &x, std::vector<double> &dxdt, double t);
 
   private:
     /// data plane if we want to access the knowledge base
@@ -58,8 +73,12 @@ namespace threads
     std::shared_ptr<designs::Design> design;
     std::chrono::time_point<std::chrono::high_resolution_clock> t;
     double t_double;
+    double t_to_gps;
+    double t_to_ahrs;
+    std::vector<double> state;
     std::vector<double> motor_signals;
     std::vector<double> thrust_and_moment;
+    boost::numeric::odeint::runge_kutta4< std::vector<double> > rk;
   };
 } // end namespace threads
 
