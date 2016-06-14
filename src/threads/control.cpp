@@ -84,7 +84,7 @@ threads::control::run (void)
         th_full = atan2(dy_full, dx_full);
         th_current = atan2(dy_current, dx_current);
         
-        printf("th_full = %f   th_current = %f\n", th_full, th_current);
+        printf("th_full = %f   heading_current = %f\n", th_full, heading_current);
         
         dth = std::abs(utility::angle_tools::minimum_difference(th_full - th_current));
         projected_length = L_current*cos(dth);
@@ -100,22 +100,26 @@ threads::control::run (void)
         dx_lookahead = lookahead_state.at(0) - x_current;
         dy_lookahead = lookahead_state.at(1) - y_current;
         heading_desired = atan2(dy_lookahead, dx_lookahead);
-        heading_error = utility::angle_tools::minimum_difference(heading_current - heading_desired); // fed into a 1 DOF PID for heading     
-        
-        printf("heading error = %f\n", heading_error);
+        heading_error = utility::angle_tools::minimum_difference(heading_current - heading_desired); // fed into a 1 DOF PID for heading                     
         
         t = utility::time_tools::now();
-        heading_signal = heading_PID.signal(heading_error, t);
+        heading_signal = heading_PID.signal(heading_error, t);                
         if (std::abs(heading_signal) > 1.0)
         {
+          std::cout << "clipping heading signal from " << heading_signal << " to ";
           heading_signal = copysign(1.0, heading_signal);
-        }                
+          std::cout << heading_signal << std::endl;
+        }
+        printf("heading error = %f   heading signal = %f\n", heading_error, heading_signal);
         
         // potentially reduce thrust signal due to too much heading error
         double base_surge_effort_fraction = containers.LOS_surge_effort_fraction.to_double();
         double surge_effort_fraction_coefficient = 1.0; // [0, 1], reduces thrust
         double angle_from_projected_to_boat = atan2(projected_state.at(1) - y_current, projected_state.at(0) - x_current);
         double cross_product = cos(th_full)*sin(angle_from_projected_to_boat) - cos(angle_from_projected_to_boat)*sin(th_full);
+        
+        printf("CONTROL: signed distance to line = %f\n", copysign(distance_from_ideal_line, cross_product));
+        
         // if cross_product is positive, do not thrust if you have positive (th_full - heading_current)
         // if negative, do not thrust if you have negative (th_full - heading_current)
         if (distance_from_ideal_line > containers.sufficientProximity.to_double())
@@ -136,6 +140,7 @@ threads::control::run (void)
       }
       else
       {
+        printf("At x = %f   y = %f, within %f meters of x = %f   y = %f\n", x_current, y_current, containers.sufficientProximity.to_double(), x_dest, y_dest);
         containers.motor_signals.set(0, 0.0);
         containers.motor_signals.set(1, 0.0);
         heading_PID.reset();        

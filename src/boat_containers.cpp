@@ -50,10 +50,10 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     LOS_lookahead = 3.0;
     
     LOS_surge_effort_fraction.set_name(prefix + "LOS_surge_effort_fraction", kb);
-    LOS_surge_effort_fraction = 0.5;
+    LOS_surge_effort_fraction = 1.0;
     
     LOS_surge_PID.set_name(prefix + "LOS_surge_PID", kb);
-    std::vector<double> LOS_surge_PID_start = {1.0, 0.1, 5.0};
+    std::vector<double> LOS_surge_PID_start = {0.7, 0.1, 0.25};
     LOS_surge_PID.set(LOS_surge_PID_start);
 
     // Integer status stuff
