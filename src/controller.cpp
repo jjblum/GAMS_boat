@@ -408,7 +408,8 @@ int main (int argc, char ** argv)
     }
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
-  
+  */
+  /*
   // Connect the AHRS in a similar loop, then hand off the successfully connected sensor to the ahrs thread
   std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
   port_ready = false;
@@ -520,7 +521,7 @@ int main (int argc, char ** argv)
   //threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
   //threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
   //threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
-  threader.run (1.0, "kb_print", new threads::kb_print ());
+  //threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (25.0, "localization", localization_thread);
   //threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
   //threader.run (10.0, "ahrs", new threads::AHRS (AHRS, localization_thread));

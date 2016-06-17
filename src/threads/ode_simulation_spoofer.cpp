@@ -101,16 +101,16 @@ threads::ODE_sim_spoofer::run (void)
   _ODE_THRUST_SWAY = thrust_and_moment.at(1);
   _ODE_MOMENT = thrust_and_moment.at(2);
 
-  printf("ODE: integration from t = %f  to t = %f\n", t_double, t_double + dt);
-  printf("    m0 = %f   m1 = %f\n", motor_signals.at(0), motor_signals.at(1));
-  printf("    thrust = %f N   moment = %f Nm\n", thrust_and_moment.at(0), thrust_and_moment.at(2));
-  std::cout << "    state before = " << state << std::endl;
+  //printf("ODE: integration from t = %f  to t = %f\n", t_double, t_double + dt);
+  //printf("    m0 = %f   m1 = %f\n", motor_signals.at(0), motor_signals.at(1));
+  //printf("    thrust = %f N   moment = %f Nm\n", thrust_and_moment.at(0), thrust_and_moment.at(2));
+  //std::cout << "    state before = " << state << std::endl;
   rk.do_step(boat_ode, state, t_double, dt);
-  std::cout << "    state after = " << state << std::endl;  
+  //std::cout << "    state after = " << state << std::endl;  
   
   if (t_to_gps > 1./5.)
   {
-    printf("ODE: new gps\n");
+    //printf("ODE: new gps\n");
     std::vector<double> gps_utm = {state.at(0) + containers.self.agent.home[0], state.at(1) + containers.self.agent.home[1]};
     Eigen::MatrixXd covariance_gps(2, 2);
     covariance_gps = Eigen::MatrixXd::Identity(2, 2); 
@@ -126,7 +126,7 @@ threads::ODE_sim_spoofer::run (void)
   
   if (t_to_ahrs > 1./20.)
   {
-    printf("ODE: new ahrs\n");
+    //printf("ODE: new ahrs\n");
     std::vector<double> ahrs = {state.at(2), state.at(5)};
     Eigen::MatrixXd covariance_ahrs(2, 2); 
     covariance_ahrs = Eigen::MatrixXd::Identity(2, 2);

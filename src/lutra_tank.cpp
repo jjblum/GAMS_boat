@@ -42,7 +42,7 @@ std::vector<double> designs::LutraTank::motor_signals_from_effort_fractions(doub
   m1 = corrected_thrust_fraction - heading_fraction;
   
   //printf("Design: motor signals AFTER saturation correction:  m0 = %f   m1 = %f\n", m0, m1);
-  printf("Design: equivalent effort fractions: thrust = %f   heading = %f\n", corrected_thrust_fraction, heading_fraction);
+  //printf("Design: equivalent effort fractions: thrust = %f   heading = %f\n", corrected_thrust_fraction, heading_fraction);
   
   result.at(0) = m0;
   result.at(1) = m1;
