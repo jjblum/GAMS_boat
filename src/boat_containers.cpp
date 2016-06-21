@@ -7,9 +7,9 @@ Containers::Containers()
 Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_) 
 : kb(kb_)
 { 
-    char prefix_[30];
-    snprintf(prefix_, 30, "agent.%d.", id_);
-    std::string prefix(prefix_);
+    std::stringstream prefix_;
+    prefix_ << "agent." << id_ << ".";
+    std::string prefix(prefix_.str());
 
     // Localization and control stuff
     motor_signals.set_name(prefix + "motorCommands", kb);
@@ -90,7 +90,12 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     self.agent.dest.set(dest_start);
     self.agent.home.set(dest_start);
     self.agent.source.set(dest_start);
-    
+
+    prefix_.str(std::string()); // clear the string stream, step 1
+    prefix_.clear(); // step 2
+    prefix_ << "agent." << id_;
+    platform_status.init_vars(kb, prefix_.str());
+    platform_status.movement_available = 1;
 }
 
 Containers::~Containers() {  }

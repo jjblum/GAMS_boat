@@ -67,7 +67,7 @@ threads::control::run (void)
       heading_current = containers.local_state[2];
       
       //printf("x_current = %f, y_current = %f, x_dest = %f, y_dest = %f\n", x_current, y_current, x_dest, y_dest);
-      printf("%f     %f\n", x_current, y_current);
+      //printf("%f     %f\n", x_current, y_current);
       
       containers.dist_to_dest = sqrt(pow(x_dest - x_current, 2.) + pow(y_dest - y_current, 2.));
       if (containers.dist_to_dest.to_double() > containers.sufficientProximity.to_double())

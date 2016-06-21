@@ -75,7 +75,7 @@ void threads::localization::new_sensor_update(Datum datum)
   {
     if (containers.gps_init == 0 && datum.type() == SENSOR_TYPE::GPS)
     {
-      printf("Received first GPS: %f, %f\n", datum.value().at(0), datum.value().at(1)); 
+      //printf("Received first GPS: %f, %f\n", datum.value().at(0), datum.value().at(1)); 
       containers.gps_init = 1;
       home_x = datum.value().at(0);
       home_y = datum.value().at(1);
@@ -83,17 +83,17 @@ void threads::localization::new_sensor_update(Datum datum)
       containers.self.agent.home.set(1, home_y);
       containers.self.agent.source.set(0, home_x);
       containers.self.agent.source.set(1, home_y);
-      containers.self.agent.dest.set(0, home_x + 10.); ////////////////////////////////////////////////////////////////////////////////////////////
-      containers.self.agent.dest.set(1, home_y + 10.); ////////////////////////////////////////////////////////////////////////////////////////////
+      containers.self.agent.dest.set(0, home_x); ////////////////////////////////////////////////////////////////////////////////////////////
+      containers.self.agent.dest.set(1, home_y); ////////////////////////////////////////////////////////////////////////////////////////////
       state(0, 0) = 0.0;
       state(1, 0) = 0.0;      
     }
     if (containers.compass_init == 0 && (datum.type() == SENSOR_TYPE::COMPASS || datum.type() == SENSOR_TYPE::AHRS))
     {
-      printf("Received first compass: %f\n", datum.value().at(0));
+      //printf("Received first compass: %f\n", datum.value().at(0));
       containers.compass_init = 1;
       state(2, 0) = datum.value().at(0);
-      std::cout << "Updated state = " << state.transpose() << std::endl;
+      //std::cout << "Updated state = " << state.transpose() << std::endl;
     }
     if (containers.compass_init == 1 && containers.gps_init == 1)
     {
@@ -202,6 +202,8 @@ void threads::localization::update()
   std::vector<double> value = current_datum.value();
   if (current_datum.type() == SENSOR_TYPE::GPS)
   {
+    containers.heartbeat_gps = 1;
+
     value.at(0) -= home_x; // use local frame
     value.at(1) -= home_y;
     
