@@ -85,7 +85,7 @@ threads::control::run (void)
         th_full = atan2(dy_full, dx_full);
         th_current = atan2(dy_current, dx_current);
         
-        //printf("th_full = %f   heading_current = %f\n", th_full, heading_current);
+        printf("th_full = %f   heading_current = %f\n", th_full, heading_current);
         
         dth = std::abs(utility::angle_tools::minimum_difference(th_full - th_current));
         projected_length = L_current*cos(dth);

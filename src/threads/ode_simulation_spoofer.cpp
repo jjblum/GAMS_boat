@@ -88,7 +88,7 @@ threads::ODE_sim_spoofer::run (void)
    **/
   madara_logger_ptr_log (gams::loggers::global_logger.get (),
     gams::loggers::LOG_MAJOR,
-    "threads::gps_spoofer::run:" 
+    "threads::ODE_sim_spoofer::run:" 
     " executing\n");
     
   std::chrono::time_point<std::chrono::high_resolution_clock> tnew = utility::time_tools::now();

@@ -2,6 +2,7 @@
 #define CONTAINERS_H
 
 #include <string>
+#include <sstream>
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/containers/NativeDoubleVector.h"
@@ -9,6 +10,7 @@
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/knowledge/containers/String.h"
 #include "gams/variables/Self.h"
+#include "gams/variables/PlatformStatus.h"
 
 namespace containers = madara::knowledge::containers;
 
@@ -47,6 +49,8 @@ public:
     containers::Integer id;
     containers::Double battery_voltage;
     gams::variables::Self self;
+    gams::variables::PlatformStatus platform_status;
+
 private:
     madara::knowledge::KnowledgeBase kb;
 };

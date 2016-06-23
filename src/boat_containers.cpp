@@ -76,7 +76,7 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     heartbeat_operator = 0;
     
     teleop_status.set_name(prefix + "teleopStatus", kb);
-    teleop_status = 0; // = 1 --> start in teleop mode
+    teleop_status = 1; // = 1 --> start in teleop mode
     
     // misc stuff
     battery_voltage.set_name(prefix + "batteryVoltage", kb);
@@ -93,8 +93,7 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
 
     prefix_.str(std::string()); // clear the string stream, step 1
     prefix_.clear(); // step 2
-    prefix_ << "agent." << id_;
-    platform_status.init_vars(kb, prefix_.str());
+    platform_status.init_vars(kb, "");
     platform_status.movement_available = 1;
 }
 

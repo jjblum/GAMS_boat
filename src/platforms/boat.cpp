@@ -40,6 +40,12 @@ platforms::boat::boat (
       (*sensors)["coverage"] = coverage_sensor;
     }
     (*sensors_)["coverage"] = (*sensors)["coverage"];
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //status_.init_vars(*knowledge, get_id());
+    status_.init_vars(*knowledge, "");
+    status_.movement_available = 1;
+    ///////////////////////////////////////////////////////////////////////////////
   }
 }
 
@@ -92,7 +98,7 @@ double
 platforms::boat::get_accuracy (void) const
 {
   // will depend on your localization capabilities for robotics
-  return 0.0;
+  return containers.sufficientProximity.to_double();
 }
 
 // Gets Location of platform, within its parent frame. Optional.
@@ -172,11 +178,29 @@ platforms::boat::move (
    * return that we are in the process of moving to the final pose.
    **/
    
-   double easting = location.x();
-   double northing = location.y();
-   printf("platform.move():  x = %f,  y = %f\n");
+   double lat = location.lat();
+   double lng = location.lng();
    
-   // if the destination is not the location supplied here, set new destination and set source to current destination
+   printf("platform.move():  lat = %f, lng = %f\n", lat, lng);
+
+   GeographicLib::GeoCoords coord(lat, lng, containers.gpsZone.to_integer());
+   double easting = coord.Easting();
+   double northing = coord.Northing();   
+   
+   if (easting != self_->agent.dest[0] || northing != self_->agent.dest[1])
+   {
+     printf("platform.move():  NEW DESNTATION\n");
+     printf("platform.move():  new x = %f,  new y = %f,  old x = %f,  old y = %f\n", 
+       easting, northing, self_->agent.dest[0], self_->agent.dest[1]);   
+
+     // update source to prior destination
+     self_->agent.source.set(0, self_->agent.dest[0]);
+     self_->agent.source.set(1, self_->agent.dest[1]);
+     
+     // new destination
+     self_->agent.dest.set(0, easting);
+     self_->agent.dest.set(1, northing);    
+   }
    
   return gams::platforms::PLATFORM_MOVING;
 }

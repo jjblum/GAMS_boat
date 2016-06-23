@@ -5,6 +5,8 @@
 #include "gams/platforms/BasePlatform.h"
 #include "gams/platforms/PlatformFactory.h"
 
+#include <GeographicLib/GeoCoords.hpp>
+
 #include "../boat_containers.h"
 
 namespace platforms

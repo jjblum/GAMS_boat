@@ -83,8 +83,8 @@ void threads::localization::new_sensor_update(Datum datum)
       containers.self.agent.home.set(1, home_y);
       containers.self.agent.source.set(0, home_x);
       containers.self.agent.source.set(1, home_y);
-      containers.self.agent.dest.set(0, home_x); ////////////////////////////////////////////////////////////////////////////////////////////
-      containers.self.agent.dest.set(1, home_y); ////////////////////////////////////////////////////////////////////////////////////////////
+      containers.self.agent.dest.set(0, home_x);
+      containers.self.agent.dest.set(1, home_y);
       state(0, 0) = 0.0;
       state(1, 0) = 0.0;      
     }
