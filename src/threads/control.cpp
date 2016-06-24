@@ -6,7 +6,7 @@ namespace knowledge = madara::knowledge;
 
 // constructor
 threads::control::control (Containers & containers_, std::shared_ptr<designs::Design> design_)
-: containers(containers_), design(design_), heading_PID(containers_.LOS_surge_PID)
+: containers(containers_), design(design_), heading_PID(containers_.LOS_heading_PID)
 {  
   t = utility::time_tools::now();
   heading_PID.set_t(t);
@@ -85,7 +85,7 @@ threads::control::run (void)
         th_full = atan2(dy_full, dx_full);
         th_current = atan2(dy_current, dx_current);
         
-        printf("th_full = %f   heading_current = %f\n", th_full, heading_current);
+        //printf("th_full = %f   heading_current = %f\n", th_full, heading_current);
         
         dth = std::abs(utility::angle_tools::minimum_difference(th_full - th_current));
         projected_length = L_current*cos(dth);
@@ -152,6 +152,11 @@ threads::control::run (void)
     }
     else
     {
+      std::vector<double> motor_signals = design->motor_signals_from_effort_fractions(
+        containers.thrustFraction.to_double(), 
+        containers.headingFraction.to_double());        
+      containers.motor_signals.set(0, motor_signals.at(0));
+      containers.motor_signals.set(1, motor_signals.at(1));          
       heading_PID.reset();
     }
 }

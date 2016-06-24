@@ -59,9 +59,6 @@ platforms::boat::~boat ()
 // Polls the sensor environment for useful information. Required.
 int platforms::boat::sense (void)
 {
-
-  // self_->agent.[agent variables] // could try using the Self container in boat_containers!
-
   //printf("platform.sense()\n");
   return gams::platforms::PLATFORM_OK;
 }
@@ -147,6 +144,12 @@ platforms::boat::home (void)
    * platform status to determine what to return. For now, we will simply
    * return that we are in the process of moving to the final pose.
    **/
+
+  self_->agent.dest.set(0, self_->agent.dest[0]);
+  self_->agent.dest.set(1, self_->agent.dest[1]);
+  self_->agent.source.set(0, containers.eastingNorthingHeading[0]);
+  self_->agent.source.set(1, containers.eastingNorthingHeading[1]);
+  
   return gams::platforms::PLATFORM_IN_PROGRESS;
 }
 

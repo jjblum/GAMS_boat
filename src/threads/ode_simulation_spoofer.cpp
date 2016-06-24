@@ -29,10 +29,11 @@ threads::ODE_sim_spoofer::ODE_sim_spoofer (Containers containers_, std::shared_p
   Datum datum_ahrs(SENSOR_TYPE::AHRS, SENSOR_CATEGORY::LOCALIZATION, ahrs, covariance_ahrs);
   new_sensor_callback(datum_ahrs);
   
-  double lat = 40.4406;
-  double lon = -79.9959;
+  double lat = 40.436969190168405; // panther hollow
+  double lon = -79.94867437236745;
   GeographicLib::GeoCoords coord(lat, lon);
-  std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
+  std::vector<double> gps_utm = {coord.Easting() + utility::random_numbers::rand(-10., 10.)
+    , coord.Northing() + utility::random_numbers::rand(-10., 10.)};
   containers.gpsZone = coord.Zone();
   if (coord.Northp())
   {
