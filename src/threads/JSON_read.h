@@ -2,6 +2,7 @@
 #ifndef   _THREAD_JSON_READ_H_
 #define   _THREAD_JSON_READ_H_
 
+#include <cmath>
 #include <functional>
 #include <eigen3/Eigen/Core>
 #include <GeographicLib/GeoCoords.hpp>
@@ -11,6 +12,21 @@
 #include "../utility.h"
 #include "../datum.h"
 #include "../localization_caller.h"
+
+enum class RMC_STRING
+{
+  SENTENCE_TYPE = 0,
+  TIME = 1,
+  STATUS = 2,
+  LAT_RAW = 3,
+  LAT_CARDINAL = 4,
+  LON_RAW = 5,
+  LON_CARDINAL = 6,
+  SPEED = 7,
+  TRACK_ANGLE = 8
+};
+static std::string NORTH = "N";
+static std::string EAST = "E";
 
 namespace threads
 {
@@ -37,6 +53,7 @@ namespace threads
     void callback_example (); // demonstrate c++11 callbacks
 
   private:
+    double GPRMC_to_degrees(double value);
     char end_of_line_char;
     int rejected_line_count;
   };

@@ -64,7 +64,8 @@ threads::JSON_write::run (void)
     case (int)DESIGN_TYPE::LUTRA_TANK:
       motor_json["m0"] = { {"v", motor_signals.at(0)} };
       motor_json["m1"] = { {"v", motor_signals.at(1)} };
-      //std::cout << std::setw(4) << motor_json << std::endl;
+      //std::cout << "sending to motors:\n" <<  std::setw(4) << motor_json << std::endl;
+      //std::cout << "sending to motors:\n" << motor_json << std::endl;
       break;
     case (int)DESIGN_TYPE::LUTRA_ARTICULATED_FAN:            
       motor_json["m0"] = { {"v", motor_signals.at(0)} };
@@ -76,11 +77,12 @@ threads::JSON_write::run (void)
   }
     
   raw_data.clear();
-  raw_data = motor_json.dump(); // do NOT need an explicit newline character at the end
-  //printf("%s\n", raw_data.c_str());
+  raw_data = motor_json.dump();
   strncpy(raw_buffer, raw_data.c_str(), raw_data.size());
+  raw_buffer[raw_data.size()] = '\n'; // explicitly add a newline character at the end?
+  //printf("JSON write buffer: %s\n", raw_buffer);
   asio::error_code ec;
-  port->write_some(asio::buffer(raw_buffer), ec);
+  port->write_some(asio::buffer(raw_buffer, raw_data.size()+1), ec);
   if (!ec) 
   {
       //printf("successful write\n");

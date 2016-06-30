@@ -81,12 +81,23 @@ threads::AHRS::run (void)
     //  sample_count, e.roll, e.pitch, e.yaw, imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az);
       
     // create ahrs (compass and gyro) Datum and send to localization
-    std::vector<double> compass_and_gyro = {(double)e.yaw*M_PI/180.0, (double)imu.gz*M_PI/180.0};
-    Eigen::MatrixXd covariance(2, 2); 
-    covariance = Eigen::MatrixXd::Identity(2, 2);
-    covariance(0, 0) = 10.0*M_PI/180.0;
-    covariance(1, 1) = 0.1;
-    Datum datum(SENSOR_TYPE::AHRS, SENSOR_CATEGORY::LOCALIZATION, compass_and_gyro, covariance);
+    //std::vector<double> compass_and_gyro = {(double)e.yaw*M_PI/180.0, (double)imu.gz*M_PI/180.0};
+    //Eigen::MatrixXd covariance(2, 2); 
+    //covariance = Eigen::MatrixXd::Identity(2, 2);
+    //covariance(0, 0) = 0.0001; //10.0*M_PI/180.0;
+    //covariance(1, 1) = 100.;
+    //Datum datum(SENSOR_TYPE::AHRS, SENSOR_CATEGORY::LOCALIZATION, compass_and_gyro, covariance);
+    //new_sensor_callback(datum);
+    double yaw = ((double)-e.yaw + 90.0);
+    if (yaw > 180.0)
+    {
+      yaw -= 360.0;
+    }
+    yaw *= M_PI/180.0;
+    std::vector<double> compass = {yaw}; 
+    Eigen::MatrixXd covariance(1, 1);
+    covariance = 0.00001*Eigen::MatrixXd::Identity(1, 1); 
+    Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
     new_sensor_callback(datum);
   }
 }

@@ -145,6 +145,7 @@ void threads::localization::updateKB()
   eastingNorthingHeading.at(0) = state(0, 0) + home_x;
   eastingNorthingHeading.at(1) = state(1, 0) + home_y;
   eastingNorthingHeading.at(2) = state(2, 0);
+  //printf("heading = %f\n", state(2,0)*180.0/M_PI);
   containers.eastingNorthingHeading.set(eastingNorthingHeading); // update the knowledge base
   coord.Reset(containers.gpsZone.to_integer(), containers.northernHemisphere.to_integer(), eastingNorthingHeading.at(0), eastingNorthingHeading.at(1));        
   location.at(0) = coord.Latitude();

@@ -279,6 +279,7 @@
  /home/odroid/madara/include/madara/knowledge/containers/Vector.h \
  /home/odroid/madara/include/madara/knowledge/containers/Map.h \
  /home/odroid/gams/src/gams/variables/AccentStatus.h \
- src/threads/../utility.h src/threads/../threads/localization.h \
- src/threads/../datum.h src/threads/../localization_caller.h \
- src/threads/../myahrs_plus.hpp
+ /home/odroid/gams/src/gams/variables/PlatformStatus.h \
+ /home/odroid/gams/src/gams/variables/Agent.h src/threads/../utility.h \
+ src/threads/../threads/localization.h src/threads/../datum.h \
+ src/threads/../localization_caller.h src/threads/../myahrs_plus.hpp

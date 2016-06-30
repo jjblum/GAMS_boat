@@ -273,4 +273,6 @@
  /home/odroid/gams/src/gams/variables/Agent.h \
  /home/odroid/madara/include/madara/knowledge/containers/Vector.h \
  /home/odroid/madara/include/madara/knowledge/containers/Map.h \
- /home/odroid/gams/src/gams/variables/AccentStatus.h
+ /home/odroid/gams/src/gams/variables/AccentStatus.h \
+ /home/odroid/gams/src/gams/variables/PlatformStatus.h \
+ /home/odroid/gams/src/gams/variables/Agent.h

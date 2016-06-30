@@ -82,9 +82,47 @@ threads::JSON_read::run (void)
                 //printf("battery voltage = %.3f V\n", battery_voltage);
                 containers.battery_voltage = battery_voltage;
               }
+              
+              if (type.compare("AdafruitGPS") == 0)              
+              {
+                double lat = -999.;
+                double lon = -999.;
+                std::string nmea = j.front().find("data").value();
+                utility::string_tools::remove_quotes(nmea);
+                std::vector<std::string> elems = utility::string_tools::split(nmea, ',');
+                //{"s1":{"type":"AdafruitGPS","data":"$GPRMC,183146.935,V,,,,,0.00,0.00,300616,,,N*49"}}
+                if (elems.at((int)RMC_STRING::LAT_RAW).size() == 0 || elems.at((int)RMC_STRING::LON_RAW).size() == 0)
+                {
+                  printf("WARNING: Adafruit GPS does not have a fix\n");
+                }
+                else
+                {                                 
+                  lat = std::stod(elems.at((int)RMC_STRING::LAT_RAW), nullptr);
+                  lon = std::stod(elems.at((int)RMC_STRING::LON_RAW), nullptr);
+                  lat = GPRMC_to_degrees(lat)*(elems.at((int)RMC_STRING::LAT_CARDINAL).compare(NORTH) == 0 ? 1. : -1.);
+                  lon = GPRMC_to_degrees(lon)*(elems.at((int)RMC_STRING::LON_CARDINAL).compare(EAST) == 0 ? 1. : -1.);
+                  //printf("Received Adafruit GPS lat/long = %f, %f\n", lat, lon);
+                  GeographicLib::GeoCoords coord(lat, lon);
+                  std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
+                  containers.gpsZone = coord.Zone();
+                  if (coord.Northp())
+                  {
+                    containers.northernHemisphere = 1;
+                  }
+                  else
+                  {
+                    containers.northernHemisphere = 0;
+                  }              
+                  Eigen::MatrixXd covariance(2, 2);
+                  covariance = Eigen::MatrixXd::Identity(2, 2);
+                  Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps_utm, covariance);
+                  new_sensor_callback(datum);                  
+                }                               
+              }
               // TODO - finish the other sensor parsing            
             }
             // ADAFRUIT GPS
+            /*
             if (primary_key.substr(0,1) == "g") // look for leading g
             {
               printf("received an Adafruit GPS reading\n");
@@ -119,7 +157,8 @@ threads::JSON_read::run (void)
                 Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps_utm, covariance);
                 new_sensor_callback(datum);              
               }
-            }            
+            }
+            */            
           }
           catch (std::exception e) 
           {
@@ -141,4 +180,11 @@ threads::JSON_read::run (void)
   else {
       printf("ERROR: port->read_some() error: %s\n", ec.message().c_str());
   }
+}
+
+double threads::JSON_read::GPRMC_to_degrees(double value)
+{
+  double fullDegrees = floor(value/100.0);
+  double minutes = value - fullDegrees*100.0;
+  return (fullDegrees + minutes/60.0);
 }

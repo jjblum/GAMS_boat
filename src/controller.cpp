@@ -377,7 +377,7 @@ int main (int argc, char ** argv)
   // create containers
   Containers containers(knowledge, settings.id);
 
-  /*
+  
   // open serial port to boat arduino
   asio::io_service io;
   std::shared_ptr<asio::serial_port> port = std::make_shared<asio::serial_port>(io);  
@@ -408,8 +408,8 @@ int main (int argc, char ** argv)
     }
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
-  */
-  /*
+  
+  
   // Connect the AHRS in a similar loop, then hand off the successfully connected sensor to the ahrs thread
   std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
   port_ready = false;
@@ -425,7 +425,7 @@ int main (int argc, char ** argv)
     printf("WARNING: ahrs port failed to open. Do you have the ahrs plugged in?\n");
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
-  */
+  
   
   // begin transport creation 
   // end transport creation
@@ -519,15 +519,15 @@ int main (int argc, char ** argv)
   //threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers, design));
   //threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
-  //threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
-  //threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
+  threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
+  threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   //threader.run (1.0, "kb_print", new threads::kb_print ());
-  threader.run (25.0, "localization", localization_thread);
+  threader.run (50.0, "localization", localization_thread);
   //threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
-  //threader.run (10.0, "ahrs", new threads::AHRS (AHRS, localization_thread));
+  threader.run (10.0, "ahrs", new threads::AHRS (AHRS, localization_thread));
   //threader.run (1, "sensing", new threads::sensing ());
   //threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
-  threader.run(100.0, "ODE_sim_spoofer", new threads::ODE_sim_spoofer (containers, design, localization_thread));
+  //threader.run(100.0, "ODE_sim_spoofer", new threads::ODE_sim_spoofer (containers, design, localization_thread));
   // end thread creation
   
   // run a mape loop for algorithm and platform control
