@@ -410,21 +410,8 @@ int main (int argc, char ** argv)
   }
   
   
-  // Connect the AHRS in a similar loop, then hand off the successfully connected sensor to the ahrs thread
+  // AHRS compass object
   std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
-  port_ready = false;
-  port_name = AHRS_PORT_NAME;
-  while (!port_ready)
-  {
-    printf("attempting to open ahrs port: %s\n", port_name.c_str());
-    if(AHRS->start(port_name, AHRS_BAUD_RATE)) {
-      printf("ahrs port is open\n");
-      port_ready = true;
-      break;
-    }
-    printf("WARNING: ahrs port failed to open. Do you have the ahrs plugged in?\n");
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
   
   
   // begin transport creation 
@@ -519,7 +506,7 @@ int main (int argc, char ** argv)
   //threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers, design));
   //threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
-  threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
+  threader.run (20.0, "JSON_read", new threads::JSON_read (port, AHRS, containers, localization_thread));
   threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   //threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (50.0, "localization", localization_thread);
