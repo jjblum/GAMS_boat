@@ -54,6 +54,7 @@ namespace threads
     void callback_example (); // demonstrate c++11 callbacks
 
   private:
+    std::shared_ptr<WithRobot::MyAhrsPlus> ahrs; 
     double GPRMC_to_degrees(double value);
     char end_of_line_char;
     int rejected_line_count;

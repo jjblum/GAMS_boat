@@ -1758,6 +1758,7 @@ namespace WithRobot {
         public:
             ResponsQueue() {}
             ~ResponsQueue() {}
+        
 
             void clear() {
                 LockGuard _l(lock);
@@ -1953,6 +1954,7 @@ namespace WithRobot {
             thread_event.start(thread_proc_callback, (void*)this);
         }
 
+	bool feed(unsigned char* data, int data_len) { return protocol.feed(data,data_len); }
         virtual ~iMyAhrsPlus() {
             event_queue.push_event_exit();
             stop();

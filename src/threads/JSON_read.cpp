@@ -83,17 +83,21 @@ threads::JSON_read::run (void)
                 containers.battery_voltage = battery_voltage;
               }
               
-              if (type.compare("PlatypusAHRS") == 0)              
+              //if (type.compare("PlatypusAHRS") == 0)              
+              if (type.compare("AdafruitGPS") == 0)              
               {
                 std::string nmea = j.front().find("data").value();
                 utility::string_tools::remove_quotes(nmea);
                 std::vector<std::string> elems = utility::string_tools::split(nmea, ',');
 
                 //Check if data corresponds to AHRS or GPS
-                if ( elems[0].compare("$RPY") )
+                if ( elems[0].compare("$RPY") == 0 )
                 {
+		  printf("Received AHRS data\n");
+		  unsigned char * nmea_arr = new unsigned char[nmea.length()+1];
+		  std::strcpy( (char *)nmea_arr, nmea.c_str() );
                   //Pass data into AHRS library, bypassing serial hardware interface
-                  ahrs->protocol.feed( reinterpret_cast<const unsigned char *>(nmea.c_str()), nmea.length() );
+                  ahrs->feed( nmea_arr, nmea.length() );
 
                 }
                 else
@@ -111,7 +115,7 @@ threads::JSON_read::run (void)
                     lon = std::stod(elems.at((int)RMC_STRING::LON_RAW), nullptr);
                     lat = GPRMC_to_degrees(lat)*( elems.at( (int)RMC_STRING::LAT_CARDINAL ).compare(NORTH) ?-1.:1.);
                     lon = GPRMC_to_degrees(lon)*(elems.at((int)RMC_STRING::LON_CARDINAL).compare(EAST)     ?-1.:1.);
-                    //printf("Received Adafruit GPS lat/long = %f, %f\n", lat, lon);
+                    printf("Received Adafruit GPS lat/long = %f, %f\n", lat, lon);
                     GeographicLib::GeoCoords coord(lat, lon);
                     std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
                     containers.gpsZone = coord.Zone();

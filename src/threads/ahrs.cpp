@@ -11,7 +11,7 @@ threads::AHRS::AHRS (std::shared_ptr<WithRobot::MyAhrsPlus> ahrs_, threads::loca
 {
   t = utility::time_tools::now();
   
-  if (ahrs->cmd_ascii_data_format("RPYIMU") == false) // sequence number, roll, pitch, yaw, accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z, magnet_y, magnet_y, magnet_z, temperature  
+  /*if (ahrs->cmd_ascii_data_format("RPYIMU") == false) // sequence number, roll, pitch, yaw, accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z, magnet_y, magnet_y, magnet_z, temperature  
   {
     printf("WARNING: AHRS did not accept data format command\n");
   }
@@ -24,7 +24,7 @@ threads::AHRS::AHRS (std::shared_ptr<WithRobot::MyAhrsPlus> ahrs_, threads::loca
   if(ahrs->cmd_mode("AT") ==false) 
   {
     //handle_error("cmd_mode() returns false");
-  }  
+  }*/  
   sample_count = 0;
 }
 

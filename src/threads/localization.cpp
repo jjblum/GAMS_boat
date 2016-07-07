@@ -203,6 +203,8 @@ void threads::localization::update()
   std::vector<double> value = current_datum.value();
   if (current_datum.type() == SENSOR_TYPE::GPS)
   {
+    
+    printf("GPS heartbeat set to 1\n");
     containers.heartbeat_gps = 1;
 
     value.at(0) -= home_x; // use local frame
