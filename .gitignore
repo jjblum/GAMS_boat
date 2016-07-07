@@ -1,3 +1,6 @@
 .depend.custom_controller
 .obj
 *.txt
+custom_controller
+bin/custom_controller
+sim/agent_0.mf sim/common.mf sim/env.mf sim/run.pl

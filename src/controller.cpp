@@ -511,7 +511,7 @@ int main (int argc, char ** argv)
   //threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (50.0, "localization", localization_thread);
   //threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
-  threader.run (10.0, "ahrs", new threads::AHRS (AHRS, localization_thread));
+  //threader.run (10.0, "ahrs", new threads::AHRS (AHRS, localization_thread));
   //threader.run (1, "sensing", new threads::sensing ());
   //threader.run (1.0, "operator_watchdog", new threads::operator_watchdog(containers));
   //threader.run(100.0, "ODE_sim_spoofer", new threads::ODE_sim_spoofer (containers, design, localization_thread));
