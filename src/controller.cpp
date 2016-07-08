@@ -498,7 +498,11 @@ int main (int argc, char ** argv)
     printf("Design object dynamic cast returned a null pointer\n");
     return -1;
   }
-  
+
+  //Set arming sinal
+  //TODO: should we check for localisation before arming?
+  containers.arming_signal = 1;
+    
   threads::localization * localization_thread = new threads::localization(containers); // separated out b/c i want to try callbacks and the caller needs a reference to the callee's instance
 
   // begin thread creation
