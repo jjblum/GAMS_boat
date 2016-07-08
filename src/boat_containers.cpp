@@ -78,6 +78,12 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     teleop_status.set_name(prefix + "teleopStatus", kb);
     teleop_status = 1; // = 1 --> start in teleop mode
     
+    arm_signal.set_name(prefix + "armingSignal", kb);
+    arm_signal = 0;
+    
+    error_signal.set_name(prefix + "errorSignal", kb);
+    error_signal = 0;
+    
     // misc stuff
     battery_voltage.set_name(prefix + "batteryVoltage", kb);
     battery_voltage = 0.0;

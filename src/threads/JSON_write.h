@@ -34,6 +34,10 @@ namespace threads
       **/
     virtual void run (void);
 
+    /**
+      * Writes commands over serial
+      */
+    void write( json data );
   private:
   };
 } // end namespace threads

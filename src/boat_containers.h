@@ -44,6 +44,8 @@ public:
     containers::Integer heartbeat_connectivity;
     containers::Integer heartbeat_operator;
     containers::Integer teleop_status;
+    containers::Integer arm_signal;
+    containers::Integer error_signal;
     
     // misc. stuff
     containers::Integer id;

@@ -75,9 +75,44 @@ threads::JSON_write::run (void)
       motor_json["m0"] = { {"v", motor_signals.at(0)} };
       motor_json["m1"] = { {"v", motor_signals.at(1)} };
   }
-    
+
+  write(motor_json);
+  
+  //Send arming signal to hardware
+  if ( containers.arm_signal == 1 )
+  {
+    json arm_json;
+    arm_json["o"] = { { "a", NULL } };
+    containers.arm_signal = 0;
+    write(arm_signal);
+  }
+  
+  //Check for error corde and inform eboard.
+  if ( containers.error_signal )
+  {
+    json error_json;
+    if ( containers.error_signal == 1)
+    { 
+      error_json["o"] = { { "e", "conn" } };
+      write(error_json); 
+    }
+    else if ( containers.error_signal == 2 )
+    { 
+      error_json["o"] = { { "e", "gps"  } };
+      write(error_json); 
+    }
+    else if ( containers.error_signal == 3 )
+    { 
+      error_json["o"] = { { "e", "ahrs" } };
+      write(error_json); 
+    }
+
+  }
+}
+void threads::JSON_write::write(json json_data)
+{ 
   raw_data.clear();
-  raw_data = motor_json.dump();
+  raw_data = json_data.dump();
   strncpy(raw_buffer, raw_data.c_str(), raw_data.size());
   raw_buffer[raw_data.size()] = '\n'; // explicitly add a newline character at the end?
   //printf("JSON write buffer: %s\n", raw_buffer);

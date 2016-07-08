@@ -83,57 +83,59 @@ threads::JSON_read::run (void)
                 containers.battery_voltage = battery_voltage;
               }
               
-              //if (type.compare("PlatypusAHRS") == 0)              
               if (type.compare("AdafruitGPS") == 0)              
               {
                 std::string nmea = j.front().find("data").value();
                 utility::string_tools::remove_quotes(nmea);
                 std::vector<std::string> elems = utility::string_tools::split(nmea, ',');
 
-                //Check if data corresponds to AHRS or GPS
-                if ( elems[0].compare("$RPY") == 0 )
+                //{"s1":{"type":"AdafruitGPS","data":"$GPRMC,183146.935,V,,,,,0.00,0.00,300616,,,N*49"}}
+                double lat = -999.;
+                double lon = -999.;
+                if ( !elems.at((int)RMC_STRING::LAT_RAW).size()|| !elems.at((int)RMC_STRING::LON_RAW).size())
                 {
-		  printf("Received AHRS data\n");
-		  unsigned char * nmea_arr = new unsigned char[nmea.length()+1];
-		  std::strcpy( (char *)nmea_arr, nmea.c_str() );
-                  //Pass data into AHRS library, bypassing serial hardware interface
-                  ahrs->feed( nmea_arr, nmea.length() );
-
+                  printf("WARNING: Adafruit GPS does not have a fix\n");
                 }
                 else
-                {
-                  //{"s1":{"type":"AdafruitGPS","data":"$GPRMC,183146.935,V,,,,,0.00,0.00,300616,,,N*49"}}
-                  double lat = -999.;
-                  double lon = -999.;
-                  if ( !elems.at((int)RMC_STRING::LAT_RAW).size()|| !elems.at((int)RMC_STRING::LON_RAW).size())
+                {                                 
+                  lat = std::stod(elems.at((int)RMC_STRING::LAT_RAW), nullptr);
+                  lon = std::stod(elems.at((int)RMC_STRING::LON_RAW), nullptr);
+                  lat = GPRMC_to_degrees(lat)*( elems.at( (int)RMC_STRING::LAT_CARDINAL ).compare(NORTH) ?-1.:1.);
+                  lon = GPRMC_to_degrees(lon)*(elems.at((int)RMC_STRING::LON_CARDINAL).compare(EAST)     ?-1.:1.);
+                  //printf("Received Adafruit GPS lat/long = %f, %f\n", lat, lon);
+                  GeographicLib::GeoCoords coord(lat, lon);
+                  std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
+                  containers.gpsZone = coord.Zone();
+                  if (coord.Northp())
                   {
-                    printf("WARNING: Adafruit GPS does not have a fix\n");
+                    containers.northernHemisphere = 1;
                   }
                   else
-                  {                                 
-                    lat = std::stod(elems.at((int)RMC_STRING::LAT_RAW), nullptr);
-                    lon = std::stod(elems.at((int)RMC_STRING::LON_RAW), nullptr);
-                    lat = GPRMC_to_degrees(lat)*( elems.at( (int)RMC_STRING::LAT_CARDINAL ).compare(NORTH) ?-1.:1.);
-                    lon = GPRMC_to_degrees(lon)*(elems.at((int)RMC_STRING::LON_CARDINAL).compare(EAST)     ?-1.:1.);
-                    printf("Received Adafruit GPS lat/long = %f, %f\n", lat, lon);
-                    GeographicLib::GeoCoords coord(lat, lon);
-                    std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
-                    containers.gpsZone = coord.Zone();
-                    if (coord.Northp())
-                    {
-                      containers.northernHemisphere = 1;
-                    }
-                    else
-                    {
-                      containers.northernHemisphere = 0;
-                    }              
-                    Eigen::MatrixXd covariance(2, 2);
-                    covariance = Eigen::MatrixXd::Identity(2, 2);
-                    Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps_utm, covariance);
-                    new_sensor_callback(datum);                  
-                  }                               
-                }
+                  {
+                    containers.northernHemisphere = 0;
+                  }              
+                  Eigen::MatrixXd covariance(2, 2);
+                  covariance = Eigen::MatrixXd::Identity(2, 2);
+                  Datum datum(SENSOR_TYPE::GPS, SENSOR_CATEGORY::LOCALIZATION, gps_utm, covariance);
+                  new_sensor_callback(datum);                  
+                }                               
               }
+              else if (type.compare("AHRS") == 0)              
+              {
+                  //printf("Received AHRS data\n");
+                  unsigned char * nmea_arr = new unsigned char[nmea.length()+1];
+                  std::strcpy( (char *)nmea_arr, nmea.c_str() );
+                  //Pass data into AHRS library, bypassing serial hardware interface
+                  bool retVal = ahrs->feed( nmea_arr, nmea.length() );
+                  
+                  // TODO - handle ahrs error
+                  if (!retVal)
+                  {
+
+                  }
+              }
+                    
+                
               // TODO - finish the other sensor parsing            
             }
             // ADAFRUIT GPS
