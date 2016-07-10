@@ -77,7 +77,7 @@ void threads::localization::new_sensor_update(Datum datum)
     {
       //printf("Received first GPS: %f, %f\n", datum.value().at(0), datum.value().at(1)); 
       containers.gps_init = 1;
-      containers.compass_init = 1;
+      containers.heartbeat_gps = 1;
       home_x = datum.value().at(0);
       home_y = datum.value().at(1);
       containers.self.agent.home.set(0, home_x);
@@ -93,6 +93,7 @@ void threads::localization::new_sensor_update(Datum datum)
     {
       //printf("Received first compass: %f\n", datum.value().at(0));
       containers.compass_init = 1;
+      containers.heartbeat_compass = 1;
       //state(2, 0) = datum.value().at(0);
       state(2, 0) = 1.0;
       //std::cout << "Updated state = " << state.transpose() << std::endl;
@@ -261,6 +262,7 @@ void threads::localization::update()
   dz = z - H*state;
   if (current_datum.type() == SENSOR_TYPE::COMPASS)
   {
+    containers.heartbeat_compass = 1;
     dz(0, 0) = utility::angle_tools::minimum_difference(dz(0, 0)); // use true angular difference, not algebraic difference
   }
           
