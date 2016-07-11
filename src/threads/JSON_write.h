@@ -37,7 +37,7 @@ namespace threads
     /**
       * Writes commands over serial
       */
-    void write( json data );
+    void write( json & data );
   private:
   };
 } // end namespace threads

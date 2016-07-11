@@ -1,4 +1,3 @@
-
 #include "gams/loggers/GlobalLogger.h"
 #include "localization.h"
 
@@ -75,9 +74,8 @@ void threads::localization::new_sensor_update(Datum datum)
   {
     if (containers.gps_init == 0 && datum.type() == SENSOR_TYPE::GPS)
     {
-      //printf("Received first GPS: %f, %f\n", datum.value().at(0), datum.value().at(1)); 
+      printf("Received first GPS: %f, %f\n", datum.value().at(0), datum.value().at(1)); 
       containers.gps_init = 1;
-      containers.compass_init = 1;
       home_x = datum.value().at(0);
       home_y = datum.value().at(1);
       containers.self.agent.home.set(0, home_x);
@@ -91,7 +89,7 @@ void threads::localization::new_sensor_update(Datum datum)
     }
     if (containers.compass_init == 0 && (datum.type() == SENSOR_TYPE::COMPASS || datum.type() == SENSOR_TYPE::AHRS))
     {
-      //printf("Received first compass: %f\n", datum.value().at(0));
+      printf("Received first compass: %f\n", datum.value().at(0));
       containers.compass_init = 1;
       //state(2, 0) = datum.value().at(0);
       state(2, 0) = 1.0;
@@ -99,7 +97,9 @@ void threads::localization::new_sensor_update(Datum datum)
     }
     if (containers.compass_init == 1 && containers.gps_init == 1)
     {
+      printf("Sending armed signal\n");
       containers.localized = 1; 
+      containers.arm_signal = 1;
       updateKB();     
     }
     return; // don't do anything until at least 1 gps and compass measurement come through
