@@ -12,7 +12,6 @@
 #include "../utility.h"
 #include "../datum.h"
 #include "../localization_caller.h"
-#include "../myahrs_plus.hpp"
 
 enum class RMC_STRING
 {
@@ -37,7 +36,7 @@ namespace threads
   class JSON_read : public io_thread, public LocalizationCaller
   {
   public:
-    JSON_read (std::shared_ptr<asio::serial_port> port_, std::shared_ptr<WithRobot::MyAhrsPlus> ahrs, Containers & containers_, threads::localization * localization_reference);
+    JSON_read (std::shared_ptr<asio::serial_port> port_, Containers & containers_, threads::localization * localization_reference);
     virtual ~JSON_read ();
     
     /**
@@ -54,7 +53,6 @@ namespace threads
     void callback_example (); // demonstrate c++11 callbacks
 
   private:
-    std::shared_ptr<WithRobot::MyAhrsPlus> ahrs; 
     double GPRMC_to_degrees(double value);
     char end_of_line_char;
     int rejected_line_count;

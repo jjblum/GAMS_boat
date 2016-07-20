@@ -5,7 +5,7 @@
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::JSON_read::JSON_read (std::shared_ptr<asio::serial_port> port_, std::shared_ptr<WithRobot::MyAhrsPlus> ahrs, Containers & containers_, threads::localization * localization_reference)
+threads::JSON_read::JSON_read (std::shared_ptr<asio::serial_port> port_, Containers & containers_, threads::localization * localization_reference)
 : threads::io_thread(port_, containers_), LocalizationCaller(localization_reference)
 {
   end_of_line_char = END_OF_LINE_CHAR;
@@ -123,16 +123,48 @@ threads::JSON_read::run (void)
               else if (type.compare("AHRS") == 0)              
               {
                   //printf("Received AHRS data\n");
-                  unsigned char * nmea_arr = new unsigned char[nmea.length()+1];
-                  std::strcpy( (char *)nmea_arr, nmea.c_str() );
+                  std::string nmea = j.front().find("data").value();
+                  //unsigned char * nmea_arr = new unsigned char[nmea.length()+1];
+                  //std::strcpy( (char *)nmea_arr, nmea.c_str() );
                   //Pass data into AHRS library, bypassing serial hardware interface
-                  bool retVal = ahrs->feed( nmea_arr, nmea.length() );
-                  
-                  // TODO - handle ahrs error
-                  if (!retVal)
-                  {
+                 // printf("Feeding ahrs data\n");
+		 // bool retVal = ahrs->my_feed( nmea_arr, nmea.length() );
+                  //Seperate data by commas
+	          std::vector<std::string> ahrs_data;
+		  ahrs_data = utility::string_tools::split(nmea, '*');
+		  std::string data = ahrs_data[0];
+		  //printf("Splitting data string : %s \n", data.c_str());
+		  ahrs_data = utility::string_tools::split(data, ',');
+/*		  for(auto & str: ahrs_data){printf(" @%s@ ", str.c_str() ); }
+		
+		  printf("\nData string is of length %d\n", ahrs_data.size());
 
-                  }
+		  bool retVal = ahrs->ascii_update_euler(ahrs_data);
+*/  
+                  // TODO - handle ahrs error
+                  //printf("ahrs feed %s\n", retVal? "successful":"failed");
+                  //if (!retVal)
+                  //{
+
+                  //}
+		  try{
+		    double euler_yaw = std::stod(ahrs_data[3]);
+		    double yaw = (-euler_yaw + 90.0);
+		    if (yaw > 180.0)
+		    {
+		      yaw -= 360.0;
+		    }
+		    yaw *= M_PI/180.0;
+		    std::vector<double> compass = {yaw}; 
+		    Eigen::MatrixXd covariance(1, 1);
+		    covariance = 0.00001*Eigen::MatrixXd::Identity(1, 1); 
+		    Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
+		    new_sensor_callback(datum);
+		}catch (const std::invalid_argument&) {
+			printf("Argument is invalid\n");
+	        } catch (const std::out_of_range&) {
+			printf("Argument is out of range for a double\n");
+    		}
               }
                     
                 

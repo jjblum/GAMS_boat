@@ -92,6 +92,8 @@
     #define DBG_PRINTF(x, args...)  {if(x) { printf(args);}}
 #endif // WIN32
 
+#define DBG false
+#define MYDBG_PRINTF( args...)  {if(DBG) { printf(args);}}
 
 /*
  *  Version
@@ -844,6 +846,7 @@ namespace WithRobot {
         , state_receiving(false), last_state(STATE_NOP)
         , debug(DEBUG_BINARY_PROTOCOL)
         {
+	    MYDBG_PRINTF("FilterByteStuffing creating\n");
             receiver = &FilterByteStuffing::state_data;
         }
 
@@ -851,13 +854,14 @@ namespace WithRobot {
 
         ReturnCode operator ()(uint8_t byte) {
             DBG_PRINTF(debug, "new byte %02X\n", byte);
+            MYDBG_PRINTF("new byte %02X\n", byte);
             last_state = (this->*receiver)(byte);
             return last_state;
         }
 
         bool is_busy() {
             return (last_state==STATE_BUSY);
-        }
+       } 
 
     private:
         void clear_all_states() {
@@ -883,6 +887,7 @@ namespace WithRobot {
         }
 
         ReturnCode state_data(uint8_t byte) {
+	    MYDBG_PRINTF("In state data\n");
             if(byte == DLE) {
                 receiver = &FilterByteStuffing::state_control;
                 return STATE_BUSY;
@@ -1135,13 +1140,19 @@ namespace WithRobot {
         };
 
     public:
-        iBinaryProtocol() : filter_byte_stuffing(binary_stream) {}
+        iBinaryProtocol() : filter_byte_stuffing(binary_stream) {MYDBG_PRINTF("Created iBinaryProtocol\n");
+	filter_byte_stuffing('$');}
         virtual ~iBinaryProtocol() {}
 
     protected:
         void push_byte(unsigned char c) {
+	    MYDBG_PRINTF("Received byte: %c\n", c);
+	    unsigned char d = 'f';
+	    filter_byte_stuffing(d);
+	    MYDBG_PRINTF("Filtering worked\n");
             if(filter_byte_stuffing(c) == FilterByteStuffing::STATE_COMPLETE) {
-                BinaryNodeParser parser(this, binary_stream.buffer, binary_stream.offset);
+                MYDBG_PRINTF("Creating binary node parser\n");
+		BinaryNodeParser parser(this, binary_stream.buffer, binary_stream.offset);
                 parser.parse();
             }
         }
@@ -1168,12 +1179,16 @@ namespace WithRobot {
         virtual ~iProtocol() {}
 
         bool feed(unsigned char* data, int data_len) {
+	    data[data_len] = '\0';
+	    MYDBG_PRINTF("Received %d bytes of data: %s\n", data_len, data); 
             if(!data || data_len <= 0) {
                 return false;
             }
 
             for(int i=0; i<data_len; i++) {
+		MYDBG_PRINTF("Pushing back byte %d: %c\n", i, data[i]);
                 iBinaryProtocol::push_byte(data[i]);
+		MYDBG_PRINTF("Pushed back byte %d: %c\n", i, data[i]);
                 if(iBinaryProtocol::is_receiving() == false) {
                     iAsciiProtocol::push_byte(data[i]);
                 }
@@ -1909,6 +1924,7 @@ namespace WithRobot {
         , activate_user_event(false)
         , thread_receiver_ready(false)
         {
+	MYDBG_PRINTF("Creating imyAHRS\n");
             // response message parser (ascii)
             ascii_handler_rsp_map[std::string("~trig")]        = &iMyAhrsPlus::ascii_rsp_trigger;
             ascii_handler_rsp_map[std::string("~ping")]        = &iMyAhrsPlus::ascii_rsp_ping;
@@ -1950,11 +1966,18 @@ namespace WithRobot {
             binary_handler_data_map[std::string(NAME_QUATERNION)] = &iMyAhrsPlus::binary_update_quaternion;
             binary_handler_data_map[std::string(NAME_IMU)]        = &iMyAhrsPlus::binary_update_imu;
             binary_handler_data_map[std::string(NAME_RIIMU)]      = &iMyAhrsPlus::binary_update_riimu;
+       	    
 
             thread_event.start(thread_proc_callback, (void*)this);
-        }
+	    
+	    MYDBG_PRINTF("Feeding data\n");
+	    unsigned char arr[4] = {'$','R','P','Y'};
+	    unsigned char * p_arr = arr;
+	    my_feed(p_arr, 4);
+	    MYDBG_PRINTF("Feed complete\n"); 
+	}
 
-	bool feed(unsigned char* data, int data_len) { return protocol.feed(data,data_len); }
+	bool my_feed(unsigned char* data, int data_len) { return protocol.feed(data,data_len); }
         virtual ~iMyAhrsPlus() {
             event_queue.push_event_exit();
             stop();
@@ -1964,12 +1987,17 @@ namespace WithRobot {
         const char* sdk_version() {
             return WITHROBOT_MYAHRS_PLUS_SDK_VERSION;
         }
+<<<<<<< HEAD
         
         bool my_start() {
         {
                 LockGuard _l(mutex_communication);
                 return true;
         }
+=======
+	
+	bool my_start() {LockGuard _l(mutex_communication);}
+>>>>>>> 53fe99ccb1a673c3a707676535b44622bc50a82b
 
         bool start(std::string port_name="", int baudrate=-1) {
             {

@@ -84,11 +84,11 @@ threads::JSON_write::run (void)
     json arm_json;
     arm_json["o"] = { { "a", NULL } };
     containers.arm_signal = 0;
-    write(arm_signal);
+    write( arm_json );
   }
   
   //Check for error corde and inform eboard.
-  if ( containers.error_signal )
+  if ( containers.error_signal != 0 )
   {
     json error_json;
     if ( containers.error_signal == 1)
@@ -109,8 +109,8 @@ threads::JSON_write::run (void)
 
   }
 }
-void threads::JSON_write::write(json json_data)
-{ 
+void threads::JSON_write::write(json & json_data)
+{
   raw_data.clear();
   raw_data = json_data.dump();
   strncpy(raw_buffer, raw_data.c_str(), raw_data.size());
@@ -120,7 +120,6 @@ void threads::JSON_write::write(json json_data)
   port->write_some(asio::buffer(raw_buffer, raw_data.size()+1), ec);
   if (!ec) 
   {
-      //printf("successful write\n");
       return;
   }
   else 

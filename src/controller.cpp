@@ -1,5 +1,3 @@
-
-
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/Threader.h"
 #include "gams/controllers/BaseController.h"
@@ -27,7 +25,6 @@
 #include "threads/random_motor_signals.h"
 #include "threads/sensing.h"
 #include "threads/operator_watchdog.h"
-#include "threads/ahrs.h"
 #include "threads/ode_simulation_spoofer.h"
 // end thread includes
 
@@ -42,7 +39,6 @@
 #include <memory>
 #include <chrono>
 #include <thread>
-#include "myahrs_plus.hpp"
 #include "design.h"
 #include "lutra_tank.h"
 #include "lutra_articulated_fan.h"
@@ -411,8 +407,11 @@ int main (int argc, char ** argv)
   
   
   // AHRS compass object
-  std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
-  AHRS->my_start(); 
+  //std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
+  //AHRS->my_start();
+  //unsigned char v[4] = {'a','b','c','d'};
+  //unsigned char * pv = v; 
+  //AHRS->my_feed(pv,4); 
   
   // begin transport creation 
   // end transport creation
@@ -500,8 +499,6 @@ int main (int argc, char ** argv)
   }
 
   //Set arming sinal
-  //TODO: should we check for localisation before arming?
-  containers.arming_signal = 1;
     
   threads::localization * localization_thread = new threads::localization(containers); // separated out b/c i want to try callbacks and the caller needs a reference to the callee's instance
 
@@ -510,7 +507,7 @@ int main (int argc, char ** argv)
   //threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers, design));
   //threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
-  threader.run (20.0, "JSON_read", new threads::JSON_read (port, AHRS, containers, localization_thread));
+  threader.run (20.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
   threader.run (20.0, "JSON_write", new threads::JSON_write (port, containers));
   //threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (50.0, "localization", localization_thread);
