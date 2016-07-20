@@ -412,7 +412,7 @@ int main (int argc, char ** argv)
   
   // AHRS compass object
   std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
-  
+  AHRS->my_start(); 
   
   // begin transport creation 
   // end transport creation
