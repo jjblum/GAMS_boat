@@ -50,7 +50,7 @@ threads::control::run (void)
     "threads::control::run:" 
     " executing\n");        
     
-    if (containers.teleop_status == 0 && containers.localized == 1)
+    if (containers.heartbeat_connectivity == 1 && containers.teleop_status == 0 && containers.localized == 1)
     {        
       // goal state - determined by containers for agent.id.source, agent.id.destination, and agent.id.desired_velocity
       double x_dest, x_source, x_current, y_dest, y_source, y_current, th_full, th_current; 
@@ -150,13 +150,27 @@ threads::control::run (void)
       // TODO - set up velocity profile along the path that lets the desired thrust be modulated for slow start up and drift down. Independent of time, only depends on location along line.
       
     }
-    else
+    //Should we drive home if we are localised?
+    else if (containers.heatbeat_connectivity == 1)
+    {
+        containers.motor_signals.set(0, 0.0);
+        containers.motor_signals.set(1, 0.0);
+        heading_PID.reset();        
+    }
+    //In teleop mode, get motor signals from thrust and heading fractions
+    else if (containers.teleop_status == 1)
     {
       std::vector<double> motor_signals = design->motor_signals_from_effort_fractions(
         containers.thrustFraction.to_double(), 
         containers.headingFraction.to_double());        
       containers.motor_signals.set(0, motor_signals.at(0));
       containers.motor_signals.set(1, motor_signals.at(1));          
+      heading_PID.reset();
+    }
+    else
+    {
+      containers.motor_signals.set(0, 0.0);
+      containers.motor_signals.set(1, 0.0);          
       heading_PID.reset();
     }
 }

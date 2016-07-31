@@ -41,6 +41,7 @@ public:
     containers::Integer compass_init;
     containers::Integer localized;
     containers::Integer heartbeat_gps;
+    containers::Integer heartbeat_compass;
     containers::Integer heartbeat_connectivity;
     containers::Integer heartbeat_operator;
     containers::Integer teleop_status;

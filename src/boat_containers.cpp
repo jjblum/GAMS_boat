@@ -69,6 +69,9 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     heartbeat_gps.set_name(prefix + "gpsWatchdog", kb);
     heartbeat_gps = 1;
     
+    heartbeat_compass.set_name(prefix + "compassWatchdog", kb);
+    heartbeat_compass = 1;
+    
     heartbeat_connectivity.set_name(prefix + "connectivityWatchdog", kb);
     heartbeat_connectivity = 1;
     

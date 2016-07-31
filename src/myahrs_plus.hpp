@@ -1987,8 +1987,17 @@ namespace WithRobot {
         const char* sdk_version() {
             return WITHROBOT_MYAHRS_PLUS_SDK_VERSION;
         }
+<<<<<<< HEAD
+        
+        bool my_start() {
+        {
+                LockGuard _l(mutex_communication);
+                return true;
+        }
+=======
 	
 	bool my_start() {LockGuard _l(mutex_communication);}
+>>>>>>> 53fe99ccb1a673c3a707676535b44622bc50a82b
 
         bool start(std::string port_name="", int baudrate=-1) {
             {

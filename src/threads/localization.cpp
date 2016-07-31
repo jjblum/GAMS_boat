@@ -263,6 +263,7 @@ void threads::localization::update()
   dz = z - H*state;
   if (current_datum.type() == SENSOR_TYPE::COMPASS)
   {
+    containers.heartbeat_compass = 1;
     dz(0, 0) = utility::angle_tools::minimum_difference(dz(0, 0)); // use true angular difference, not algebraic difference
   }
           
