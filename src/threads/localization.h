@@ -92,7 +92,8 @@ namespace threads
     std::chrono::time_point<std::chrono::high_resolution_clock> t0; // reference time
     double tR; // current time, but measured relative to the reference time, in seconds
     double home_x;
-    double home_y;    
+    double home_y;  
+    double heading;  
     GeographicLib::GeoCoords coord;
     
     std::vector<double> gps_data_t;

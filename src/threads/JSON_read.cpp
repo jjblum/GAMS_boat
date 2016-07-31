@@ -148,7 +148,7 @@ threads::JSON_read::run (void)
 
                   //}
 		  try{
-		    double euler_yaw = std::stod(ahrs_data[3]);
+		    double euler_yaw = std::stod(ahrs_data[4]);
 		    double yaw = (-euler_yaw + 90.0);
 		    if (yaw > 180.0)
 		    {
@@ -226,7 +226,7 @@ threads::JSON_read::run (void)
       }
     }        
   }
-  else {
+  else if (ec){
       printf("ERROR: port->read_some() error: %s\n", ec.message().c_str());
   }
 }

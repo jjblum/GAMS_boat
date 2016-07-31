@@ -91,8 +91,9 @@ void threads::localization::new_sensor_update(Datum datum)
     {
       printf("Received first compass: %f\n", datum.value().at(0));
       containers.compass_init = 1;
-      //state(2, 0) = datum.value().at(0);
-      state(2, 0) = 1.0;
+      state(2, 0) = datum.value().at(0);
+      //state(2, 0) = 1.0;
+      heading = datum.value().at(0);
       //std::cout << "Updated state = " << state.transpose() << std::endl;
     }
     if (containers.compass_init == 1 && containers.gps_init == 1)
@@ -146,7 +147,8 @@ void threads::localization::updateKB()
   // update the knowledge base. Make sure to use containers so that these updates are not sent out constantly
   eastingNorthingHeading.at(0) = state(0, 0) + home_x;
   eastingNorthingHeading.at(1) = state(1, 0) + home_y;
-  eastingNorthingHeading.at(2) = state(2, 0);
+  //eastingNorthingHeading.at(2) = state(2, 0);
+  eastingNorthingHeading.at(2) = heading;
   //printf("heading = %f\n", state(2,0)*180.0/M_PI);
   containers.eastingNorthingHeading.set(eastingNorthingHeading); // update the knowledge base
   coord.Reset(containers.gpsZone.to_integer(), containers.northernHemisphere.to_integer(), eastingNorthingHeading.at(0), eastingNorthingHeading.at(1));        
@@ -304,6 +306,7 @@ void threads::localization::setH()
   else if (current_datum.type() == SENSOR_TYPE::COMPASS) 
   {
     H(0, 2) = 1.0;
+    heading = current_datum.value().at(0);
   }
   else if (current_datum.type() == SENSOR_TYPE::GYRO) 
   {
