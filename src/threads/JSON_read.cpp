@@ -1,6 +1,7 @@
 
 #include "gams/loggers/GlobalLogger.h"
 #include "JSON_read.h"
+#include "../utility.h"
 
 namespace knowledge = madara::knowledge;
 
@@ -49,8 +50,20 @@ threads::JSON_read::run (void)
     gams::loggers::LOG_MAJOR,
     "threads::JSON_read::run:" 
     " executing\n");
-
-  asio::error_code ec;
+  static int num_readings = 0;
+  static int num_loops = 0;
+  static std::chrono::time_point<std::chrono::high_resolution_clock> t1; 
+  std::chrono::time_point<std::chrono::high_resolution_clock> t2 = utility::time_tools::now();
+  double dt = utility::time_tools::dt(t1, t2);
+  num_loops++;
+  if( dt > 1.0)
+  {
+//	std::cout << "Read " << num_readings << " sensor readings in " << dt << " seconds. Rate: " << num_readings/dt << " mps. Freq: " << num_loops/dt << " Hz\n";
+	num_readings = 0;
+	num_loops = 0;
+        t1 = utility::time_tools::now();
+  }	 
+ asio::error_code ec;
   int bytes_read = port->read_some(asio::buffer(raw_buffer, BUFFER_SIZE), ec);
   if (!ec && bytes_read > 0) 
   {
@@ -70,6 +83,7 @@ threads::JSON_read::run (void)
             // SENSORS
             if (primary_key.substr(0,1) == "s") // look for a leading "s"
             {
+		num_readings++;
               std::string type = j.front().find("type").value();
               utility::string_tools::remove_quotes(type);
               
@@ -82,7 +96,18 @@ threads::JSON_read::run (void)
                 //printf("battery voltage = %.3f V\n", battery_voltage);
                 containers.battery_voltage = battery_voltage;
               }
-              
+             
+	      if (type.compare("Test") == 0)
+	      {
+		containers.test_flag += 1;
+		std::cout << "Received Test message. flag is " << *containers.test_flag << std::endl;
+		if (containers.test_flag == 1) std::cout << "Received test reading\n";
+		else if (containers.test_flag == 4){ 
+			std::cout << "Received test response: Round trip time was " << j.front().find("data").value() << " seconds\n";
+			containers.test_flag = 0;
+
+		}
+	      } 
               if (type.compare("AdafruitGPS") == 0)              
               {
                 std::string nmea = j.front().find("data").value();

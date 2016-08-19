@@ -30,7 +30,6 @@ FILES = \
   src/threads/io_thread.cpp \
   src/threads/compass_spoofer.cpp \
   src/threads/ode_simulation_spoofer.cpp \
-  src/threads/ahrs.cpp \
   src/threads/sensing.cpp \
   src/threads/operator_watchdog.cpp \
   src/threads/localization.cpp \

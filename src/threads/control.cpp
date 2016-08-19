@@ -1,7 +1,6 @@
 #include "control.h"
 #include "gams/loggers/GlobalLogger.h"
 
-
 namespace knowledge = madara::knowledge;
 
 // constructor
@@ -49,8 +48,19 @@ threads::control::run (void)
     gams::loggers::LOG_MAJOR,
     "threads::control::run:" 
     " executing\n");        
-    
-    if (containers.heartbeat_connectivity == 1 && containers.teleop_status == 0 && containers.localized == 1)
+//     std::cout << "top is " << *containers.teleop_status << std::endl;
+//    printf("teleop status == %d\n", containers.teleop_status.get()); 
+/*	static int i = 0;
+	if (i++ > 10)
+	{
+	  std::cout<<"LOS_PID "<<containers.LOS_heading_PID[0];
+	  std::cout<<" , " << containers.LOS_heading_PID[1];
+	  std::cout<<" , " << containers.LOS_heading_PID[2] << std::endl;
+	  std::cout<<"SF "<<*containers.LOS_surge_effort_fraction << std::endl;
+		i = 0;
+	}*/
+    if(containers.test_flag == 1) 
+    //if (containers.autonomy_enabled == 1 && containers.teleop_status != 1 && containers.localized == 1)
     {        
       // goal state - determined by containers for agent.id.source, agent.id.destination, and agent.id.desired_velocity
       double x_dest, x_source, x_current, y_dest, y_source, y_current, th_full, th_current; 
@@ -66,7 +76,7 @@ threads::control::run (void)
       y_current = containers.local_state[1];
       heading_current = containers.local_state[2];
       
-      //printf("x_current = %f, y_current = %f, x_dest = %f, y_dest = %f\n", x_current, y_current, x_dest, y_dest);
+//      printf("x_current = %f, y_current = %f, x_dest = %f, y_dest = %f\n", x_current, y_current, x_dest, y_dest);
       //printf("%f     %f\n", x_current, y_current);
       
       containers.dist_to_dest = sqrt(pow(x_dest - x_current, 2.) + pow(y_dest - y_current, 2.));
@@ -101,6 +111,7 @@ threads::control::run (void)
         dx_lookahead = lookahead_state.at(0) - x_current;
         dy_lookahead = lookahead_state.at(1) - y_current;
         heading_desired = atan2(dy_lookahead, dx_lookahead);
+ //     std::cout<< "Headings " << heading_current << " ,  "<< atan2(dy_current, dx_current) <<std::endl;
         heading_error = utility::angle_tools::minimum_difference(heading_current - heading_desired); // fed into a 1 DOF PID for heading                     
         
         t = utility::time_tools::now();
@@ -137,11 +148,14 @@ threads::control::run (void)
         double surge_effort_fraction = base_surge_effort_fraction*surge_effort_fraction_coefficient;
         std::vector<double> motor_signals = design->motor_signals_from_effort_fractions(surge_effort_fraction, heading_signal);        
         containers.motor_signals.set(0, motor_signals.at(0));
-        containers.motor_signals.set(1, motor_signals.at(1));                                
+        containers.motor_signals.set(1, motor_signals.at(1));
+        containers.test_flag = 2;
       }
       else
       {
         //printf("At x = %f   y = %f, within %f meters of x = %f   y = %f\n", x_current, y_current, containers.sufficientProximity.to_double(), x_dest, y_dest);
+        containers.self.agent.source.set(0, containers.local_state[0]);
+        containers.self.agent.source.set(1, containers.local_state[1]);
         containers.motor_signals.set(0, 0.0);
         containers.motor_signals.set(1, 0.0);
         heading_PID.reset();        
@@ -151,20 +165,24 @@ threads::control::run (void)
       
     }
     //Should we drive home if we are localised?
-    else if (containers.heatbeat_connectivity == 1)
+   /* else if (containers.connection_status == 0)
     {
         containers.motor_signals.set(0, 0.0);
         containers.motor_signals.set(1, 0.0);
         heading_PID.reset();        
-    }
+    }*/
     //In teleop mode, get motor signals from thrust and heading fractions
     else if (containers.teleop_status == 1)
     {
+
       std::vector<double> motor_signals = design->motor_signals_from_effort_fractions(
-        containers.thrustFraction.to_double(), 
-        containers.headingFraction.to_double());        
-      containers.motor_signals.set(0, motor_signals.at(0));
-      containers.motor_signals.set(1, motor_signals.at(1));          
+       containers.thrustFraction.to_double(), 
+       containers.headingFraction.to_double());
+ //    containers.thrustFraction = 0.0;        
+ //    containers.headingFraction = 0.0;        
+       containers.motor_signals.set(0, motor_signals.at(0));
+       containers.motor_signals.set(1, motor_signals.at(1));
+//     printf("In teleop. Motor signals are: %f, %f\n", motor_signals.at(0), motor_signals.at(1));          
       heading_PID.reset();
     }
     else

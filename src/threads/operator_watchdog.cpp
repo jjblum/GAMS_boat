@@ -52,7 +52,7 @@ threads::operator_watchdog::run (void)
   {
     printf("WARNING: Operator is not sending packets to the boat!\n");
     // do stuff, like put the boat into teleop mode
-    containers.teleop_status = 1;
+    containers.teleop_status = 0;
   }
   containers.heartbeat_operator = 0;
 }

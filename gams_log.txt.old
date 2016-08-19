@@ -1,0 +1,284 @@
+HEYYYYYYY
+THERE
+gams::controllers::BaseController::analyze: calling algorithm_->analyze ()
+gams::controllers::BaseController::run: after analyze (), 33 modifications to send
+gams::controllers::BaseController::run: calling plan ()
+gams::controllers::BaseController::plan: calling algorithm_->plan ()
+gams::controllers::BaseController::run: after plan (), 33 modifications to send
+gams::controllers::BaseController::run: calling execute ()
+gams::controllers::BaseController::execute: calling algorithm_->execute ()
+gams::controllers::BaseController::run: after execute (), 33 modifications to send
+gams::controllers::BaseController::run: sending updates
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::kb_print::run: executing
+threads::localization::run: executing
+threads::kb_print::run: executing
+gams::controllers::BaseController::run: calling monitor ()
+gams::controllers::BaseController::monitor: calling platform_->sense ()
+gams::controllers::BaseController::run: after monitor (), 33 modifications to send
+gams::controllers::BaseController::run: calling analyze ()
+gams::controllers::BaseController::analyze: calling platform_->analyze ()
+gams::controllers::BaseController::analyze: calling system_analyze ()
+gams::controllers::BaseController::system_analyze: checking agent and swarm commands
+gams::controllers::BaseController::analyze: calling algorithm_->analyze ()
+gams::controllers::BaseController::run: after analyze (), 33 modifications to send
+gams::controllers::BaseController::run: calling plan ()
+gams::controllers::BaseController::plan: calling algorithm_->plan ()
+gams::controllers::BaseController::run: after plan (), 33 modifications to send
+gams::controllers::BaseController::run: calling execute ()
+gams::controllers::BaseController::execute: calling algorithm_->execute ()
+gams::controllers::BaseController::run: after execute (), 33 modifications to send
+gams::controllers::BaseController::run: sending updates
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::kb_print::run: executing
+gams::controllers::BaseController::run: calling monitor ()
+gams::controllers::BaseController::monitor: calling platform_->sense ()
+gams::controllers::BaseController::run: after monitor (), 33 modifications to send
+gams::controllers::BaseController::run: calling analyze ()
+gams::controllers::BaseController::analyze: calling platform_->analyze ()
+gams::controllers::BaseController::analyze: calling system_analyze ()
+gams::controllers::BaseController::system_analyze: checking agent and swarm commands
+threads::kb_print::run: executing
+gams::controllers::BaseController::analyze: calling algorithm_->analyze ()
+gams::controllers::BaseController::run: after analyze (), 33 modifications to send
+gams::controllers::BaseController::run: calling plan ()
+gams::controllers::BaseController::plan: calling algorithm_->plan ()
+gams::controllers::BaseController::run: after plan (), 33 modifications to send
+gams::controllers::BaseController::run: calling execute ()
+gams::controllers::BaseController::execute: calling algorithm_->execute ()
+gams::controllers::BaseController::run: after execute (), 33 modifications to send
+gams::controllers::BaseController::run: sending updates
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::kb_print::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::kb_print::run: executing
+gams::controllers::BaseController::run: calling monitor ()
+gams::controllers::BaseController::monitor: calling platform_->sense ()
+gams::controllers::BaseController::run: after monitor (), 33 modifications to send
+gams::controllers::BaseController::run: calling analyze ()
+gams::controllers::BaseController::analyze: calling platform_->analyze ()
+gams::controllers::BaseController::analyze: calling system_analyze ()
+gams::controllers::BaseController::system_analyze: checking agent and swarm commands
+gams::controllers::BaseController::analyze: calling algorithm_->analyze ()
+gams::controllers::BaseController::run: after analyze (), 33 modifications to send
+gams::controllers::BaseController::run: calling plan ()
+gams::controllers::BaseController::plan: calling algorithm_->plan ()
+gams::controllers::BaseController::run: after plan (), 33 modifications to send
+gams::controllers::BaseController::run: calling execute ()
+gams::controllers::BaseController::execute: calling algorithm_->execute ()
+gams::controllers::BaseController::run: after execute (), 33 modifications to send
+gams::controllers::BaseController::run: sending updates
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::gps_spoofer::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::compass_spoofer::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::compass_spoofer::run: executing
+threads::localization::run: executing
+threads::gps_spoofer::run: executing
+threads::localization::run: executing
+threads::control::run: executing
+threads::

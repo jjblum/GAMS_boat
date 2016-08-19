@@ -50,6 +50,14 @@ threads::JSON_write::run (void)
 
   // construct motor json
   json motor_json;
+  if (containers.test_flag == 2)
+  {
+      motor_json["m0"] = { {"v", 2.0} };
+      motor_json["m1"] = { {"v", 1.0} };
+      write(motor_json);
+      containers.test_flag = 3;
+      return;
+  }
   std::vector<double> motor_signals = containers.motor_signals.to_record().to_doubles();
   if (motor_signals.size() < 2) 
   {

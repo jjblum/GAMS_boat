@@ -47,6 +47,8 @@ public:
     containers::Integer teleop_status;
     containers::Integer arm_signal;
     containers::Integer error_signal;
+    containers::Integer autonomy_enabled;
+    containers::Integer test_flag;
     
     // misc. stuff
     containers::Integer id;

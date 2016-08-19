@@ -86,6 +86,12 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     
     error_signal.set_name(prefix + "errorSignal", kb);
     error_signal = 0;
+
+    autonomy_enabled.set_name(prefix + "autonomyEnabled", kb);
+    autonomy_enabled = 0;
+    
+    test_flag.set_name(prefix + "testFlag", kb);
+    test_flag = 0;
     
     // misc stuff
     battery_voltage.set_name(prefix + "batteryVoltage", kb);
