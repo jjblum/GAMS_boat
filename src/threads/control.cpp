@@ -59,8 +59,7 @@ threads::control::run (void)
 	  std::cout<<"SF "<<*containers.LOS_surge_effort_fraction << std::endl;
 		i = 0;
 	}*/
-    if(containers.test_flag == 1) 
-    //if (containers.autonomy_enabled == 1 && containers.teleop_status != 1 && containers.localized == 1)
+    if (containers.autonomy_enabled == 1 && containers.teleop_status != 1 && containers.localized == 1)
     {        
       // goal state - determined by containers for agent.id.source, agent.id.destination, and agent.id.desired_velocity
       double x_dest, x_source, x_current, y_dest, y_source, y_current, th_full, th_current; 
@@ -149,7 +148,6 @@ threads::control::run (void)
         std::vector<double> motor_signals = design->motor_signals_from_effort_fractions(surge_effort_fraction, heading_signal);        
         containers.motor_signals.set(0, motor_signals.at(0));
         containers.motor_signals.set(1, motor_signals.at(1));
-        containers.test_flag = 2;
       }
       else
       {
