@@ -102,7 +102,11 @@ threads::control::run (void)
         lookahead_distance = containers.LOS_lookahead.to_double(); // TODO - use a dynamic lookahead?     
         std::vector<double> projected_state = {x_source + L_current*cos(th_full), y_source + L_current*sin(th_full)};
         std::vector<double> lookahead_state = {projected_state.at(0) + lookahead_distance*cos(th_full), projected_state.at(1) + lookahead_distance*sin(th_full)};
-        
+        if (  L_current + lookahead_distance > L_full )
+	{
+		lookahead_state[0] = x_dest;
+		lookahead_state[1] = y_dest;
+	}
         //std::cout << "projected state = " << projected_state << std::endl;
         //std::cout << "lookahead state = " << lookahead_state << std::endl;
         
@@ -112,7 +116,9 @@ threads::control::run (void)
         heading_desired = atan2(dy_lookahead, dx_lookahead);
  //     std::cout<< "Headings " << heading_current << " ,  "<< atan2(dy_current, dx_current) <<std::endl;
         heading_error = utility::angle_tools::minimum_difference(heading_current - heading_desired); // fed into a 1 DOF PID for heading                     
-        
+       	containers.heading_error = heading_error; 
+       	containers.heading_ahrs = heading_current; 
+       	containers.heading_desired = heading_desired; 
         t = utility::time_tools::now();
         heading_signal = heading_PID.signal(heading_error, t);                
         if (std::abs(heading_signal) > 1.0)
@@ -152,8 +158,8 @@ threads::control::run (void)
       else
       {
         //printf("At x = %f   y = %f, within %f meters of x = %f   y = %f\n", x_current, y_current, containers.sufficientProximity.to_double(), x_dest, y_dest);
-        containers.self.agent.source.set(0, containers.local_state[0]);
-        containers.self.agent.source.set(1, containers.local_state[1]);
+        //containers.self.agent.source.set(0, containers.local_state[0]);
+        //containers.self.agent.source.set(1, containers.local_state[1]);
         containers.motor_signals.set(0, 0.0);
         containers.motor_signals.set(1, 0.0);
         heading_PID.reset();        

@@ -70,7 +70,6 @@ threads::JSON_read::run (void)
             // SENSORS
             if (primary_key.substr(0,1) == "s") // look for a leading "s"
             {
-		num_readings++;
               std::string type = j.front().find("type").value();
               utility::string_tools::remove_quotes(type);
               
@@ -150,10 +149,10 @@ threads::JSON_read::run (void)
                   //}
 		  try{
 		    double euler_yaw = std::stod(ahrs_data[4]);
-		    double yaw = (-euler_yaw + 90.0);
-		    if (yaw > 180.0)
+		    double yaw = (-euler_yaw - 90.0);
+		    if (yaw < -180.0)
 		    {
-		      yaw -= 360.0;
+		      yaw += 360.0;
 		    }
 		    yaw *= M_PI/180.0;
 		    std::vector<double> compass = {yaw}; 

@@ -50,11 +50,18 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     LOS_lookahead = 3.0;
     
     LOS_surge_effort_fraction.set_name(prefix + "LOS_surge_effort_fraction", kb);
-    LOS_surge_effort_fraction = 1.0;
+    LOS_surge_effort_fraction = 0.75;
     
     LOS_heading_PID.set_name(prefix + "LOS_heading_PID", kb);
     std::vector<double> LOS_heading_PID_start = {2.0, 0.0, 1.0};
     LOS_heading_PID.set(LOS_heading_PID_start);
+
+    heading_error.set_name(prefix + "headingError", kb);
+    heading_error = 0;
+    heading_ahrs.set_name(prefix + "headingAHRS", kb);
+    heading_ahrs = 0;
+    heading_desired.set_name(prefix + "headingDesired", kb);
+    heading_desired = 0;
 
     // Integer status stuff
     gps_init.set_name(prefix + "gpsInitialized", kb);
@@ -90,8 +97,6 @@ Containers::Containers(madara::knowledge::KnowledgeBase &kb_, int id_)
     autonomy_enabled.set_name(prefix + "autonomyEnabled", kb);
     autonomy_enabled = 0;
     
-    test_flag.set_name(prefix + "testFlag", kb);
-    test_flag = 0;
     
     // misc stuff
     battery_voltage.set_name(prefix + "batteryVoltage", kb);

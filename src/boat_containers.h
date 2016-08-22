@@ -35,6 +35,9 @@ public:
     containers::Double LOS_lookahead;
     containers::Double LOS_surge_effort_fraction; // desired maximum surge effort = [0., 1.]
     containers::NativeDoubleVector LOS_heading_PID;
+    containers::Double heading_error;
+    containers::Double heading_ahrs;
+    containers::Double heading_desired;
     
     // Integer status stuff
     containers::Integer gps_init;

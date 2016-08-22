@@ -24,8 +24,8 @@ std::vector<double> designs::LutraTank::motor_signals_from_effort_fractions(doub
   double m0 = 0;
   double m1 = 0;
   double motor_overage = 0;
-  m0 = thrust_fraction + heading_fraction;
-  m1 = thrust_fraction - heading_fraction;
+  m0 = thrust_fraction - heading_fraction;
+  m1 = thrust_fraction + heading_fraction;
   
   //printf("Design: motor signals BEFORE saturation correction:  m0 = %f   m1 = %f\n", m0, m1);
   
@@ -38,8 +38,8 @@ std::vector<double> designs::LutraTank::motor_signals_from_effort_fractions(doub
     motor_overage = copysign(std::abs(m1) - 1.0, m1);
   }
   double corrected_thrust_fraction = thrust_fraction - motor_overage;
-  m0 = corrected_thrust_fraction + heading_fraction;
-  m1 = corrected_thrust_fraction - heading_fraction;
+  m0 = corrected_thrust_fraction - heading_fraction;
+  m1 = corrected_thrust_fraction + heading_fraction;
   
   //printf("Design: motor signals AFTER saturation correction:  m0 = %f   m1 = %f\n", m0, m1);
   //printf("Design: equivalent effort fractions: thrust = %f   heading = %f\n", corrected_thrust_fraction, heading_fraction);

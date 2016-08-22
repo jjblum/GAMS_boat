@@ -184,7 +184,7 @@ platforms::boat::move (
    double lat = location.lat();
    double lng = location.lng();
    
-//   printf("platform.move():  lat = %f, lng = %f\n", lat, lng);
+   printf("platform.move():  lat = %f, lng = %f\n", lat, lng);
 
    GeographicLib::GeoCoords coord(lat, lng, containers.gpsZone.to_integer());
    double easting = coord.Easting();
@@ -192,8 +192,8 @@ platforms::boat::move (
    
    if (easting != self_->agent.dest[0] || northing != self_->agent.dest[1])
    {
-   //  printf("platform.move():  NEW DESTINATION\n");
-  //   printf("platform.move():  new x = %f,  new y = %f,  old x = %f,  old y = %f\n", 
+     printf("platform.move():  NEW DESTINATION\n");
+    printf("platform.move():  new x = %f,  new y = %f,  old x = %f,  old y = %f\n", 
 //       easting, northing, self_->agent.dest[0], self_->agent.dest[1]);   
 
      // update source to prior destination
