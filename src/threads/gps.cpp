@@ -1,7 +1,7 @@
 
 #include "gams/loggers/GlobalLogger.h"
 #include "gps.h"
-
+#include <stdio.h>
 namespace knowledge = madara::knowledge;
 
 // constructor
@@ -50,8 +50,8 @@ threads::gps::run (void)
     
     if (gps_.decodeSingleMessage(Ublox::NAV_POSLLH, pos_data) == 1)
     { 
-      //printf("Received Adafruit GPS lat/long = %f, %f\n", lat, lon);
-      GeographicLib::GeoCoords coord(pos_data[1], pos_data[1]);
+      //printf("Received Adafruit GPS lat/long = %f, %f\n", pos_data[2], pos_data[1]);
+      GeographicLib::GeoCoords coord(pos_data[2]/10000000, pos_data[1]/10000000);
       std::vector<double> gps_utm = {coord.Easting(), coord.Northing()};
       containers_.gpsZone = coord.Zone();
       if (coord.Northp())
@@ -68,3 +68,11 @@ threads::gps::run (void)
       new_sensor_callback(datum);
     }
 }
+
+double threads::gps::GPRMC_to_degrees(double value)
+{
+  double fullDegrees = floor(value/100.0);
+  double minutes = value - fullDegrees*100.0;
+  return (fullDegrees + minutes/60.0);
+}
+

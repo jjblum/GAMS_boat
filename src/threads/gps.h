@@ -53,6 +53,7 @@ namespace threads
     Containers containers_;
     Ublox gps_;
     std::vector<double> pos_data;
+    double GPRMC_to_degrees(double value);
   };
 } // end namespace threads
 	

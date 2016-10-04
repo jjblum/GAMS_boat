@@ -1,8 +1,6 @@
 
 #include "gams/loggers/GlobalLogger.h"
 #include "ahrs.h"
-#include "/home/pi/Navio2/C++/Navio/MPU9250.h"
-#include "Util.h"
 #include <stdint.h>
 #include <unistd.h>
 #include <sys/time.h>

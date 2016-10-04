@@ -9,7 +9,7 @@
 
 mkdir -p "$HOME/tmp"
 PIDFILE="$HOME/tmp/boat_controller.pid"
-CMD="/home/pi/GAMS_boat/custom_controller -i 0 -M /home/pi/GAMS_boat/init.mf --broadcast 192.168.1.255:15000"
+CMD="sudo /home/pi/GAMS_boat/custom_controller -i 0 -M /home/pi/GAMS_boat/init.mf --broadcast 192.168.1.255:15000"
 
 if [ -e "${PIDFILE}" ] && (ps -u $(whoami) -opid= |
                            grep -P "^\s*$(cat ${PIDFILE})$" &> /dev/null); then

@@ -1,12 +1,13 @@
 
 #include "gams/loggers/GlobalLogger.h"
 #include "dynamite.h"
-
+#include "stdlib.h"
+#include "stdlib.h"
 namespace knowledge = madara::knowledge;
 
 // constructor
 threads::dynamite::dynamite (Containers & containers_)
-: containers(containers_), pwrPin0(MOTOR0_PWR_PIN), pwrPin1(MOTOR1_PWR_PIN)
+: containers(containers_), pwrPin0(RPI_GPIO_17), pwrPin1(RPI_GPIO_18)
 {
 }
 
@@ -30,12 +31,20 @@ threads::dynamite::init (knowledge::KnowledgeBase & knowledge)
     fprintf(stderr, "Output Enable not set. Are you root?\n");
     return;
   }
+/*  if (!pwm.init(pwr_pins_[0]) || !pwm.init(pwr_pins_[1])) {
+    fprintf(stderr, "Output Enable not set. Are you root?\n");
+    return;
+  }*/
   pwm.enable(pwm_pins_[0]);
   pwm.set_period(pwm_pins_[0], 50);
   pwm.enable(pwm_pins_[1]);
   pwm.set_period(pwm_pins_[1], 50);
  
-  pwrPin0.init();
+  /*pwm.enable(pwr_pins_[0]);
+  pwm.set_period(pwr_pins_[0], 50);
+  pwm.enable(pwr_pins_[1]);
+  pwm.set_period(pwr_pins_[1], 50);
+  */pwrPin0.init();
   pwrPin0.setMode(Navio::Pin::GpioMode::GpioModeOutput);
   pwrPin1.init();
   pwrPin1.setMode(Navio::Pin::GpioMode::GpioModeOutput);
@@ -65,21 +74,25 @@ threads::dynamite::run (void)
   if(!motors_armed)
   { 
     if(containers.arm_signal != 1)
-			return;
-		else
-		{
+      return;
+    else
+    {
       //arm motors
-      pwrPin0.write(0);
-      usleep(500000);
-      pwm.set_duty_cycle(pwm_pins_[0], 1500);
-      pwrPin0.write(1);
+      printf("Arming\n");
+      //pwm.set_duty_cycle(pwr_pins_[0], 0.1);
+      //pwrPin0.write(0);
+      //usleep(500000);
+      pwm.set_duty_cycle(pwm_pins_[0], 1.5);
+      pwm.set_duty_cycle(pwm_pins_[1], 1.5);
+      //pwrPin0.write(1);
+      //pwm.set_duty_cycle(pwr_pins_[0], 20.0);
       usleep(3000000);
 
-      pwrPin1.write(0);
-      usleep(500000);
-      pwm.set_duty_cycle(pwm_pins_[1], 1500);
-  		pwrPin1.write(1);
-      usleep(3000000);
+      //pwm.set_duty_cycle(pwr_pins_[1], 0.1);
+      //usleep(500000);
+      //pwm.set_duty_cycle(pwm_pins_[1], 1.5);
+      //pwm.set_duty_cycle(pwr_pins_[1], 20.0);
+      //usleep(3000000);
 		
       motors_armed = true;
     }
@@ -108,6 +121,6 @@ threads::dynamite::setMotor(int m_id, double v)
 
 
   //Convert motor signal to correct pulse width
-  double command  = 1500 + velocities_[m_id]*500;
+  float command  = 1.5 + (float)velocities_[m_id]*0.5;
   pwm.set_duty_cycle(pwm_pins_[m_id], command);
 }

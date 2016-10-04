@@ -15,9 +15,9 @@
 #define VELOCITY_THRESHOLD 0.001
 
 #define MOTOR0_PWM_PIN 0
-#define MOTOR0_PWR_PIN 1
-#define MOTOR1_PWM_PIN 2
-#define MOTOR1_PWR_PIN 3
+//#define MOTOR0_PWR_PIN 1
+#define MOTOR1_PWM_PIN 1
+//#define MOTOR1_PWR_PIN 3
 
 
 namespace threads
@@ -55,6 +55,7 @@ namespace threads
     Containers containers;
     double velocities_[2];
     double pwm_pins_[2] = { MOTOR0_PWM_PIN, MOTOR1_PWM_PIN };
+    //double pwr_pins_[2] = { MOTOR0_PWR_PIN, MOTOR1_PWR_PIN };
     Navio::Pin pwrPin0;
     Navio::Pin pwrPin1;
     PWM pwm; 
