@@ -17,9 +17,9 @@
 #include "threads/compass_spoofer.h"
 #include "threads/control.h"
 #include "threads/gps_spoofer.h"
-#include "threads/io_thread.h"
-#include "threads/JSON_read.h"
-#include "threads/JSON_write.h"
+#include "threads/dynamite.h"
+//#include "threads/ahrs.h"
+//#include "threads/gps.h"
 #include "threads/kb_print.h"
 #include "threads/localization.h"
 #include "threads/random_motor_signals.h"
@@ -33,15 +33,13 @@
 
 // begin other includes
 #include "boat_containers.h"
-#include "asio/io_service.hpp"
-#include "asio/error_code.hpp"
-#include "asio/serial_port.hpp"
 #include <memory>
 #include <chrono>
 #include <thread>
 #include "design.h"
 #include "lutra_tank.h"
 #include "lutra_articulated_fan.h"
+
 // end other includes
 
 // END DO NOT DELETE THIS SECTION
@@ -373,46 +371,6 @@ int main (int argc, char ** argv)
   // create containers
   Containers containers(knowledge, settings.id);
 
-  
-  // open serial port to boat arduino
-  asio::io_service io;
-  std::shared_ptr<asio::serial_port> port = std::make_shared<asio::serial_port>(io);  
-  std::string port_name = EBOARD_PORT_NAME;
-  asio::error_code ec; 
-  bool port_ready = false;
-  while (!port_ready)
-  {
-    printf("attempting to open eboard port: %s\n", port_name.c_str());
-    port->open(port_name, ec);
-    if (!ec) 
-    {
-      if (port->is_open()) 
-      {
-          printf("eboard port is open\n");
-          port->set_option(asio::serial_port_base::baud_rate(EBOARD_BAUD_RATE));
-          port_ready = true;
-          break;
-      }
-      else 
-      {
-        printf("ERROR: port->is_open() returned false\n");
-      }
-    }
-    else 
-    {
-      printf("WARNING: port->open() failed:  %s\n Do you have the eboard plugged in?\n", ec.message().c_str());
-    }
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
-  
-  
-  // AHRS compass object
-  //std::shared_ptr<WithRobot::MyAhrsPlus> AHRS = std::make_shared<WithRobot::MyAhrsPlus>();
-  //AHRS->my_start();
-  //unsigned char v[4] = {'a','b','c','d'};
-  //unsigned char * pv = v; 
-  //AHRS->my_feed(pv,4); 
-  
   // begin transport creation 
   // end transport creation
   
@@ -507,8 +465,9 @@ int main (int argc, char ** argv)
   //threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers, design));
   //threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
-  threader.run (0.0, "JSON_read", new threads::JSON_read (port, containers, localization_thread));
-  threader.run (0.0, "JSON_write", new threads::JSON_write (port, containers));
+  //threader.run (0.0, "dynamite", new threads::dynamite (port, containers, localization_thread));
+  //threader.run (0.0, "gps", new threads::gps (port, containers));
+  //threader.run (0.0, "ahrs", new threads::ahrs (port, containers));
   //threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (50.0, "localization", localization_thread);
   //threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));

@@ -27,18 +27,19 @@ FILES = \
   src/boat_containers.cpp \
   src/platforms/boat.cpp \
   src/threads/control.cpp \
-  src/threads/io_thread.cpp \
   src/threads/compass_spoofer.cpp \
   src/threads/ode_simulation_spoofer.cpp \
   src/threads/sensing.cpp \
   src/threads/operator_watchdog.cpp \
   src/threads/localization.cpp \
+  src/threads/dynamite.cpp \
   src/threads/random_motor_signals.cpp \
-  src/threads/JSON_write.cpp \
   src/threads/gps_spoofer.cpp \
   src/threads/analytics.cpp \
-  src/threads/JSON_read.cpp \
-  src/threads/kb_print.cpp
+  src/threads/kb_print.cpp \
+  /home/pi/Navio2/C++/Navio/gpio.cpp \
+  /home/pi/Navio2/C++/Navio/PWM.cpp \
+  /home/pi/Navio2/C++/Navio/Util.cpp 
 
 VPATH = .:src:src/threads:src/platforms
 
