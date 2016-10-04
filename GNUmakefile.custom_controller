@@ -32,21 +32,25 @@ FILES = \
   src/threads/sensing.cpp \
   src/threads/operator_watchdog.cpp \
   src/threads/localization.cpp \
-  src/threads/dynamite.cpp \
   src/threads/random_motor_signals.cpp \
   src/threads/gps_spoofer.cpp \
   src/threads/analytics.cpp \
   src/threads/kb_print.cpp \
+  /home/pi/Navio2/C++/Navio/Util.cpp \
   /home/pi/Navio2/C++/Navio/gpio.cpp \
   /home/pi/Navio2/C++/Navio/PWM.cpp \
-  /home/pi/Navio2/C++/Navio/Util.cpp 
+  /home/pi/Navio2/C++/Navio/MPU9250.cpp \
+  /home/pi/Navio2/C++/Navio/Ublox.cpp \
+  src/threads/dynamite.cpp \
+  src/threads/gps.cpp \
+  src/threads/ahrs.cpp
 
 VPATH = .:src:src/threads:src/platforms
 
 #----------------------------------------------------------------------------
 #       Include macros and targets
 #----------------------------------------------------------------------------
-LDLIBS = -lACE -lMADARA -lGAMS -lGeographic
+LDLIBS = -lACE -lMADARA -lGAMS -lGeographic -lwiringPi
 
 PRJ_TYPE = rtp
 
@@ -137,7 +141,7 @@ LDLIBPATH     = -L. -L$(GAMS_ROOT)/lib -L$(MADARA_ROOT)/lib -L$(ACE_ROOT)/lib
 else
 LDFLAGS      += -L. $(if $(ARCH),-L./$(ARCH)) -L$(GAMS_ROOT)/lib $(if $(ARCH),-L$(GAMS_ROOT)/lib/$(ARCH)) -L$(MADARA_ROOT)/lib $(if $(ARCH),-L$(MADARA_ROOT)/lib/$(ARCH)) -L$(ACE_ROOT)/lib $(if $(ARCH),-L$(ACE_ROOT)/lib/$(ARCH))
 endif
-CPPFLAGS     += -I$(GAMS_ROOT)/src -I$(MADARA_ROOT)/include -I$(ACE_ROOT)
+CPPFLAGS     += -I$(GAMS_ROOT)/src -I$(MADARA_ROOT)/include -I$(ACE_ROOT) -I$(NAVIO_ROOT)
 CPPFLAGS     += -D_USE_MATH_DEFINES
 CPPFLAGS     += -std=c++11 -g -Og -Wextra -pedantic
 ifeq ($(static_libs),1)

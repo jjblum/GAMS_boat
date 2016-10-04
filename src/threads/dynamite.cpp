@@ -35,10 +35,10 @@ threads::dynamite::init (knowledge::KnowledgeBase & knowledge)
   pwm.enable(pwm_pins_[1]);
   pwm.set_period(pwm_pins_[1], 50);
  
-  pwrPin0.setMode(Navio::Pin::GpioMode::GpioModeOutput);
   pwrPin0.init();
-  pwrPin1.setMode(Navio::Pin::GpioMode::GpioModeOutput);
+  pwrPin0.setMode(Navio::Pin::GpioMode::GpioModeOutput);
   pwrPin1.init();
+  pwrPin1.setMode(Navio::Pin::GpioMode::GpioModeOutput);
 }
 
 /**

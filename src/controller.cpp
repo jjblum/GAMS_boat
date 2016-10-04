@@ -18,8 +18,8 @@
 #include "threads/control.h"
 #include "threads/gps_spoofer.h"
 #include "threads/dynamite.h"
-//#include "threads/ahrs.h"
-//#include "threads/gps.h"
+#include "threads/ahrs.h"
+#include "threads/gps.h"
 #include "threads/kb_print.h"
 #include "threads/localization.h"
 #include "threads/random_motor_signals.h"
@@ -465,9 +465,9 @@ int main (int argc, char ** argv)
   //threader.run (10.0, "compass_spoofer", new threads::compass_spoofer (localization_thread));
   threader.run (20.0, "control", new threads::control (containers, design));
   //threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
-  //threader.run (0.0, "dynamite", new threads::dynamite (port, containers, localization_thread));
-  //threader.run (0.0, "gps", new threads::gps (port, containers));
-  //threader.run (0.0, "ahrs", new threads::ahrs (port, containers));
+  threader.run (0.0, "dynamite", new threads::dynamite (containers));
+  threader.run (0.0, "ahrs", new threads::ahrs (containers, localization_thread));
+  threader.run (0.0, "gps", new threads::gps (containers, localization_thread));
   //threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (50.0, "localization", localization_thread);
   //threader.run (1.0, "random_motor_signals", new threads::random_motor_signals (containers));
