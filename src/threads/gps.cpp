@@ -26,6 +26,10 @@ threads::gps::init (knowledge::KnowledgeBase & knowledge)
 {
   // point our data plane to the knowledge base initializing the thread
   data_ = knowledge;
+  if (!gps_.testConnection())
+  {
+    fprintf(stderr, "Unable to complete Ublox connection test\n");  
+  }
 }
 
 /**

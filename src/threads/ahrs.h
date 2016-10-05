@@ -8,6 +8,7 @@
 #include "../boat_containers.h"
 #include "AHRS.hpp"
 #include "/home/pi/Navio2/C++/Navio/MPU9250.h"
+#include "/home/pi/Navio2/C++/Navio/LSM9DS1.h"
 #include "/home/pi/Navio2/C++/Navio/Util.h"
 #include <unistd.h>
 #include "localization.h"

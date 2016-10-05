@@ -40,6 +40,7 @@ FILES = \
   /home/pi/Navio2/C++/Navio/gpio.cpp \
   /home/pi/Navio2/C++/Navio/PWM.cpp \
   /home/pi/Navio2/C++/Navio/MPU9250.cpp \
+  /home/pi/Navio2/C++/Navio/LSM9DS1.cpp \
   /home/pi/Navio2/C++/Navio/Ublox.cpp \
   src/threads/dynamite.cpp \
   src/threads/gps.cpp \

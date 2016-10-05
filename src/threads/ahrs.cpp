@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdio.h>
+#include <math.h>
 
 namespace knowledge = madara::knowledge;
 
@@ -30,7 +31,8 @@ threads::ahrs::init (knowledge::KnowledgeBase & knowledge)
 {
   // point our data plane to the knowledge base initializing the thread
   data_ = knowledge;
-  imu = new MPU9250();
+  //imu = new MPU9250();
+  imu = new LSM9DS1();
   if (!imu->probe()) {
       printf("Sensor not enabled\n");
       return;
@@ -92,7 +94,7 @@ threads::ahrs::run (void)
     //------------------------ Read Euler angles ------------------------------
 
     ahrs_.getEuler(&roll, &pitch, &yaw);
-
+    double boat_yaw = yaw;
     //------------------- Discard the time of the first cycle -----------------
 
     if (!isFirst)
@@ -105,18 +107,20 @@ threads::ahrs::run (void)
     //------------- Console and network output with a lowered rate ------------
 
     dtsumm += dt;
-    if(dtsumm > 0.05)
+    if(dtsumm > 0.05 && !isnan(boat_yaw))
     {
+	printf("dtsumm is %f\n", dtsumm);
         // Console output
-        //printf("ROLL: %+05.2f PITCH: %+05.2f YAW: %+05.2f PERIOD %.4fs RATE %dHz \n", roll, pitch, yaw * -1, dt, int(1/dt));
+        printf("ROLL: %+05.2f PITCH: %+05.2f YAW: %+05.2f PERIOD %.4fs RATE %dHz \n", roll, pitch, yaw * -1, dt, int(1/dt));
 
         /*yaw = (-euler_yaw - 90.0);
         if (yaw < -180.0)
         {
           yaw += 360.0;
         }*/
-        yaw *= M_PI/180.0;
-        std::vector<double> compass = {yaw};
+	//Convert to boat frame: Navio pitch is boat yaw
+        boat_yaw = boat_yaw*M_PI/180.0;
+        std::vector<double> compass = {boat_yaw};
         Eigen::MatrixXd covariance(1, 1);
         covariance = 0.00001*Eigen::MatrixXd::Identity(1, 1);
         Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
