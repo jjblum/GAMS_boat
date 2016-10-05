@@ -109,7 +109,7 @@ threads::ahrs::run (void)
     dtsumm += dt;
     if(dtsumm > 0.05 && !isnan(boat_yaw))
     {
-	printf("dtsumm is %f\n", dtsumm);
+	//printf("dtsumm is %f\n", dtsumm);
         // Console output
    //     printf("ROLL: %+05.2f PITCH: %+05.2f YAW: %+05.2f PERIOD %.4fs RATE %dHz \n", roll, pitch, yaw * -1, dt, int(1/dt));
 
