@@ -24,7 +24,7 @@ public:
 	AHRS(float q0 = 1, float q1 = 0, float q2 = 0, float q3 = 0)
 	:	 q0(q0), q1(q1), q2(q2), q3(q3), twoKi(0), twoKp(2)  {;}
 
-	void update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float dt)
+	void AHRSupdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float dt)
 	{
 		float recipNorm;
 	    float q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
@@ -53,6 +53,8 @@ public:
 			mx *= recipNorm;
 			my *= recipNorm;
 			mz *= recipNorm;
+    
+		//printf("{%6.2f, %6.2f, %6.2f} {%6.2f, %6.2f, %6.2f}, {%6.2f, %6.2f, %6.2f}\n", ax,ay,az,gx,gy,gz,mx,my,mz);
 
 	        // Auxiliary variables to avoid repeated arithmetic
 	        q0q0 = q0 * q0;

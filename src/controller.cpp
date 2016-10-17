@@ -466,7 +466,7 @@ int main (int argc, char ** argv)
   threader.run (20.0, "control", new threads::control (containers, design));
   //threader.run (5.0, "gps_spoofer", new threads::gps_spoofer (containers, localization_thread));
   threader.run (0.0, "dynamite", new threads::dynamite (containers));
-  threader.run (0.0, "ahrs", new threads::ahrs (containers, localization_thread));
+  threader.run (512.0, "ahrs", new threads::ahrs (containers, localization_thread));
   threader.run (0.0, "gps", new threads::gps (containers, localization_thread));
   //threader.run (1.0, "kb_print", new threads::kb_print ());
   threader.run (50.0, "localization", localization_thread);

@@ -1,20 +1,17 @@
 #include "gams/loggers/GlobalLogger.h"
-#include "ahrs.h"
-#include <stdint.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <stdio.h>
+#include "myahrs.h"
+#include "../utility.h"
 
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::ahrs::ahrs (Containers & containers_, threads::localization * localization_reference)
+threads::myahrs::myahrs (Containers & containers_, threads::localization * localization_reference)
 : containers(containers_), LocalizationCaller(localization_reference)
 {
 }
 
 // destructor
-threads::ahrs::~ahrs ()
+threads::myahrs::~myahrs ()
 {
 }
 
@@ -25,16 +22,24 @@ threads::ahrs::~ahrs ()
  * the function.
  **/
 void
-threads::ahrs::init (knowledge::KnowledgeBase & knowledge)
+threads::myahrs::init (knowledge::KnowledgeBase & knowledge)
 {
   // point our data plane to the knowledge base initializing the thread
   data_ = knowledge;
-  imu = new LSM9DS1();
-  if (!imu->probe()) {
-      printf("Sensor not enabled\n");
-      return;
+  asio::io_service io;
+  this->port = std::make_shared<asio::serial_port>(io);
+  asio::error_code ec;
+  bool portReady = false;
+  while (!portReady){
+      this->port->open("\dev\ttyAMA0", ec);
+      if (!ec && this->port->is_open()){
+          this->port->set_option(asio::serial_port_base::baud_rate(115200));
+          portReady=true;
+          break;
+      }
+      std::this_thread::sleep_for(std::chrono::seconds(1));:
   }
-  imuSetup();
+
 }
 
 /**
@@ -44,7 +49,7 @@ threads::ahrs::init (knowledge::KnowledgeBase & knowledge)
  * controller.
  **/
 void
-threads::ahrs::run (void)
+threads::myahrs::run (void)
 {
   /**
    * the MADARA logger is thread-safe, fast, and allows for specifying
@@ -89,8 +94,8 @@ threads::ahrs::run (void)
     my -= hardOffsets[1];
     mz -= hardOffsets[2];
     
-    //printf("{%6.2f, %6.2f, %6.2f} {%6.2f, %6.2f, %6.2f}, {%6.2f, %6.2f, %6.2f}\n", ax,ay,az,gx,gy,gz,mx,my,mz);
-    ahrs_.AHRSupdate(ax, ay, az, gx, gy, gz, my, mx, -mz, dt);
+    printf("{%6.2f, %6.2f, %6.2f} {%6.2f, %6.2f, %6.2f}, {%6.2f, %6.2f, %6.2f}\n", ax,ay,az,gx,gy,gz,mx,my,mz);
+    ahrs_.MadgwickAHRSupdate(ax, ay, az, gx, gy, gz, my, mx, -mz, dt);
     
 
     //------------------------ Read Euler angles ------------------------------
@@ -112,7 +117,6 @@ threads::ahrs::run (void)
     if(dtsumm > 0.05)
     {
         // Console output
-        //printf("{%6.2f, %6.2f, %6.2f} {%6.2f, %6.2f, %6.2f}, {%6.2f, %6.2f, %6.2f}\n", ax,ay,az,gx,gy,gz,mx,my,mz);
         printf("ROLL: %+05.2f PITCH: %+05.2f YAW: %+05.2f PERIOD %.4fs RATE %dHz \n", roll, pitch, yaw * -1, dt, int(1/dt));
 
         /*yaw = (-euler_yaw - 90.0);
@@ -132,67 +136,5 @@ threads::ahrs::run (void)
  
 }
 
-void threads::ahrs::imuSetup()
-{
-    //----------------------- MPU initialization ------------------------------
 
-    imu->initialize();
-
-    //-------------------------------------------------------------------------
-
-	printf("Beginning Gyro calibration...\n");
-	for(int i = 0; i<200; i++)
-	{
-	   imu->update();
-           imu->read_gyroscope(&gx, &gy, &gz);
-
-           gx *= 180 / PI;
-           gy *= 180 / PI;
-           gz *= 180 / PI;
-
-	   offset[0] += (gx*0.0175);
-       offset[1] += (gy*0.0175);
-       offset[2] += (gz*0.0175);
-	   usleep(10000);
-	}
-	offset[0]/=200.0;
-	offset[1]/=200.0;
-	offset[2]/=200.0;
-
-	printf("Gyro Offsets are: %f %f %f\n", offset[0], offset[1], offset[2]);
-	//ahrs_.setGyroOffset(offset[0], offset[1], offset[2]);
-
-    printf("Starting Magnetometer calibration... Start spinning!\n");
-    /*sleep(3);
-    for(int i = 0; i < 2000; i++){
-        imu->update();
-        imu->read_magnetometer(&mx, &my, &mz);
-
-        double magTemp[] = {mx, my, mz};
-        
-        for (int j = 0; j < 3; j++){
-            if (magTemp[j] > magMax[j]){
-                magMax[j] = magTemp[j];
-            }
-            if (magTemp[j] < magMin[j]){
-                magMin[j] = magTemp[j];
-            }
-        }
-
-        usleep(10000);
-    }
-
-    printf("Done. You can stop spinning now...\n");
-
-        hardOffsets[0] = (magMin[0] + magMax[0])/2.0;
-        hardOffsets[1] = (magMin[1] + magMax[1])/2.0;
-        hardOffsets[2] = (magMin[2] + magMax[2])/2.0;
-
-        usleep(1000000);
-	printf("Mag Offsets are: %f %f %f\n", hardOffsets[0], hardOffsets[1], hardOffsets[2]);
-*/
-    hardOffsets[0] = 14.557999;
-    hardOffsets[1] = 4.930000;
-    hardOffsets[2] = 15.631001;
-}
 
