@@ -63,6 +63,7 @@ namespace threads
     char end_of_line_char;
     std::shared_ptr<boost::asio::serial_port> port;
     char raw_buffer[256];
+    std::string data;
   };
 } // end namespace threads
 	

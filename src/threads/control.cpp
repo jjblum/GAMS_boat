@@ -103,10 +103,10 @@ threads::control::run (void)
         std::vector<double> projected_state = {x_source + L_current*cos(th_full), y_source + L_current*sin(th_full)};
         std::vector<double> lookahead_state = {projected_state.at(0) + lookahead_distance*cos(th_full), projected_state.at(1) + lookahead_distance*sin(th_full)};
         if (  L_current + lookahead_distance > L_full )
-	{
-		lookahead_state[0] = x_dest;
-		lookahead_state[1] = y_dest;
-	}
+        {
+            lookahead_state[0] = x_dest;
+            lookahead_state[1] = y_dest;
+        }
         //std::cout << "projected state = " << projected_state << std::endl;
         //std::cout << "lookahead state = " << lookahead_state << std::endl;
         

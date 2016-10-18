@@ -32,7 +32,7 @@ threads::myahrs::init (knowledge::KnowledgeBase & knowledge)
   boost::system::error_code ec;
   bool portReady = false;
   while (!portReady){
-      this->port->open("\dev\ttyAMA0", ec);
+      this->port->open("/dev/ttyAMA0", ec);
       if (!ec && this->port->is_open()){
           this->port->set_option(boost::asio::serial_port_base::baud_rate(115200));
           portReady=true;
@@ -40,7 +40,7 @@ threads::myahrs::init (knowledge::KnowledgeBase & knowledge)
       }
       std::this_thread::sleep_for(std::chrono::seconds(1));
   }
-
+  std::cout << "Port ready\n";
 }
 
 /**
@@ -66,21 +66,30 @@ threads::myahrs::run (void)
     boost::system::error_code ec;
     int bytes_read = port->read_some(boost::asio::buffer(raw_buffer, 256), ec);
     if (!ec && bytes_read > 0)
-	std::cout << raw_buffer << std::endl; 	   
-
-        /*yaw = (-euler_yaw - 90.0);
-        if (yaw < -180.0)
+    {
+        for(int i = 0; i < bytes_read; i++)
         {
-          yaw += 360.0;
+            char c = raw_buffer[i];
+            if(c == '\n')
+            {
+                double yaw = std::stod( utility::string_tools::split(data, ',')[4] );
+                yaw = -yaw + 90;
+                if (yaw > 180)
+                    yaw -= 360;
+                yaw *= M_PI/180.0;
+                std::vector<double> compass = {yaw};
+                Eigen::MatrixXd covariance(1, 1);
+                covariance = 0.00001*Eigen::MatrixXd::Identity(1, 1);
+                Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
+                new_sensor_callback(datum);
+                data.erase();
+                break;
+            }
+            else
+                data += c;
         }
-        yaw *= M_PI/180.0;
-        std::vector<double> compass = {yaw};
-        Eigen::MatrixXd covariance(1, 1);
-        covariance = 0.00001*Eigen::MatrixXd::Identity(1, 1);
-        Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
-        new_sensor_callback(datum);
-*/
- 
+
+    }
 }
 
 
