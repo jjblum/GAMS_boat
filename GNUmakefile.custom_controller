@@ -44,14 +44,14 @@ FILES = \
   /home/pi/Navio2/C++/Navio/Ublox.cpp \
   src/threads/dynamite.cpp \
   src/threads/gps.cpp \
-  src/threads/ahrs.cpp
+  src/threads/myahrs.cpp
 
 VPATH = .:src:src/threads:src/platforms
 
 #----------------------------------------------------------------------------
 #       Include macros and targets
 #----------------------------------------------------------------------------
-LDLIBS = -lACE -lMADARA -lGAMS -lGeographic -lwiringPi
+LDLIBS = -lACE -lMADARA -lGAMS -lGeographic -lwiringPi -lboost_system
 
 PRJ_TYPE = rtp
 

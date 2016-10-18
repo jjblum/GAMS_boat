@@ -1,6 +1,5 @@
 
-#ifndef   _THREAD_AHRS_H_
-#define   _THREAD_AHRS_H_
+#pragma once
 
 #include <string>
 
@@ -11,15 +10,16 @@
 #include "../utility.h"
 #include "../datum.h"
 #include "../localization_caller.h"
-#include "asio.hpp"
-#include "asio/error_code.hpp"
-#include "asio/serial_port.hpp"
-#include "asio/buffer.hpp"
-#include "asio/io_service.hpp"
+#include "boost/asio.hpp"
+#include "boost/system/error_code.hpp"
+#include "boost/asio/serial_port.hpp"
+#include "boost/asio/buffer.hpp"
+#include "boost/asio/io_service.hpp"
 #include <cmath>
 #include <functional>
 #include <eigen3/Eigen/Core>
-
+#include <thread>
+#include <chrono>
 
 
 
@@ -61,9 +61,8 @@ namespace threads
     Containers containers;
 
     char end_of_line_char;
-    std::shared_ptr<asio::serial_port> port;
+    std::shared_ptr<boost::asio::serial_port> port;
     char raw_buffer[256];
   };
 } // end namespace threads
 	
-#endif // _THREAD_AHRS_H_

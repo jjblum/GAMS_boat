@@ -116,7 +116,6 @@ threads::ahrs::run (void)
 	//printf("dtsumm is %f\n", dtsumm);
         // Console output
         //printf("{%6.2f, %6.2f, %6.2f} {%6.2f, %6.2f, %6.2f}, {%6.2f, %6.2f, %6.2f}\n", ax,ay,az,gx,gy,gz,mx,my,mz);
-        printf("ROLL: %+05.2f PITCH: %+05.2f YAW: %+05.2f PERIOD %.4fs RATE %dHz \n", roll, pitch, yaw * -1, dt, int(1/dt));
 	
 	yaw += headingCorrection;
 	if (yaw > 180.0)
@@ -128,6 +127,8 @@ threads::ahrs::run (void)
         {
           yaw += 360.0;
         }*/
+	boat_yaw = yaw;
+        printf("ROLL: %+05.2f PITCH: %+05.2f YAW: %+05.2f PERIOD %.4fs RATE %dHz \n", roll, pitch, yaw * -1, dt, int(1/dt));
 	//Convert to boat frame: Navio pitch is boat yaw
         boat_yaw = boat_yaw*M_PI/180.0;
         std::vector<double> compass = {boat_yaw};
@@ -170,8 +171,8 @@ void threads::ahrs::imuSetup()
 
 	printf("Gyro Offsets are: %f %f %f\n", offset[0], offset[1], offset[2]);
 	//ahrs_.setGyroOffset(offset[0], offset[1], offset[2]);
-
-   /* printf("Starting Magnetometer calibration... Start spinning!\n");
+/*
+    printf("Starting Magnetometer calibration... Start spinning!\n");
     sleep(3);
     for(int i = 0; i < 2000; i++){
         imu->update();
@@ -197,8 +198,9 @@ void threads::ahrs::imuSetup()
         hardOffsets[1] = (magMin[1] + magMax[1])/2.0;
         hardOffsets[2] = (magMin[2] + magMax[2])/2.0;
 
-      usleep(1000000);
-*/
+	printf("Mag Offsets are: %f %f %f\n", hardOffsets[0], hardOffsets[1], hardOffsets[2]);
+
+      usleep(1000000);*/
 	std::string line;
 	std::ifstream infile("/home/pi/GAMS_boat/mag_params.txt");
 	if (std::getline(infile, line) )
@@ -206,6 +208,5 @@ void threads::ahrs::imuSetup()
   		std::istringstream iss(line);
 		iss >> hardOffsets[0] >> hardOffsets[1] >>  hardOffsets[2] >> headingCorrection;
 	}
-	printf("Mag Offsets are: %f %f %f\n", hardOffsets[0], hardOffsets[1], hardOffsets[2]);
 }
 
