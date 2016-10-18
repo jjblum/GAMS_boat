@@ -117,7 +117,12 @@ threads::ahrs::run (void)
         // Console output
         //printf("{%6.2f, %6.2f, %6.2f} {%6.2f, %6.2f, %6.2f}, {%6.2f, %6.2f, %6.2f}\n", ax,ay,az,gx,gy,gz,mx,my,mz);
         printf("ROLL: %+05.2f PITCH: %+05.2f YAW: %+05.2f PERIOD %.4fs RATE %dHz \n", roll, pitch, yaw * -1, dt, int(1/dt));
-
+	
+	yaw += headingCorrection;
+	if (yaw > 180.0)
+	  yaw -= 360.0;
+	if (yaw < -180.0)
+	  yaw += 360; 
         /*yaw = (-euler_yaw - 90.0);
         if (yaw < -180.0)
         {
@@ -199,7 +204,7 @@ void threads::ahrs::imuSetup()
 	if (std::getline(infile, line) )
 	{
   		std::istringstream iss(line);
-		iss >> hardOffsets[0] >> hardOffsets[1] >>  hardOffsets[2];
+		iss >> hardOffsets[0] >> hardOffsets[1] >>  hardOffsets[2] >> headingCorrection;
 	}
 	printf("Mag Offsets are: %f %f %f\n", hardOffsets[0], hardOffsets[1], hardOffsets[2]);
 }
