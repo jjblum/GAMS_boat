@@ -72,18 +72,25 @@ threads::myahrs::run (void)
             char c = raw_buffer[i];
             if(c == '\n')
             {
-                double yaw = std::stod( utility::string_tools::split(data, ',')[4] );
-                yaw = -yaw + 90;
-                if (yaw > 180)
-                    yaw -= 360;
-                yaw *= M_PI/180.0;
-                std::vector<double> compass = {yaw};
-                Eigen::MatrixXd covariance(1, 1);
-                covariance = 0.00001*Eigen::MatrixXd::Identity(1, 1);
-                Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
-                new_sensor_callback(datum);
-                data.erase();
-                break;
+                
+		try{
+			double yaw = std::stod( utility::string_tools::split(data, ',')[4] );
+			yaw = -yaw + 90;
+			if (yaw > 180)
+			    yaw -= 360;
+			yaw *= M_PI/180.0;
+			std::vector<double> compass = {yaw};
+			Eigen::MatrixXd covariance(1, 1);
+			covariance = 0.00001*Eigen::MatrixXd::Identity(1, 1);
+			Datum datum(SENSOR_TYPE::COMPASS, SENSOR_CATEGORY::LOCALIZATION, compass, covariance);
+			new_sensor_callback(datum);
+			data.erase();
+			break;
+		}catch(const std::invalid_argument &){
+			std::cout << "AHRS invalid argument\n";
+		}catch(const std::out_of_range &){
+			std::cout << "AHRS invalid argument\n";
+		}
             }
             else
                 data += c;

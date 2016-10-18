@@ -17,8 +17,8 @@ if [ -e "${PIDFILE}" ] && (ps -u $(whoami) -opid= |
   exit 99
 fi
 
-#$CMD > $HOME/tmp/boat_controller.log &
-$CMD 
+$CMD > $HOME/tmp/boat_controller.log &
+#$CMD 
 
 echo $! > "${PIDFILE}"
 chmod 644 "${PIDFILE}"
