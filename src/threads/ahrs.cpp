@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include <math.h>
-
+#include <sstream>
 namespace knowledge = madara::knowledge;
 
 // constructor
@@ -166,8 +166,8 @@ void threads::ahrs::imuSetup()
 	printf("Gyro Offsets are: %f %f %f\n", offset[0], offset[1], offset[2]);
 	//ahrs_.setGyroOffset(offset[0], offset[1], offset[2]);
 
-    printf("Starting Magnetometer calibration... Start spinning!\n");
-    /*sleep(3);
+   /* printf("Starting Magnetometer calibration... Start spinning!\n");
+    sleep(3);
     for(int i = 0; i < 2000; i++){
         imu->update();
         imu->read_magnetometer(&mx, &my, &mz);
@@ -192,11 +192,15 @@ void threads::ahrs::imuSetup()
         hardOffsets[1] = (magMin[1] + magMax[1])/2.0;
         hardOffsets[2] = (magMin[2] + magMax[2])/2.0;
 
-        usleep(1000000);
-	printf("Mag Offsets are: %f %f %f\n", hardOffsets[0], hardOffsets[1], hardOffsets[2]);
+      usleep(1000000);
 */
-    hardOffsets[0] = 14.557999;
-    hardOffsets[1] = 4.930000;
-    hardOffsets[2] = 15.631001;
+	std::string line;
+	std::ifstream infile("/home/pi/GAMS_boat/mag_params.txt");
+	if (std::getline(infile, line) )
+	{
+  		std::istringstream iss(line);
+		iss >> hardOffsets[0] >> hardOffsets[1] >>  hardOffsets[2];
+	}
+	printf("Mag Offsets are: %f %f %f\n", hardOffsets[0], hardOffsets[1], hardOffsets[2]);
 }
 
